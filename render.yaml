@@ -1,0 +1,62 @@
+# Configuration de déploiement pour Render (https://render.com).
+# Une fois ce dépôt poussé sur GitHub et connecté à Render, ce fichier
+# permet à Render de créer le service automatiquement ("Blueprint").
+#
+# Le disque persistant est monté sur /var/data (jamais sur un dossier qui
+# contient du code, pour ne pas le masquer au démarrage) et ne sert qu'à la
+# base de données (DB_PATH) : c'est le seul élément qui change après le
+# déploiement (nouvelles commandes, stock...). Les photos produits sont
+# suivies par Git et redéployées avec le code ; si vous ajoutez beaucoup de
+# nouveaux produits par la suite, pensez à récupérer et committer les
+# nouvelles photos de temps en temps.
+
+services:
+  - type: web
+    name: hijama-store
+    runtime: node
+    plan: starter
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: DB_PATH
+        value: /var/data/store.db
+      - key: STORE_NAME
+        sync: false
+      - key: STORE_TAGLINE
+        sync: false
+      - key: WHATSAPP_NUMBER
+        sync: false
+      - key: INSTAGRAM_URL
+        sync: false
+      - key: FACEBOOK_URL
+        sync: false
+      - key: TIKTOK_URL
+        sync: false
+      - key: CURRENCY
+        sync: false
+      - key: DELIVERY_COUNTRY
+        sync: false
+      - key: DEFAULT_DELIVERY_FEE
+        sync: false
+      - key: ADMIN_USERNAME
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: GOOGLE_SHEETS_WEBHOOK_URL
+        sync: false
+      - key: NOTIFY_EMAIL_USER
+        sync: false
+      - key: NOTIFY_EMAIL_APP_PASSWORD
+        sync: false
+      - key: NOTIFY_EMAIL_TO
+        sync: false
+    disks:
+      - name: hijama-db
+        mountPath: /var/data
+        sizeGB: 1

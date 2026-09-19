@@ -7,7 +7,11 @@ const path = require('path');
 const fs = require('fs');
 const Database = require('better-sqlite3');
 
-const DB_PATH = path.join(__dirname, 'store.db');
+// En production sur un hébergeur avec disque persistant (ex. Render), DB_PATH
+// pointe vers ce disque (voir render.yaml) pour que la base survive aux
+// redéploiements. En local, aucune variable n'est définie : on garde le
+// fichier ici, dans backend/db/, comme avant.
+const DB_PATH = process.env.DB_PATH || path.join(__dirname, 'store.db');
 const SCHEMA_PATH = path.join(__dirname, 'schema.sql');
 
 const db = new Database(DB_PATH);
