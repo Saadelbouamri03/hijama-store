@@ -1,0 +1,10 @@
+node_modules/
+.claude/
+.env
+backend/db/store.db
+backend/db/store.db-journal
+backend/db/store.db-wal
+backend/db/store.db-shm
+.DS_Store
+npm-debug.log*
+*.log

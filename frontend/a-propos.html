@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>À propos</title>
+<meta name="description" content="Découvrez notre sélection de produits de hijama, massage, récupération et bien-être, pensée pour un usage simple et serein à la maison.">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Aller au contenu</a>
+<div data-include="header"></div>
+
+<main id="main">
+  <section class="section-cream">
+    <div class="container">
+      <p class="breadcrumb"><a href="/">Accueil</a> / À propos</p>
+      <div class="section-head" style="max-width: 60ch">
+        <h1 id="about-title">À propos de notre boutique</h1>
+        <p>Nous proposons une sélection de produits autour de la hijama, du massage, de la récupération et du bien-être : ventouses, huiles naturelles et accessoires, choisis pour leur qualité et leur simplicité d'usage à la maison.</p>
+        <p>Notre objectif est simple : vous permettre de commander facilement depuis Instagram, Facebook ou TikTok, et de recevoir vos produits partout au Maroc, en toute confiance.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sand">
+    <div class="container">
+      <div class="section-head"><h2>Notre sélection</h2></div>
+      <div class="grid grid-cats" id="about-categories"></div>
+    </div>
+  </section>
+
+  <section class="section-cream">
+    <div class="container">
+      <div class="grid why-grid">
+        <div class="why-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.9 6.1L21 9l-4.5 4.4L17.6 20 12 16.8 6.4 20l1.1-6.6L3 9l6.1-.9z"/></svg>
+          <h3>Une sélection soignée</h3>
+          <p>Chaque produit est choisi pour sa qualité et son utilité au quotidien, pas pour la quantité du catalogue.</p>
+        </div>
+        <div class="why-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a5 5 0 0 1 5 5v3h1a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h1V7a5 5 0 0 1 5-5z"/></svg>
+          <h3>Hygiène et sérieux</h3>
+          <p>Nos produits sont emballés avec soin et expédiés rapidement après votre commande.</p>
+        </div>
+        <div class="why-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-8.9 8.4 8.5 8.5 0 0 1-4-1L3 20l1.1-5A8.4 8.4 0 1 1 21 11.5z"/></svg>
+          <h3>Une relation directe</h3>
+          <p>Une question sur un produit ou votre commande ? Nous vous répondons directement sur WhatsApp.</p>
+        </div>
+      </div>
+      <p class="hint mt-6" style="max-width:60ch">Nos produits accompagnent une routine de bien-être et de détente ; ils ne remplacent pas un avis médical et ne visent aucun usage thérapeutique ou curatif.</p>
+    </div>
+  </section>
+
+  <section class="section-sand">
+    <div class="container">
+      <div class="cta-band">
+        <h2>Découvrez nos produits</h2>
+        <a href="/produits" class="btn btn-primary">Voir la boutique</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div data-include="footer"></div>
+<div data-include="whatsapp"></div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script src="/js/include.js"></script>
+<script src="/js/api.js"></script>
+<script src="/js/cart.js"></script>
+<script src="/js/render.js"></script>
+<script src="/js/mini-cart.js"></script>
+<script>
+document.addEventListener('config:ready', async (e) => {
+  document.getElementById('about-title').textContent = `À propos de ${e.detail.storeName}`;
+  try {
+    const categories = await Api.get('/api/categories');
+    document.getElementById('about-categories').innerHTML = categories.map(renderCategoryCard).join('');
+  } catch (err) { console.error(err); }
+});
+</script>
+</body>
+</html>

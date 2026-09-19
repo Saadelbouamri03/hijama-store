@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comparer des produits</title>
+<meta name="description" content="Comparez côte à côte deux ou trois produits d'une même catégorie : tailles, prix, conditionnement et disponibilité.">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Aller au contenu</a>
+<div data-include="header"></div>
+
+<main id="main">
+  <section class="section-cream" style="padding-bottom: var(--space-4)">
+    <div class="container">
+      <p class="breadcrumb"><a href="/">Accueil</a> / <a href="/produits">Produits</a> / Comparer</p>
+      <div class="section-head">
+        <h1>Comparer des produits</h1>
+        <p>Choisissez une catégorie puis deux ou trois produits à comparer côte à côte, sur la base des informations réellement renseignées dans notre catalogue.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-cream reveal" style="padding-top:0">
+    <div class="container">
+      <div class="compare-picker">
+        <div class="field">
+          <label for="compare-category">Catégorie</label>
+          <select id="compare-category"></select>
+        </div>
+        <div class="field">
+          <label for="compare-a">Produit 1</label>
+          <select id="compare-a"></select>
+        </div>
+        <div class="field">
+          <label for="compare-b">Produit 2</label>
+          <select id="compare-b"></select>
+        </div>
+        <div class="field">
+          <label for="compare-c">Produit 3 (optionnel)</label>
+          <select id="compare-c"><option value="">—</option></select>
+        </div>
+      </div>
+
+      <div id="compare-result">
+        <p>Sélectionnez au moins deux produits pour lancer la comparaison.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div data-include="footer"></div>
+<div data-include="whatsapp"></div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script src="/js/include.js"></script>
+<script src="/js/api.js"></script>
+<script src="/js/cart.js"></script>
+<script src="/js/render.js"></script>
+<script src="/js/mini-cart.js"></script>
+<script src="/js/catalog-helpers.js"></script>
+<script src="/js/comparer.js"></script>
+</body>
+</html>

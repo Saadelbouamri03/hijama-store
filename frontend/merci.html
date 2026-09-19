@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Commande confirmée</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div data-include="header"></div>
+
+<main id="main">
+  <section class="section-cream">
+    <div class="container">
+      <div class="success-box">
+        <div class="success-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+        </div>
+        <h1>Merci pour votre commande !</h1>
+        <p>Votre commande a bien été enregistrée. Nous allons vous contacter pour confirmer les détails.</p>
+        <p id="order-ref" class="hint"></p>
+        <div class="btn-group" style="display:flex; flex-direction:column; gap:12px; margin-top: var(--space-5)">
+          <a href="#" id="merci-whatsapp" class="btn btn-whatsapp" target="_blank" rel="noopener">Contacter sur WhatsApp</a>
+          <a href="/produits" class="btn btn-outline">Continuer mes achats</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div data-include="footer"></div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script src="/js/include.js"></script>
+<script src="/js/api.js"></script>
+<script src="/js/cart.js"></script>
+<script src="/js/render.js"></script>
+<script src="/js/mini-cart.js"></script>
+<script>
+document.addEventListener('config:ready', (e) => {
+  const config = e.detail;
+  let order = null;
+  try { order = JSON.parse(sessionStorage.getItem('lastOrder') || 'null'); } catch {}
+
+  const ref = document.getElementById('order-ref');
+  let waMessage = 'Bonjour, je viens de passer une commande sur le site.';
+  if (order) {
+    ref.textContent = `Commande n°${order.id} — Total : ${formatPrice(order.total, config.currency)}`;
+    waMessage = `Bonjour, je viens de passer la commande n°${order.id} (${formatPrice(order.total, config.currency)}) sur le site.`;
+  }
+  document.getElementById('merci-whatsapp').href = Api.whatsappLink(config.whatsappNumber, waMessage);
+});
+</script>
+</body>
+</html>

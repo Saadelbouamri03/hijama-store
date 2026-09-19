@@ -1,0 +1,102 @@
+const path = require('path');
+const express = require('express');
+const session = require('express-session');
+
+const { config, checkConfig } = require('./config');
+
+const configRoute = require('./routes/config');
+const authRoute = require('./routes/auth');
+const statsRoute = require('./routes/stats');
+const categoriesRoute = require('./routes/categories');
+const productsRoute = require('./routes/products');
+const ordersRoute = require('./routes/orders');
+const reviewsRoute = require('./routes/reviews');
+const deliveryRoute = require('./routes/delivery');
+
+const app = express();
+const FRONTEND_DIR = path.join(__dirname, '..', 'frontend');
+
+const isProduction = config.nodeEnv === 'production';
+
+app.disable('x-powered-by');
+app.use(express.json({ limit: '2mb' }));
+
+// Nécessaire en production derrière un reverse proxy (Render, Railway,
+// Nginx...) pour que express-session détecte correctement le HTTPS et pose
+// des cookies "secure" — sans ça, la session admin ne fonctionnerait pas.
+if (isProduction) app.set('trust proxy', 1);
+
+app.use(session({
+  name: 'hijama.sid',
+  secret: config.sessionSecret || 'dev-only-insecure-secret-change-me',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    sameSite: 'lax',
+    // true en production (le site DOIT alors être servi en HTTPS, sinon les
+    // navigateurs refusent le cookie et /admin devient inaccessible) ; false
+    // en développement local pour pouvoir tester sur http://localhost.
+    secure: isProduction,
+    maxAge: 1000 * 60 * 60 * 24 * 7, // 7 jours
+  },
+}));
+
+// --- API ---------------------------------------------------------------
+app.use('/api/config', configRoute);
+app.use('/api/admin', authRoute);
+app.use('/api/stats', statsRoute);
+app.use('/api/categories', categoriesRoute);
+app.use('/api/products', productsRoute);
+app.use('/api/orders', ordersRoute);
+app.use('/api/reviews', reviewsRoute);
+app.use('/api/delivery-fees', deliveryRoute);
+
+// --- Page produit à URL propre : /produit/mon-produit -------------------
+app.get('/produit/:slug', (req, res) => {
+  res.sendFile(path.join(FRONTEND_DIR, 'produit.html'));
+});
+
+// --- /admin -> redirige vers le tableau de bord (protégé côté client + API) ---
+app.get('/admin', (req, res) => res.redirect('/admin/dashboard'));
+
+// --- Fichiers statiques (HTML/CSS/JS/images) -----------------------------
+// "extensions: ['html']" permet des URLs propres : /produits sert produits.html
+app.use(express.static(FRONTEND_DIR, { extensions: ['html'] }));
+
+// --- 404 -----------------------------------------------------------------
+app.use((req, res) => {
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).json({ error: 'Route API introuvable.' });
+  }
+  res.status(404).sendFile(path.join(FRONTEND_DIR, '404.html'));
+});
+
+// --- Gestion centralisée des erreurs (dont les erreurs Multer) -----------
+app.use((err, req, res, next) => {
+  console.error(err);
+  const status = err.status || 400;
+  res.status(status).json({ error: err.message || 'Une erreur est survenue.' });
+});
+
+const warnings = checkConfig();
+
+// En production, un mot de passe admin ou un secret de session manquant
+// n'est plus un simple avertissement : le serveur refuse de démarrer, pour
+// ne jamais exposer /admin avec des identifiants par défaut sur internet.
+if (isProduction && (!config.admin.password || !config.sessionSecret)) {
+  console.error('❌ Démarrage refusé en production : ADMIN_PASSWORD et SESSION_SECRET doivent être définis dans .env.');
+  process.exit(1);
+}
+
+app.listen(config.port, () => {
+  console.log('');
+  console.log(`✅ ${config.storeName} est en ligne sur http://localhost:${config.port}`);
+  console.log(`   Espace admin : http://localhost:${config.port}/admin/login`);
+  console.log('');
+  if (warnings.length) {
+    console.log('⚠️  Pensez à compléter votre fichier .env :');
+    warnings.forEach((w) => console.log('   - ' + w));
+    console.log('');
+  }
+});

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nos produits</title>
+<meta name="description" content="Découvrez tous nos produits de hijama, massage, huiles et accessoires bien-être. Livraison partout au Maroc.">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+<style>
+  .filter-bar { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; margin-bottom: var(--space-6); }
+  .chip-row { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+  .chip {
+    padding: 0.5rem 1rem; border-radius: 999px; border: 1.5px solid var(--sand-deep);
+    font-size: var(--fs-xs); font-weight: 700; background: var(--white); color: var(--ink-soft);
+  }
+  .chip[aria-pressed="true"] { background: var(--moss); border-color: var(--moss); color: var(--white); }
+  .search-box { margin-left: auto; min-width: 220px; }
+  @media (max-width: 640px) { .search-box { margin-left: 0; width: 100%; } }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Aller au contenu</a>
+<div data-include="header"></div>
+
+<main id="main">
+  <section class="section-cream" style="padding-bottom: var(--space-4)">
+    <div class="container">
+      <p class="breadcrumb"><a href="/">Accueil</a> / Produits</p>
+      <div class="section-head">
+        <h1 id="page-title">Nos produits</h1>
+        <p>Parcourez notre sélection de produits de hijama, massage et bien-être.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-cream" style="padding-top:0">
+    <div class="container">
+      <div class="filter-bar">
+        <div class="chip-row" id="category-chips">
+          <button class="chip" data-filter="" aria-pressed="true">Tous les produits</button>
+        </div>
+        <div class="search-box">
+          <input type="text" id="search-input" placeholder="Rechercher un produit…" aria-label="Rechercher un produit">
+        </div>
+      </div>
+      <div class="context-banner" id="hijama-context-banner" hidden>
+        <p>Vous parcourez les ventouses et accessoires de hijama.</p>
+        <div class="context-links">
+          <a href="/guide-tailles-ventouses" class="btn-text">📏 Guide des tailles</a>
+          <a href="/comparer" class="btn-text">⇄ Comparer des produits</a>
+          <a href="/composez-votre-kit" class="btn-text">🧺 Composer un kit</a>
+        </div>
+      </div>
+      <div class="grid grid-products" id="products-grid">
+        <p>Chargement des produits…</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div data-include="footer"></div>
+<div data-include="whatsapp"></div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script src="/js/include.js"></script>
+<script src="/js/api.js"></script>
+<script src="/js/cart.js"></script>
+<script src="/js/render.js"></script>
+<script src="/js/mini-cart.js"></script>
+<script src="/js/products.js"></script>
+</body>
+</html>

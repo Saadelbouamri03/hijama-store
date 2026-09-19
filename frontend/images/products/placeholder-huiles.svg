@@ -1,0 +1,11 @@
+<svg viewBox="0 0 480 480" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Photo à venir — produit à base d'huile">
+  <rect width="480" height="480" fill="#EFE3C9"/>
+  <circle cx="240" cy="230" r="150" fill="#E1D0A8" opacity="0.6"/>
+  <g fill="none" stroke="#46592F" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M212 148 L212 100 L268 100 L268 148" />
+    <rect x="190" y="148" width="100" height="210" rx="26" />
+    <line x1="190" y1="216" x2="290" y2="216" />
+  </g>
+  <path d="M320 156 Q366 156 366 202 Q366 236 332 244 Q298 236 298 202 Q298 160 320 156 Z" fill="#7C9067" stroke="none" />
+  <text x="240" y="424" text-anchor="middle" font-family="Karla, sans-serif" font-size="16" fill="#6B6255">Photo à ajouter depuis l'admin</text>
+</svg>

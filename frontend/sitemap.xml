@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Remplacez "https://votre-domaine.ma" par votre nom de domaine une fois le
+  site en ligne (voir le README, section "Mettre le site en ligne").
+  Les pages produits n'apparaissent pas ici car elles sont générées
+  dynamiquement depuis la base de données ; un développeur pourra plus tard
+  générer ce fichier automatiquement à partir de la table "products" si besoin.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://votre-domaine.ma/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://votre-domaine.ma/produits</loc><changefreq>daily</changefreq><priority>0.9</priority></url>
+  <url><loc>https://votre-domaine.ma/categories</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://votre-domaine.ma/a-propos</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://votre-domaine.ma/avis</loc><changefreq>weekly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://votre-domaine.ma/contact</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+</urlset>

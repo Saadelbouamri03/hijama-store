@@ -1,0 +1,84 @@
+/* Styles spécifiques à l'espace admin, chargés en plus de style.css */
+
+.admin-body { background: var(--sand); min-height: 100vh; }
+
+.admin-topbar {
+  background: var(--white); border-bottom: 1px solid var(--sand-deep);
+  padding: var(--space-4) 0;
+}
+.admin-topbar .container { display: flex; align-items: center; justify-content: space-between; }
+.admin-topbar h1 { font-size: var(--fs-md); margin-bottom: 0; }
+
+.admin-tabs {
+  display: flex; gap: var(--space-2); overflow-x: auto;
+  padding: var(--space-4) 0 0;
+}
+.admin-tab {
+  background: var(--white); border: 1px solid var(--sand-deep); color: var(--ink-soft);
+  padding: 0.6rem 1.1rem; border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  font-weight: 700; font-size: var(--fs-sm); white-space: nowrap;
+}
+.admin-tab.active { background: var(--moss); color: var(--white); border-color: var(--moss); }
+
+.admin-panel { display: none; padding: var(--space-6) 0 var(--space-9); }
+.admin-panel.active { display: block; }
+
+.stat-grid { display: grid; gap: var(--space-4); grid-template-columns: repeat(2, 1fr); margin-bottom: var(--space-7); }
+@media (min-width: 720px) { .stat-grid { grid-template-columns: repeat(4, 1fr); } }
+.stat-card { background: var(--white); border-radius: var(--radius-md); padding: var(--space-5); border: 1px solid var(--sand-deep); }
+.stat-card .num { font-family: var(--font-display); font-size: var(--fs-2xl); color: var(--moss-dark); display: block; }
+.stat-card .label { font-size: var(--fs-xs); color: var(--ink-soft); font-weight: 700; }
+.stat-card.alert .num { color: var(--clay); }
+
+.admin-toolbar { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; justify-content: space-between; margin-bottom: var(--space-4); }
+.admin-toolbar h2 { margin-bottom: 0; }
+
+.table-wrap { background: var(--white); border-radius: var(--radius-md); border: 1px solid var(--sand-deep); overflow: auto; }
+table.admin-table { width: 100%; border-collapse: collapse; min-width: 640px; }
+.admin-table th, .admin-table td { text-align: left; padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--sand-deep); font-size: var(--fs-sm); }
+.admin-table th { background: var(--cream); font-weight: 700; color: var(--ink-soft); font-size: var(--fs-xs); }
+.admin-table tr:last-child td { border-bottom: none; }
+.admin-table img.thumb { width: 40px; height: 40px; object-fit: cover; border-radius: var(--radius-sm); background: var(--sand); }
+.admin-table select { padding: 0.4rem 0.6rem; border-radius: var(--radius-sm); border: 1.5px solid var(--sand-deep); font-size: var(--fs-xs); }
+.row-actions { display: flex; gap: var(--space-2); }
+.icon-btn { display: inline-block; background: none; border: 1.5px solid var(--sand-deep); border-radius: var(--radius-sm); padding: 0.35rem 0.6rem; font-size: var(--fs-xs); font-weight: 700; color: var(--ink-soft); text-decoration: none; white-space: nowrap; }
+.icon-btn:hover { border-color: var(--moss); color: var(--moss); }
+.icon-btn.danger:hover { border-color: #A3402A; color: #A3402A; }
+
+.status-select[data-status="Nouvelle commande"] { color: var(--clay); font-weight:700; }
+.status-select[data-status="Livrée"] { color: var(--moss-dark); font-weight:700; }
+.status-select[data-status="Annulée"] { color: #A3402A; font-weight:700; }
+
+.modal-backdrop {
+  position: fixed; inset: 0; background: rgba(43,38,32,0.5); display: none;
+  align-items: flex-start; justify-content: center; padding: var(--space-6) var(--space-4); z-index: 100; overflow-y: auto;
+}
+.modal-backdrop.open { display: flex; }
+.modal-box {
+  background: var(--white); border-radius: var(--radius-md); max-width: 560px; width: 100%;
+  padding: var(--space-6); margin: var(--space-6) 0;
+}
+.modal-box h2 { font-size: var(--fs-lg); }
+.modal-close { float: right; background: none; border: none; font-size: 1.4rem; color: var(--ink-soft); line-height: 1; }
+.field-inline { display: flex; align-items: center; gap: var(--space-2); }
+.checkbox-row { display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-4); }
+.checkbox-row input { width: auto; }
+.image-thumb-row { display: flex; gap: var(--space-2); flex-wrap: wrap; margin-bottom: var(--space-3); }
+.image-thumb {
+  position: relative; width: 64px; height: 64px; border-radius: var(--radius-sm); overflow: hidden; background: var(--sand);
+}
+.image-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.image-thumb button {
+  position: absolute; top: 2px; right: 2px; background: rgba(43,38,32,0.7); color: var(--white);
+  border: none; border-radius: 50%; width: 18px; height: 18px; font-size: 0.7rem; line-height: 1;
+}
+.empty-row td { text-align: center; color: var(--ink-soft); padding: var(--space-6); }
+
+/* style.css ne cible pas input[type=number]/[type=file] (non utilisés ailleurs sur le site) */
+input[type="number"] {
+  width: 100%; padding: 0.75rem 0.9rem;
+  border: 1.5px solid var(--sand-deep); border-radius: var(--radius-sm);
+  background: var(--white); color: var(--ink);
+}
+input[type="number"]:focus { border-color: var(--moss); outline: none; }
+input[type="file"] { width: 100%; padding: var(--space-2) 0; font-size: var(--fs-sm); }

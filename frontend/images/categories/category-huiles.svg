@@ -1,0 +1,9 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Huiles naturelles">
+  <rect width="200" height="200" rx="24" fill="#EFE3C9"/>
+  <g fill="none" stroke="#46592F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M88 60 L88 40 L112 40 L112 60" />
+    <rect x="78" y="60" width="44" height="92" rx="12" />
+    <line x1="78" y1="92" x2="122" y2="92" />
+  </g>
+  <path d="M134 64 Q156 64 156 86 Q156 102 140 106 Q124 102 124 86 Q124 68 134 64 Z" fill="#7C9067" stroke="none" />
+</svg>

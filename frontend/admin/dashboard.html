@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tableau de bord</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+
+<div class="admin-topbar">
+  <div class="container">
+    <h1>Espace admin — <span id="admin-store-name">Boutique</span></h1>
+    <div class="flex items-center gap-2">
+      <a href="/" class="btn-text" target="_blank">Voir le site ↗</a>
+      <button class="btn btn-outline btn-sm" id="logout-btn">Se déconnecter</button>
+    </div>
+  </div>
+  <div class="container admin-tabs" id="admin-tabs">
+    <button class="admin-tab active" data-panel="overview">Vue d'ensemble</button>
+    <button class="admin-tab" data-panel="orders">Commandes</button>
+    <button class="admin-tab" data-panel="products">Produits</button>
+    <button class="admin-tab" data-panel="categories">Catégories</button>
+    <button class="admin-tab" data-panel="reviews">Avis</button>
+    <button class="admin-tab" data-panel="delivery">Livraison</button>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ===== VUE D'ENSEMBLE ===== -->
+  <section class="admin-panel active" id="panel-overview">
+    <div class="stat-grid" id="stat-grid"></div>
+    <div id="low-stock-block"></div>
+  </section>
+
+  <!-- ===== COMMANDES ===== -->
+  <section class="admin-panel" id="panel-orders">
+    <div class="admin-toolbar">
+      <h2>Commandes</h2>
+      <div class="flex gap-2">
+        <select id="order-status-filter">
+          <option value="">Tous les statuts</option>
+          <option>Nouvelle commande</option>
+          <option>Confirmée</option>
+          <option>Préparation</option>
+          <option>Expédiée</option>
+          <option>Livrée</option>
+          <option>Annulée</option>
+        </select>
+        <a href="/api/orders/export/csv" class="btn btn-primary btn-sm" id="export-csv-btn">Exporter CSV</a>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table class="admin-table">
+        <thead><tr><th>N°</th><th>Date</th><th>Client</th><th>Ville</th><th>Total</th><th>Statut</th><th>Actions</th></tr></thead>
+        <tbody id="orders-tbody"><tr class="empty-row"><td colspan="7">Chargement…</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===== PRODUITS ===== -->
+  <section class="admin-panel" id="panel-products">
+    <div class="admin-toolbar">
+      <h2>Produits</h2>
+      <button class="btn btn-primary btn-sm" id="add-product-btn">+ Ajouter un produit</button>
+    </div>
+    <div class="table-wrap">
+      <table class="admin-table">
+        <thead><tr><th></th><th>Nom</th><th>Catégorie</th><th>Prix</th><th>Stock</th><th>Statut</th><th>Actions</th></tr></thead>
+        <tbody id="products-tbody"><tr class="empty-row"><td colspan="7">Chargement…</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===== CATEGORIES ===== -->
+  <section class="admin-panel" id="panel-categories">
+    <div class="admin-toolbar">
+      <h2>Catégories</h2>
+      <button class="btn btn-primary btn-sm" id="add-category-btn">+ Ajouter une catégorie</button>
+    </div>
+    <p class="hint" style="margin-bottom: var(--space-4)">La carte "Nouveautés" affichée sur le site est automatique : elle regroupe les produits cochés "Nouveau" et n'apparaît pas dans cette liste.</p>
+    <div class="table-wrap">
+      <table class="admin-table">
+        <thead><tr><th>Nom</th><th>Description</th><th>Ordre</th><th>Actions</th></tr></thead>
+        <tbody id="categories-tbody"><tr class="empty-row"><td colspan="4">Chargement…</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===== AVIS ===== -->
+  <section class="admin-panel" id="panel-reviews">
+    <div class="admin-toolbar">
+      <h2>Avis clients</h2>
+      <button class="btn btn-primary btn-sm" id="add-review-btn">+ Ajouter un avis</button>
+    </div>
+    <div class="table-wrap">
+      <table class="admin-table">
+        <thead><tr><th>Client</th><th>Note</th><th>Commentaire</th><th>Type</th><th>Visible</th><th>Actions</th></tr></thead>
+        <tbody id="reviews-tbody"><tr class="empty-row"><td colspan="6">Chargement…</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===== LIVRAISON ===== -->
+  <section class="admin-panel" id="panel-delivery">
+    <div class="admin-toolbar">
+      <h2>Frais de livraison</h2>
+      <button class="btn btn-primary btn-sm" id="add-fee-btn">+ Ajouter une ville</button>
+    </div>
+    <p class="hint" style="margin-bottom: var(--space-4)">Pour toute ville non listée ici, le frais par défaut défini dans <code>.env</code> (<code>DEFAULT_DELIVERY_FEE</code>) s'applique automatiquement.</p>
+    <div class="table-wrap">
+      <table class="admin-table">
+        <thead><tr><th>Ville</th><th>Frais</th><th>Actions</th></tr></thead>
+        <tbody id="delivery-tbody"><tr class="empty-row"><td colspan="3">Chargement…</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+</div>
+
+<!-- ===== MODALE GENERIQUE (formulaires + détail commande) ===== -->
+<div class="modal-backdrop" id="modal-backdrop">
+  <div class="modal-box" id="modal-box"></div>
+</div>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script src="/js/api.js"></script>
+<script src="/js/render.js"></script>
+<script src="/js/admin.js"></script>
+</body>
+</html>

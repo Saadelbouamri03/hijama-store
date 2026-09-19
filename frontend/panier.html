@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panier</title>
+<meta name="description" content="Votre panier d'achats.">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Aller au contenu</a>
+<div data-include="header"></div>
+
+<main id="main">
+  <section class="section-cream">
+    <div class="container">
+      <p class="breadcrumb"><a href="/">Accueil</a> / Panier</p>
+      <h1>Votre panier</h1>
+
+      <div id="cart-empty" class="empty-state" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l1 13a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L6 7z"/><path d="M9 7V5a3 3 0 0 1 6 0v2"/></svg>
+        <h2>Votre panier est vide</h2>
+        <p>Parcourez nos produits pour commencer votre commande.</p>
+        <a href="/produits" class="btn btn-primary">Découvrir nos produits</a>
+      </div>
+
+      <div id="cart-full" class="cart-layout" hidden>
+        <div>
+          <div id="cart-items-list"></div>
+          <a href="/produits" class="btn-text mt-6" style="display:inline-block">← Continuer mes achats</a>
+        </div>
+        <div class="summary-card">
+          <h3>Résumé de la commande</h3>
+          <div class="summary-row"><span>Sous-total</span><span id="summary-subtotal">0 DH</span></div>
+          <div class="summary-row"><span>Livraison (estimation)</span><span id="summary-delivery">0 DH</span></div>
+          <div class="summary-row total"><span>Total</span><span id="summary-total">0 DH</span></div>
+          <p class="hint">La livraison est recalculée précisément selon votre ville à l'étape suivante.</p>
+          <a href="/checkout" class="btn btn-primary btn-block">Passer la commande</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div data-include="footer"></div>
+<div data-include="whatsapp"></div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script src="/js/include.js"></script>
+<script src="/js/api.js"></script>
+<script src="/js/cart.js"></script>
+<script src="/js/render.js"></script>
+<script src="/js/mini-cart.js"></script>
+<script src="/js/panier.js"></script>
+</body>
+</html>

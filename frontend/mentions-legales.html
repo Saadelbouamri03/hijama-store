@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mentions légales</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Mentions légales de la boutique : identification de l'éditeur, hébergement et propriété intellectuelle.">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Aller au contenu</a>
+<div data-include="header"></div>
+
+<main id="main">
+  <section class="section-cream">
+    <div class="container">
+      <p class="breadcrumb"><a href="/">Accueil</a> / Mentions légales</p>
+      <div class="section-head" style="max-width: 70ch">
+        <h1>Mentions légales</h1>
+      </div>
+
+      <div class="legal-content">
+        <h2>Éditeur du site</h2>
+        <p>
+          Le site <strong id="legal-store-name">la boutique</strong> est édité par :<br>
+          [NOM DU RESPONSABLE OU DE L'ENTREPRISE]<br>
+          Statut : [AUTO-ENTREPRENEUR / SOCIÉTÉ — À PRÉCISER]<br>
+          Ville : [VILLE], Maroc<br>
+          ICE (Identifiant Commun de l'Entreprise) : [À COMPLÉTER SI DISPONIBLE]<br>
+          Contact : via <a href="#" id="legal-whatsapp-link" target="_blank" rel="noopener">WhatsApp</a>
+        </p>
+        <p class="hint">Ces informations doivent être complétées par l'exploitant du site avant sa mise en ligne publique (voir le fichier README, section "Notes importantes").</p>
+
+        <h2>Hébergement</h2>
+        <p>[NOM DE L'HÉBERGEUR ET ADRESSE — À COMPLÉTER LORS DE LA MISE EN LIGNE]</p>
+
+        <h2>Propriété intellectuelle</h2>
+        <p>L'ensemble des textes, photographies et éléments graphiques présents sur ce site sont la propriété de son éditeur, sauf mention contraire, et ne peuvent être reproduits sans autorisation préalable.</p>
+
+        <h2>Nature des produits</h2>
+        <p>Les produits présentés sur ce site (hijama, massage, bien-être) sont vendus à titre d'accessoires de confort et de bien-être. Aucun contenu de ce site ne doit être interprété comme un avis médical, un diagnostic ou une promesse de traitement : pour toute question de santé, consultez un professionnel de santé qualifié.</p>
+
+        <h2>Responsabilité</h2>
+        <p>L'éditeur s'efforce d'assurer l'exactitude des informations diffusées sur ce site, mais ne saurait être tenu responsable des erreurs, omissions, ou de l'indisponibilité temporaire du site.</p>
+
+        <h2>Contact</h2>
+        <p>Pour toute question relative à ces mentions légales, contactez-nous via la page <a href="/contact">Contact</a>.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div data-include="footer"></div>
+<div data-include="whatsapp"></div>
+
+<script src="/js/include.js"></script>
+<script src="/js/api.js"></script>
+<script src="/js/cart.js"></script>
+<script>
+document.addEventListener('config:ready', (e) => {
+  const config = e.detail;
+  document.getElementById('legal-store-name').textContent = config.storeName;
+  document.getElementById('legal-whatsapp-link').href = Api.whatsappLink(config.whatsappNumber, 'Bonjour, j\'ai une question.');
+});
+</script>
+</body>
+</html>

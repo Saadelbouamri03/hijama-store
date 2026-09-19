@@ -1,0 +1,11 @@
+<svg viewBox="0 0 480 480" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Photo à venir — accessoire bien-être">
+  <rect width="480" height="480" fill="#EFE3C9"/>
+  <circle cx="240" cy="230" r="150" fill="#E1D0A8" opacity="0.6"/>
+  <g fill="none" stroke="#46592F" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M168 192 Q168 134 240 134 Q312 134 312 192" />
+    <path d="M154 192 L326 192 L306 356 Q240 380 174 356 Z" />
+    <line x1="196" y1="250" x2="284" y2="250" stroke-dasharray="6 10"/>
+  </g>
+  <circle cx="240" cy="134" r="6" fill="#B5693D"/>
+  <text x="240" y="424" text-anchor="middle" font-family="Karla, sans-serif" font-size="16" fill="#6B6255">Photo à ajouter depuis l'admin</text>
+</svg>

@@ -1,0 +1,12 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ventouses de hijama">
+  <rect width="200" height="200" rx="24" fill="#EFE3C9"/>
+  <g fill="none" stroke="#46592F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M62 128 Q62 76 100 76 Q138 76 138 128" />
+    <ellipse cx="100" cy="128" rx="38" ry="9" />
+    <path d="M32 148 Q32 122 50 122 Q68 122 68 148" />
+    <ellipse cx="50" cy="148" rx="18" ry="6" />
+    <path d="M132 150 Q132 128 148 128 Q164 128 164 150" />
+    <ellipse cx="148" cy="150" rx="16" ry="5.5" />
+  </g>
+  <circle cx="100" cy="55" r="3" fill="#B5693D"/>
+</svg>

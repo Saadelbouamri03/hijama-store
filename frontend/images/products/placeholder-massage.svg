@@ -1,0 +1,11 @@
+<svg viewBox="0 0 480 480" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Photo à venir — produit de massage">
+  <rect width="480" height="480" fill="#EFE3C9"/>
+  <circle cx="240" cy="230" r="150" fill="#E1D0A8" opacity="0.6"/>
+  <g fill="none" stroke="#46592F" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <ellipse cx="240" cy="336" rx="124" ry="46" />
+    <ellipse cx="248" cy="256" rx="90" ry="38" />
+    <ellipse cx="232" cy="176" rx="62" ry="26" />
+  </g>
+  <circle cx="352" cy="140" r="6" fill="#B5693D"/>
+  <text x="240" y="424" text-anchor="middle" font-family="Karla, sans-serif" font-size="16" fill="#6B6255">Photo à ajouter depuis l'admin</text>
+</svg>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Avis clients</title>
+<meta name="description" content="Découvrez les avis de nos clients sur nos produits de hijama, massage et bien-être.">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Aller au contenu</a>
+<div data-include="header"></div>
+
+<main id="main">
+  <section class="section-cream" style="padding-bottom: var(--space-4)">
+    <div class="container">
+      <p class="breadcrumb"><a href="/">Accueil</a> / Avis clients</p>
+      <div class="section-head">
+        <h1>Ce que nos clients pensent de nous</h1>
+        <p>Les retours de nos clientes et clients après réception de leurs produits.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-cream" style="padding-top:0">
+    <div class="container">
+      <div class="grid grid-reviews" id="reviews-grid">
+        <p>Chargement des avis…</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sand">
+    <div class="container">
+      <div class="cta-band">
+        <h2>Envie de commander ?</h2>
+        <a href="/produits" class="btn btn-primary">Voir la boutique</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div data-include="footer"></div>
+<div data-include="whatsapp"></div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script src="/js/include.js"></script>
+<script src="/js/api.js"></script>
+<script src="/js/cart.js"></script>
+<script src="/js/render.js"></script>
+<script src="/js/mini-cart.js"></script>
+<script>
+document.addEventListener('config:ready', async () => {
+  const grid = document.getElementById('reviews-grid');
+  try {
+    const reviews = await Api.get('/api/reviews');
+    grid.innerHTML = reviews.length ? reviews.map(renderReviewCard).join('') : '<p>Pas encore d\'avis.</p>';
+  } catch (err) {
+    grid.innerHTML = '<p>Impossible de charger les avis pour le moment.</p>';
+  }
+});
+</script>
+</body>
+</html>

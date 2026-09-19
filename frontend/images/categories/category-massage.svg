@@ -1,0 +1,9 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pierres de massage">
+  <rect width="200" height="200" rx="24" fill="#EFE3C9"/>
+  <g fill="none" stroke="#46592F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <ellipse cx="100" cy="146" rx="52" ry="20" />
+    <ellipse cx="104" cy="108" rx="38" ry="16" />
+    <ellipse cx="97" cy="74" rx="26" ry="11" />
+  </g>
+  <circle cx="150" cy="58" r="3" fill="#B5693D"/>
+</svg>

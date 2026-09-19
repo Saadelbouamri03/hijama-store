@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connexion admin</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+<style>
+  body { display: flex; min-height: 100vh; align-items: center; justify-content: center; background: var(--sand); }
+  .login-card {
+    background: var(--white); border-radius: var(--radius-lg); padding: var(--space-7);
+    width: 100%; max-width: 380px; box-shadow: var(--shadow-lift);
+  }
+  .login-card h1 { font-size: var(--fs-xl); margin-bottom: var(--space-2); }
+</style>
+</head>
+<body>
+  <form class="login-card" id="login-form">
+    <h1>Espace admin</h1>
+    <p class="hint" style="margin-bottom: var(--space-5)">Connectez-vous pour gérer votre boutique.</p>
+    <div id="login-error" class="payment-note" style="background:#F6DDD3; display:none"></div>
+    <div class="field">
+      <label for="username">Identifiant</label>
+      <input type="text" id="username" name="username" autocomplete="username" required>
+    </div>
+    <div class="field">
+      <label for="password">Mot de passe</label>
+      <input type="password" id="password" name="password" autocomplete="current-password" required>
+    </div>
+    <button type="submit" class="btn btn-primary btn-block" id="login-btn">Se connecter</button>
+    <p class="hint" style="margin-top: var(--space-5); text-align:center"><a href="/" class="btn-text">← Retour au site</a></p>
+  </form>
+
+<script>
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const errorEl = document.getElementById('login-error');
+  const btn = document.getElementById('login-btn');
+  errorEl.style.display = 'none';
+  btn.disabled = true;
+  btn.textContent = 'Connexion…';
+
+  try {
+    const res = await fetch('/api/admin/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'same-origin',
+      body: JSON.stringify({
+        username: document.getElementById('username').value,
+        password: document.getElementById('password').value,
+      }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Connexion impossible.');
+    window.location.href = '/admin/dashboard';
+  } catch (err) {
+    errorEl.textContent = err.message;
+    errorEl.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Se connecter';
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conditions générales de vente</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Conditions générales de vente : commande, prix, paiement à la livraison, livraison et retours.">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Aller au contenu</a>
+<div data-include="header"></div>
+
+<main id="main">
+  <section class="section-cream">
+    <div class="container">
+      <p class="breadcrumb"><a href="/">Accueil</a> / Conditions générales de vente</p>
+      <div class="section-head" style="max-width: 70ch">
+        <h1>Conditions générales de vente</h1>
+        <p>En passant commande sur ce site, vous acceptez les conditions décrites ci-dessous.</p>
+      </div>
+
+      <div class="legal-content">
+        <h2>1. Objet</h2>
+        <p>Les présentes conditions régissent la vente à distance des produits proposés sur <strong id="cgv-store-name">la boutique</strong> aux clients situés au Maroc.</p>
+
+        <h2>2. Produits et prix</h2>
+        <p>Les prix affichés sont exprimés en dirhams marocains (DH), toutes taxes comprises, et n'incluent pas les frais de livraison (calculés séparément selon la ville de livraison et affichés avant validation de la commande).</p>
+        <p>Les photos et descriptions sont fournies à titre indicatif. En cas d'erreur manifeste de prix ou de description, nous nous réservons le droit d'annuler la commande concernée en vous en informant sans délai.</p>
+
+        <h2>3. Commande</h2>
+        <p>Une commande peut être passée directement depuis le site (panier + formulaire de commande) ou par message WhatsApp. Elle n'est définitive qu'après confirmation de notre part (message ou appel de confirmation avant expédition).</p>
+
+        <h2>4. Paiement</h2>
+        <p>Le paiement s'effectue exclusivement <strong>en espèces à la livraison</strong> (paiement à la livraison / "cash on delivery"). Aucun paiement en ligne n'est demandé sur ce site.</p>
+
+        <h2>5. Livraison</h2>
+        <p>Nous livrons partout au Maroc. Les délais de livraison sont indicatifs et peuvent varier selon la ville et le transporteur. Les frais de livraison dépendent de la ville renseignée et sont affichés avant la validation de votre commande.</p>
+
+        <h2>6. Retours et échanges</h2>
+        <p>Pour des raisons d'hygiène, les produits en contact direct avec la peau (ventouses, accessoires de soin...) qui ont été utilisés ne peuvent pas être repris.</p>
+        <p>En revanche, si vous recevez un produit défectueux, endommagé pendant le transport, ou différent de votre commande, contactez-nous via WhatsApp dans les 48 heures suivant la réception avec une photo du produit : nous procéderons à un échange ou un remboursement selon le cas.</p>
+
+        <h2>7. Absence de promesse médicale</h2>
+        <p>Les produits vendus (hijama, massage, bien-être) sont des accessoires de confort. Aucune information présente sur ce site ne constitue un avis médical, un diagnostic ou une garantie de résultat thérapeutique. Pour toute question de santé, consultez un professionnel de santé qualifié.</p>
+
+        <h2>8. Réclamations</h2>
+        <p>Pour toute question ou réclamation concernant votre commande, contactez-nous via <a href="/contact">WhatsApp</a> : nous nous engageons à vous répondre dans les meilleurs délais.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div data-include="footer"></div>
+<div data-include="whatsapp"></div>
+
+<script src="/js/include.js"></script>
+<script src="/js/api.js"></script>
+<script src="/js/cart.js"></script>
+<script>
+document.addEventListener('config:ready', (e) => {
+  document.getElementById('cgv-store-name').textContent = e.detail.storeName;
+});
+</script>
+</body>
+</html>
