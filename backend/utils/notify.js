@@ -13,6 +13,7 @@ const https = require('https');
 const nodemailer = require('nodemailer');
 const { config } = require('../config');
 const { renderBonCommande } = require('./bon-commande');
+const { generateBonCommandePdf } = require('./bon-commande-pdf');
 
 function notifyNewOrder(order) {
   console.log('\n📦 Nouvelle commande #' + order.id + ' — ' + order.customer_name + ' (' + order.city + ') — ' + order.total + ' DH\n');
@@ -49,25 +50,46 @@ function getEmailTransporter() {
 
 // Notification email "best-effort" : ne bloque jamais la commande si Gmail
 // n'est pas configuré ou si l'envoi échoue (la commande est déjà enregistrée
-// avant cet appel, voir routes/orders.js).
-function sendOrderEmail(order) {
+// avant cet appel, voir routes/orders.js). Le PDF joint est le vrai bon de
+// commande (généré avec pdfkit, sans navigateur) ; le corps de l'email n'est
+// qu'un résumé rapide + le lien WhatsApp prêt à envoyer.
+async function sendOrderEmail(order) {
   const transporter = getEmailTransporter();
   if (!transporter) return; // fonctionnalité non activée (.env incomplet)
 
   const waLink = whatsappSelfLink(order);
-  const html = renderBonCommande(order, config).replace(
-    '</body>',
-    waLink
-      ? `<p class="no-print"><a href="${waLink}" style="display:inline-block;margin-top:16px;padding:10px 18px;background:#25D366;color:#fff;border-radius:8px;font-weight:700;text-decoration:none;font-family:sans-serif">Envoyer ce résumé sur WhatsApp</a></p></body>`
-      : '</body>'
-  );
+  const currency = config.currency || 'DH';
+  const itemsHtml = order.items.map((it) =>
+    `<li>${it.product_name}${it.variant_label ? ' (' + it.variant_label + ')' : ''} — ${it.quantity} × ${it.unit_price} ${currency}</li>`
+  ).join('');
 
-  transporter.sendMail({
-    from: `"${config.storeName}" <${config.notifyEmail.user}>`,
-    to: config.notifyEmail.to,
-    subject: `Nouvelle commande #${order.id} — ${order.customer_name} (${order.total} ${config.currency})`,
-    html,
-  }).catch((err) => console.error('Notification email échouée (commande tout de même enregistrée) :', err.message));
+  const html = `
+    <div style="font-family:sans-serif;color:#262D29;max-width:520px">
+      <h2 style="color:#183D32;margin-bottom:4px">Nouvelle commande #${order.id}</h2>
+      <p style="color:#5B6560;margin-top:0">${order.customer_name} — ${order.phone}</p>
+      <p>${order.address}, ${order.city}</p>
+      <ul>${itemsHtml}</ul>
+      <p><strong>Total : ${order.total} ${currency}</strong></p>
+      <p style="color:#5B6560;font-size:0.9em">Le bon de commande complet est en pièce jointe (PDF).</p>
+      ${waLink ? `<p><a href="${waLink}" style="display:inline-block;padding:10px 18px;background:#25D366;color:#fff;border-radius:8px;font-weight:700;text-decoration:none">Envoyer ce résumé sur WhatsApp</a></p>` : ''}
+    </div>`;
+
+  try {
+    const pdfBuffer = await generateBonCommandePdf(order, config);
+    await transporter.sendMail({
+      from: `"${config.storeName}" <${config.notifyEmail.user}>`,
+      to: config.notifyEmail.to,
+      subject: `Nouvelle commande #${order.id} — ${order.customer_name} (${order.total} ${currency})`,
+      html,
+      attachments: [{
+        filename: `bon-de-commande-${order.id}.pdf`,
+        content: pdfBuffer,
+        contentType: 'application/pdf',
+      }],
+    });
+  } catch (err) {
+    console.error('Notification email échouée (commande tout de même enregistrée) :', err.message);
+  }
 }
 
 // Envoie la commande à un "Google Apps Script Web App" branché sur une

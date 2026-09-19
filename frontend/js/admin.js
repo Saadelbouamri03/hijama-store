@@ -133,6 +133,7 @@ async function loadOrders() {
       <td class="row-actions">
         <button class="icon-btn view-order-btn" data-order-id="${o.id}">Détail</button>
         <a class="icon-btn" href="/api/orders/${o.id}/bon-commande" target="_blank" rel="noopener">Bon de commande</a>
+        <a class="icon-btn" href="/api/orders/${o.id}/bon-commande.pdf" target="_blank" rel="noopener">PDF</a>
       </td>
     </tr>`).join('');
 
@@ -172,6 +173,7 @@ async function openOrderDetail(id) {
     <div class="summary-row"><span>Livraison</span><span>${formatPrice(o.delivery_fee, ADMIN_CURRENCY)}</span></div>
     <div class="summary-row total"><span>Total</span><span>${formatPrice(o.total, ADMIN_CURRENCY)}</span></div>
     <a href="/api/orders/${o.id}/bon-commande" target="_blank" rel="noopener" class="btn btn-primary btn-block" style="margin-top: var(--space-4)">Ouvrir le bon de commande (à imprimer / envoyer)</a>
+    <a href="/api/orders/${o.id}/bon-commande.pdf" target="_blank" rel="noopener" class="btn btn-outline btn-block" style="margin-top: var(--space-2)">Télécharger en PDF</a>
     ${whatsappOrderLink(o) ? `<a href="${whatsappOrderLink(o)}" target="_blank" rel="noopener" class="btn btn-whatsapp btn-block" style="margin-top: var(--space-2)">Envoyer sur WhatsApp</a>` : ''}
   `);
   wireModalClose();

@@ -6,6 +6,7 @@ const { validateOrderInput } = require('../utils/validators');
 const { ordersToCsv } = require('../utils/csv');
 const { notifyNewOrder } = require('../utils/notify');
 const { renderBonCommande } = require('../utils/bon-commande');
+const { generateBonCommandePdf } = require('../utils/bon-commande-pdf');
 const { config } = require('../config');
 
 const router = express.Router();
@@ -149,6 +150,17 @@ router.get('/:id/bon-commande', requireAdmin, (req, res) => {
   const order = getOrderWithItems(req.params.id);
   if (!order) return res.status(404).send('Commande introuvable.');
   res.send(renderBonCommande(order, config));
+});
+
+// GET /api/orders/:id/bon-commande.pdf - admin, même document en PDF réel
+// (téléchargeable directement, même fichier que celui joint à l'email).
+router.get('/:id/bon-commande.pdf', requireAdmin, async (req, res) => {
+  const order = getOrderWithItems(req.params.id);
+  if (!order) return res.status(404).send('Commande introuvable.');
+  const pdfBuffer = await generateBonCommandePdf(order, config);
+  res.setHeader('Content-Type', 'application/pdf');
+  res.setHeader('Content-Disposition', `inline; filename="bon-de-commande-${order.id}.pdf"`);
+  res.send(pdfBuffer);
 });
 
 // PUT /api/orders/:id/status - admin, changement de statut
