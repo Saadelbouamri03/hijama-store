@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /admin
 
-Sitemap: https://votre-domaine.ma/sitemap.xml
+Sitemap: https://hijamastore.com/sitemap.xml

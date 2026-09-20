@@ -2,7 +2,11 @@ const path = require('path');
 const express = require('express');
 const session = require('express-session');
 
+const fs = require('fs');
 const { config, checkConfig } = require('./config');
+const db = require('./db/database');
+const { injectProductMeta } = require('./utils/seo-meta');
+const { generateSitemap } = require('./utils/sitemap');
 
 const configRoute = require('./routes/config');
 const authRoute = require('./routes/auth');
@@ -53,8 +57,27 @@ app.use('/api/reviews', reviewsRoute);
 app.use('/api/delivery-fees', deliveryRoute);
 
 // --- Page produit à URL propre : /produit/mon-produit -------------------
+// Le HTML de base est chargé une fois au démarrage (fichier statique, ne
+// change jamais en cours de route) ; à chaque requête, si le produit existe,
+// on y injecte ses vraies infos (titre, description, image, JSON-LD) avant
+// envoi — indispensable pour que les liens partagés sur WhatsApp affichent
+// le bon produit plutôt qu'un titre générique (voir utils/seo-meta.js).
+const PRODUIT_TEMPLATE = fs.readFileSync(path.join(FRONTEND_DIR, 'produit.html'), 'utf8');
 app.get('/produit/:slug', (req, res) => {
-  res.sendFile(path.join(FRONTEND_DIR, 'produit.html'));
+  const row = db.prepare('SELECT * FROM products WHERE slug = ? AND active = 1').get(req.params.slug);
+  if (!row) return res.send(PRODUIT_TEMPLATE);
+
+  let images = [];
+  try { images = JSON.parse(row.images || '[]'); } catch { /* images reste vide */ }
+
+  const baseUrl = `${req.protocol}://${req.get('host')}`;
+  res.send(injectProductMeta(PRODUIT_TEMPLATE, { ...row, images, currency: config.currency }, baseUrl));
+});
+
+// --- sitemap.xml généré à la volée depuis le catalogue réel (voir utils/sitemap.js) ---
+app.get('/sitemap.xml', (req, res) => {
+  const baseUrl = `${req.protocol}://${req.get('host')}`;
+  res.type('application/xml').send(generateSitemap(baseUrl));
 });
 
 // --- Sous-domaine admin.<domaine> : raccourci facile à retenir/taper sur
