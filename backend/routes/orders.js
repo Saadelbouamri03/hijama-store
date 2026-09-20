@@ -36,6 +36,29 @@ function findDeliveryFee(city) {
   return row ? row.fee : config.defaultDeliveryFee;
 }
 
+// Les produits volumineux (catégorie "athath-tajhizat" : sièges de hijama,
+// tables/lits, mobilier de cabinet...) partent chacun dans leur propre
+// carton chez le transporteur, contrairement au reste du catalogue (cùpes,
+// accessoires...) qui se regroupe toujours dans un seul envoi quelle que soit
+// la quantité. Le frais de livraison de base (par ville) est donc multiplié
+// par : (nombre d'unités volumineuses) + (1 si la commande contient aussi
+// des articles non-volumineux, pour ce carton "classique" partagé).
+function computeDeliveryFee(city, lineItems) {
+  const baseFee = findDeliveryFee(city);
+  const bulkyCategory = db.prepare("SELECT id FROM categories WHERE slug = 'athath-tajhizat'").get();
+  if (!bulkyCategory) return baseFee;
+
+  let bulkyUnits = 0;
+  let hasNonBulky = false;
+  for (const li of lineItems) {
+    if (li.product.category_id === bulkyCategory.id) bulkyUnits += li.quantity;
+    else hasNonBulky = true;
+  }
+
+  const parcelCount = bulkyUnits + (hasNonBulky ? 1 : 0);
+  return baseFee * Math.max(1, parcelCount);
+}
+
 // POST /api/orders - création publique d'une commande.
 // IMPORTANT : les prix et le total sont toujours recalculés côté serveur à
 // partir de la base de données (jamais depuis les valeurs envoyées par le
@@ -70,7 +93,7 @@ router.post('/', orderLimiter, (req, res) => {
   }
 
   const subtotal = lineItems.reduce((sum, li) => sum + (li.variant ? li.variant.price : li.product.price) * li.quantity, 0);
-  const deliveryFee = findDeliveryFee(body.city);
+  const deliveryFee = computeDeliveryFee(body.city, lineItems);
   const total = subtotal + deliveryFee;
 
   const createOrder = db.transaction(() => {
@@ -176,11 +199,26 @@ router.put('/:id/status', requireAdmin, (req, res) => {
   res.json(getOrderWithItems(req.params.id));
 });
 
-// DELETE /api/orders/:id - admin, suppression définitive (ex. commandes de test)
+// DELETE /api/orders/:id - admin, suppression définitive (ex. commandes de test).
+// Restaure le stock consommé par la commande : supprimer une commande doit
+// annuler tout son effet, sinon le stock réel se désynchronise petit à petit
+// à chaque nettoyage de commande de test.
 router.delete('/:id', requireAdmin, (req, res) => {
   const existing = db.prepare('SELECT * FROM orders WHERE id = ?').get(req.params.id);
   if (!existing) return res.status(404).json({ error: 'Commande introuvable.' });
-  db.prepare('DELETE FROM orders WHERE id = ?').run(req.params.id); // order_items suit via ON DELETE CASCADE
+
+  const deleteOrder = db.transaction(() => {
+    const items = db.prepare('SELECT * FROM order_items WHERE order_id = ?').all(req.params.id);
+    const restoreVariantStock = db.prepare('UPDATE product_variants SET stock = stock + ? WHERE product_id = ? AND label = ?');
+    const restoreProductStock = db.prepare('UPDATE products SET stock = stock + ? WHERE id = ?');
+    for (const item of items) {
+      if (item.variant_label) restoreVariantStock.run(item.quantity, item.product_id, item.variant_label);
+      else if (item.product_id) restoreProductStock.run(item.quantity, item.product_id);
+    }
+    db.prepare('DELETE FROM orders WHERE id = ?').run(req.params.id); // order_items suit via ON DELETE CASCADE
+  });
+  deleteOrder();
+
   res.json({ success: true });
 });
 

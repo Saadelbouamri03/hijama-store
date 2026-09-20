@@ -45,6 +45,7 @@ const Cart = (() => {
         image: (product.images && product.images[0]) || '',
         stock: maxQty,
         quantity: Math.min(quantity, maxQty),
+        categorySlug: product.category_slug || '',
       });
     }
     saveItems(items);
