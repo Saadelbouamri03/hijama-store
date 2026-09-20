@@ -26,7 +26,10 @@ router.post('/login', loginLimiter, (req, res) => {
     return res.status(500).json({ error: "ADMIN_PASSWORD n'est pas configuré dans .env." });
   }
 
-  if (username === config.admin.username && password === config.admin.password) {
+  // L'identifiant n'est pas sensible à la casse (facilite la saisie sur
+  // téléphone/autofill) ; le mot de passe reste comparé strictement.
+  const usernameMatches = String(username || '').toLowerCase() === config.admin.username.toLowerCase();
+  if (usernameMatches && password === config.admin.password) {
     req.session.isAdmin = true;
     req.session.username = username;
     return res.json({ success: true });
