@@ -38,9 +38,10 @@ function renderCart(currency, defaultDeliveryFee) {
   document.getElementById('cart-items-list').innerHTML = items.map((i) => renderCartItem(i, currency)).join('');
 
   const subtotal = Cart.getSubtotal();
-  const total = subtotal + defaultDeliveryFee;
+  const deliveryFee = Cart.estimateDeliveryFee(defaultDeliveryFee);
+  const total = subtotal + deliveryFee;
   document.getElementById('summary-subtotal').textContent = formatPrice(subtotal, currency);
-  document.getElementById('summary-delivery').textContent = formatPrice(defaultDeliveryFee, currency);
+  document.getElementById('summary-delivery').textContent = formatPrice(deliveryFee, currency);
   document.getElementById('summary-total').textContent = formatPrice(total, currency);
 }
 

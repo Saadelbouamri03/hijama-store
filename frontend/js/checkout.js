@@ -18,21 +18,6 @@ function findFeeForCity(city) {
   return match ? match.fee : defaultFee;
 }
 
-// Les articles volumineux (mobilier / équipement, catégorie "athath-tajhizat")
-// partent chacun dans leur propre carton chez le transporteur ; le reste du
-// panier se regroupe toujours dans un seul envoi. Reflète ici la même règle
-// que le calcul définitif côté serveur (voir backend/routes/orders.js), pour
-// que ce que le client voit avant de valider corresponde au total réel.
-function estimateDeliveryFee(items, baseFee) {
-  let bulkyUnits = 0;
-  let hasNonBulky = false;
-  items.forEach((i) => {
-    if (i.categorySlug === 'athath-tajhizat') bulkyUnits += i.quantity;
-    else hasNonBulky = true;
-  });
-  const parcelCount = bulkyUnits + (hasNonBulky ? 1 : 0);
-  return baseFee * Math.max(1, parcelCount);
-}
 
 function renderSummary() {
   const items = Cart.getItems();
@@ -43,7 +28,7 @@ function renderSummary() {
 
   const subtotal = Cart.getSubtotal();
   const city = document.getElementById('city').value;
-  const fee = estimateDeliveryFee(items, findFeeForCity(city));
+  const fee = Cart.estimateDeliveryFee(findFeeForCity(city));
   const total = subtotal + fee;
 
   document.getElementById('checkout-subtotal').textContent = formatPrice(subtotal, currentCurrency);

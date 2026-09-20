@@ -81,6 +81,36 @@ const Cart = (() => {
     return getItems().reduce((sum, i) => sum + i.price * i.quantity, 0);
   }
 
+  // Même règle que le calcul définitif côté serveur (voir computeDeliveryFee
+  // dans backend/routes/orders.js) : mobilier (chaque unité = son propre
+  // colis), produits vendus par boîte (10 boîtes par colis, le reste du
+  // panier profite de la place libre du dernier colis s'il en reste), sinon
+  // 1 colis partagé pour tout le reste. Affichée en estimation avant
+  // validation (panier, checkout) ; le total qui compte reste celui renvoyé
+  // par le serveur à la création de la commande.
+  const BOX_UNITS_PER_PARCEL = 10;
+  function isBoxedItem(name) {
+    return /\(\d+\s*(?:كأس|قطعة|pièces?|pcs?)\)/i.test(String(name || ''));
+  }
+  function estimateDeliveryFee(baseFee) {
+    let furnitureUnits = 0;
+    let boxUnits = 0;
+    let hasOtherItems = false;
+
+    getItems().forEach((i) => {
+      if (i.categorySlug === 'athath-tajhizat') furnitureUnits += i.quantity;
+      else if (isBoxedItem(i.name)) boxUnits += i.quantity;
+      else hasOtherItems = true;
+    });
+
+    const boxParcels = boxUnits > 0 ? Math.ceil(boxUnits / BOX_UNITS_PER_PARCEL) : 0;
+    const boxHasSpareRoom = boxUnits > 0 && boxUnits % BOX_UNITS_PER_PARCEL !== 0;
+    const otherNeedsOwnParcel = hasOtherItems && !boxHasSpareRoom;
+
+    const parcelCount = furnitureUnits + boxParcels + (otherNeedsOwnParcel ? 1 : 0);
+    return baseFee * Math.max(1, parcelCount);
+  }
+
   function refreshBadge(bump = false) {
     const badge = document.getElementById('cart-count');
     if (badge) {
@@ -99,7 +129,7 @@ const Cart = (() => {
 
   document.addEventListener('partials:ready', () => refreshBadge(false));
 
-  return { getItems, add, updateQuantity, remove, clear, getCount, getSubtotal, refreshBadge };
+  return { getItems, add, updateQuantity, remove, clear, getCount, getSubtotal, estimateDeliveryFee, refreshBadge };
 })();
 
 function showToast(message) {

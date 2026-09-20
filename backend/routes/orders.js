@@ -36,26 +36,49 @@ function findDeliveryFee(city) {
   return row ? row.fee : config.defaultDeliveryFee;
 }
 
-// Les produits volumineux (catégorie "athath-tajhizat" : sièges de hijama,
-// tables/lits, mobilier de cabinet...) partent chacun dans leur propre
-// carton chez le transporteur, contrairement au reste du catalogue (cùpes,
-// accessoires...) qui se regroupe toujours dans un seul envoi quelle que soit
-// la quantité. Le frais de livraison de base (par ville) est donc multiplié
-// par : (nombre d'unités volumineuses) + (1 si la commande contient aussi
-// des articles non-volumineux, pour ce carton "classique" partagé).
+// Un produit vendu "par boîte" (ex. "كؤوس الصفاء للحجامة (100 كأس)") l'indique
+// toujours ainsi dans son nom — sert à repérer ce type de produit sans le
+// coder en dur par identifiant, pour que la règle s'applique aussi à toute
+// future référence vendue de la même façon.
+function isBoxedProduct(name) {
+  return /\(\d+\s*(?:كأس|قطعة|pièces?|pcs?)\)/i.test(String(name || ''));
+}
+
+const BOX_UNITS_PER_PARCEL = 10;
+
+// Calcule le nombre de "colis" que le transporteur va réellement manipuler,
+// pour multiplier le frais de livraison de base (par ville) d'autant :
+//  - Mobilier/équipement (catégorie "athath-tajhizat" : sièges, tables...) :
+//    chaque unité part dans son propre carton, toujours (jamais mutualisé).
+//  - Produits vendus par boîte (ex. coffrets de 100 ventouses) : les boîtes
+//    s'empilent ensemble, 10 boîtes tenant dans un même colis.
+//  - Tout le reste (accessoires, produits à l'unité...) : se glisse dans la
+//    place restante du dernier colis de boîtes s'il en reste (nombre de
+//    boîtes non multiple de 10), sinon nécessite son propre colis partagé.
 function computeDeliveryFee(city, lineItems) {
   const baseFee = findDeliveryFee(city);
   const bulkyCategory = db.prepare("SELECT id FROM categories WHERE slug = 'athath-tajhizat'").get();
-  if (!bulkyCategory) return baseFee;
+  const bulkyCategoryId = bulkyCategory ? bulkyCategory.id : null;
 
-  let bulkyUnits = 0;
-  let hasNonBulky = false;
+  let furnitureUnits = 0;
+  let boxUnits = 0;
+  let hasOtherItems = false;
+
   for (const li of lineItems) {
-    if (li.product.category_id === bulkyCategory.id) bulkyUnits += li.quantity;
-    else hasNonBulky = true;
+    if (bulkyCategoryId && li.product.category_id === bulkyCategoryId) {
+      furnitureUnits += li.quantity;
+    } else if (isBoxedProduct(li.product.name)) {
+      boxUnits += li.quantity;
+    } else {
+      hasOtherItems = true;
+    }
   }
 
-  const parcelCount = bulkyUnits + (hasNonBulky ? 1 : 0);
+  const boxParcels = boxUnits > 0 ? Math.ceil(boxUnits / BOX_UNITS_PER_PARCEL) : 0;
+  const boxHasSpareRoom = boxUnits > 0 && boxUnits % BOX_UNITS_PER_PARCEL !== 0;
+  const otherNeedsOwnParcel = hasOtherItems && !boxHasSpareRoom;
+
+  const parcelCount = furnitureUnits + boxParcels + (otherNeedsOwnParcel ? 1 : 0);
   return baseFee * Math.max(1, parcelCount);
 }
 
