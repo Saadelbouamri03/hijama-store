@@ -50,6 +50,15 @@ const config = {
     appPassword: required('NOTIFY_EMAIL_APP_PASSWORD', ''),
     to: required('NOTIFY_EMAIL_TO', required('NOTIFY_EMAIL_USER', '')),
   },
+
+  // Meta Pixel + Conversions API (suivi des commandes pour les publicités
+  // Facebook/Instagram). META_CAPI_ACCESS_TOKEN active l'envoi côté serveur
+  // (recommandé, contourne les bloqueurs de pub) ; laissez-le vide pour
+  // n'utiliser que le pixel navigateur.
+  metaPixel: {
+    id: required('META_PIXEL_ID', '8482376721812747'),
+    capiAccessToken: required('META_CAPI_ACCESS_TOKEN', ''),
+  },
 };
 
 // Avertissements de sécurité au démarrage si la config par défaut n'a pas été changée.

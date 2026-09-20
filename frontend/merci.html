@@ -78,7 +78,7 @@ document.addEventListener('config:ready', (e) => {
           currency: 'MAD',
           contents: (order.items || []).map((i) => ({ id: i.product_id, quantity: i.quantity })),
           content_type: 'product',
-        });
+        }, { eventID: `purchase_${order.id}` });
         sessionStorage.setItem(firedKey, '1');
       }
     }

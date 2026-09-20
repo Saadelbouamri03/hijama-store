@@ -5,6 +5,7 @@ const { requireAdmin } = require('../middleware/auth');
 const { validateOrderInput } = require('../utils/validators');
 const { ordersToCsv } = require('../utils/csv');
 const { notifyNewOrder } = require('../utils/notify');
+const { sendPurchaseEventCapi } = require('../utils/meta-capi');
 const { renderBonCommande } = require('../utils/bon-commande');
 const { generateBonCommandePdf } = require('../utils/bon-commande-pdf');
 const { config } = require('../config');
@@ -156,6 +157,7 @@ router.post('/', orderLimiter, (req, res) => {
   const orderId = createOrder();
   const order = getOrderWithItems(orderId);
   notifyNewOrder(order);
+  sendPurchaseEventCapi(order, req);
   res.status(201).json(order);
 });
 
