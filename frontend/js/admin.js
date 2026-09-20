@@ -134,8 +134,23 @@ async function loadOrders() {
         <button class="icon-btn view-order-btn" data-order-id="${o.id}">Détail</button>
         <a class="icon-btn" href="/api/orders/${o.id}/bon-commande" target="_blank" rel="noopener">Bon de commande</a>
         <a class="icon-btn" href="/api/orders/${o.id}/bon-commande.pdf" target="_blank" rel="noopener">PDF</a>
+        <button class="icon-btn danger delete-order-btn" data-order-id="${o.id}">Supprimer</button>
       </td>
     </tr>`).join('');
+
+  tbody.querySelectorAll('.delete-order-btn').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      if (!confirm(`Supprimer définitivement la commande #${btn.dataset.orderId} ? Cette action est irréversible.`)) return;
+      try {
+        await Api.del(`/api/orders/${btn.dataset.orderId}`);
+        showToast(`Commande #${btn.dataset.orderId} supprimée`);
+        loadOrders();
+        loadOverview();
+      } catch (err) {
+        showToast(err.message);
+      }
+    });
+  });
 
   tbody.querySelectorAll('.status-select').forEach((sel) => {
     sel.addEventListener('change', async () => {
@@ -175,7 +190,20 @@ async function openOrderDetail(id) {
     <a href="/api/orders/${o.id}/bon-commande" target="_blank" rel="noopener" class="btn btn-primary btn-block" style="margin-top: var(--space-4)">Ouvrir le bon de commande (à imprimer / envoyer)</a>
     <a href="/api/orders/${o.id}/bon-commande.pdf" target="_blank" rel="noopener" class="btn btn-outline btn-block" style="margin-top: var(--space-2)">Télécharger en PDF</a>
     ${whatsappOrderLink(o) ? `<a href="${whatsappOrderLink(o)}" target="_blank" rel="noopener" class="btn btn-whatsapp btn-block" style="margin-top: var(--space-2)">Envoyer sur WhatsApp</a>` : ''}
+    <button type="button" class="btn btn-outline btn-block danger" id="modal-delete-order-btn" style="margin-top: var(--space-4)">Supprimer cette commande</button>
   `);
+  document.getElementById('modal-delete-order-btn').addEventListener('click', async () => {
+    if (!confirm(`Supprimer définitivement la commande #${o.id} ? Cette action est irréversible.`)) return;
+    try {
+      await Api.del(`/api/orders/${o.id}`);
+      showToast(`Commande #${o.id} supprimée`);
+      closeModal();
+      loadOrders();
+      loadOverview();
+    } catch (err) {
+      showToast(err.message);
+    }
+  });
   wireModalClose();
 }
 

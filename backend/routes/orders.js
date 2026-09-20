@@ -176,5 +176,13 @@ router.put('/:id/status', requireAdmin, (req, res) => {
   res.json(getOrderWithItems(req.params.id));
 });
 
+// DELETE /api/orders/:id - admin, suppression définitive (ex. commandes de test)
+router.delete('/:id', requireAdmin, (req, res) => {
+  const existing = db.prepare('SELECT * FROM orders WHERE id = ?').get(req.params.id);
+  if (!existing) return res.status(404).json({ error: 'Commande introuvable.' });
+  db.prepare('DELETE FROM orders WHERE id = ?').run(req.params.id); // order_items suit via ON DELETE CASCADE
+  res.json({ success: true });
+});
+
 module.exports = router;
 module.exports.ORDER_STATUSES = ORDER_STATUSES;

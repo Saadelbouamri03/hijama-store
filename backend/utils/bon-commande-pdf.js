@@ -4,7 +4,17 @@
 // à l'écran/à imprimer depuis l'admin ; ce fichier ne fait que la mise en
 // page façon PDF, plus sobre (pas de mise en page CSS possible avec pdfkit).
 
+const path = require('path');
 const PDFDocument = require('pdfkit');
+
+// Police unique couvrant latin + arabe (les noms de produits, adresses...
+// sont souvent en arabe). pdfkit ne fait aucune mise en forme de texte par
+// défaut (pas de liaison des lettres arabes, pas de réordonnancement RTL) :
+// l'option `features: ['rtla']` passée à chaque .text() active le moteur de
+// formes complexes de fontkit pour que l'arabe s'affiche correctement (lettres
+// liées, sens de lecture) au lieu de caractères isolés ou inversés.
+const ARABIC_FONT = path.join(__dirname, '..', 'assets', 'fonts', 'NotoNaskhArabic-Regular.ttf');
+const RTL = { features: ['rtla'] };
 
 const MOSS = '#183D32';
 const CLAY = '#B58A45';
@@ -47,40 +57,43 @@ function generateBonCommandePdf(order, config) {
     const pageWidth = doc.page.width - doc.page.margins.left - doc.page.margins.right;
     const left = doc.page.margins.left;
 
+    doc.registerFont('Arabic', ARABIC_FONT);
+    doc.font('Arabic');
+
     // ---------- En-tête ----------
-    doc.fillColor(MOSS).font('Helvetica-Bold').fontSize(20).text(config.storeName, left, 44);
+    doc.fillColor(MOSS).fontSize(20).text(config.storeName, left, 44, RTL);
     const storePhone = formatPhoneDisplay(config.whatsappNumber);
     if (storePhone) {
-      doc.fillColor(INK_SOFT).font('Helvetica').fontSize(10).text(`Tél / WhatsApp : ${storePhone}`, left, 68);
+      doc.fillColor(INK_SOFT).fontSize(10).text(`Tél / WhatsApp : ${storePhone}`, left, 68, RTL);
     }
 
-    doc.fillColor(INK).font('Helvetica-Bold').fontSize(13).text(`Bon de commande n° ${order.id}`, left, 44, { width: pageWidth, align: 'right' });
-    doc.fillColor(INK_SOFT).font('Helvetica').fontSize(10)
-      .text(formatDateTime(order.created_at), left, 62, { width: pageWidth, align: 'right' })
-      .text(order.status, left, 76, { width: pageWidth, align: 'right' });
+    doc.fillColor(INK).fontSize(13).text(`Bon de commande n° ${order.id}`, left, 44, { width: pageWidth, align: 'right', ...RTL });
+    doc.fillColor(INK_SOFT).fontSize(10)
+      .text(formatDateTime(order.created_at), left, 62, { width: pageWidth, align: 'right', ...RTL })
+      .text(order.status, left, 76, { width: pageWidth, align: 'right', ...RTL });
 
     doc.moveTo(left, 100).lineTo(left + pageWidth, 100).lineWidth(2).strokeColor(MOSS).stroke();
 
     // ---------- Client ----------
     let y = 118;
-    doc.fillColor(INK_SOFT).font('Helvetica-Bold').fontSize(9).text('CLIENT', left, y);
+    doc.fillColor(INK_SOFT).fontSize(9).text('CLIENT', left, y, RTL);
     y += 16;
     doc.rect(left, y, pageWidth, 74).fillColor('#F7F4ED').fill();
-    doc.fillColor(INK).font('Helvetica-Bold').fontSize(12).text(order.customer_name, left + 12, y + 10);
-    doc.font('Helvetica').fontSize(10).fillColor(INK)
-      .text(`Tél : ${order.phone}`, left + 12, y + 28)
-      .text(order.address, left + 12, y + 42)
-      .text(`${order.city}${order.region ? ' — ' + order.region : ''}${order.postal_code ? ' — ' + order.postal_code : ''}`, left + 12, y + 56);
+    doc.fillColor(INK).fontSize(12).text(order.customer_name, left + 12, y + 10, RTL);
+    doc.fontSize(10).fillColor(INK)
+      .text(`Tél : ${order.phone}`, left + 12, y + 28, RTL)
+      .text(order.address, left + 12, y + 42, RTL)
+      .text(`${order.city}${order.region ? ' — ' + order.region : ''}${order.postal_code ? ' — ' + order.postal_code : ''}`, left + 12, y + 56, RTL);
     y += 74 + 10;
 
     if (order.comment) {
-      doc.fillColor(INK_SOFT).font('Helvetica-Oblique').fontSize(9).text(`Commentaire client : ${order.comment}`, left, y, { width: pageWidth });
+      doc.fillColor(INK_SOFT).fontSize(9).text(`Commentaire client : ${order.comment}`, left, y, { width: pageWidth, ...RTL });
       y += 24;
     }
 
     // ---------- Tableau produits ----------
     y += 10;
-    doc.fillColor(INK_SOFT).font('Helvetica-Bold').fontSize(9).text('PRODUITS COMMANDÉS', left, y);
+    doc.fillColor(INK_SOFT).fontSize(9).text('PRODUITS COMMANDÉS', left, y, RTL);
     y += 16;
 
     const cols = [
@@ -104,8 +117,8 @@ function generateBonCommandePdf(order, config) {
     ensureSpace(24);
     drawRowBg(y, 22, MOSS);
     cols.forEach((c) => {
-      doc.fillColor('#FFFFFF').font('Helvetica-Bold').fontSize(9)
-        .text(c.label, c.x + 6, y + 6, { width: c.width - 10, align: c.align });
+      doc.fillColor('#FFFFFF').fontSize(9)
+        .text(c.label, c.x + 6, y + 6, { width: c.width - 10, align: c.align, ...RTL });
     });
     y += 22;
 
@@ -120,8 +133,8 @@ function generateBonCommandePdf(order, config) {
         sub: formatPrice(item.unit_price * item.quantity, currency),
       };
       cols.forEach((c) => {
-        doc.fillColor(INK).font('Helvetica').fontSize(9.5)
-          .text(rowData[c.key], c.x + 6, y + 6, { width: c.width - 10, align: c.align });
+        doc.fillColor(INK).fontSize(9.5)
+          .text(rowData[c.key], c.x + 6, y + 6, { width: c.width - 10, align: c.align, ...RTL });
       });
       y += 22;
     });
@@ -134,9 +147,9 @@ function generateBonCommandePdf(order, config) {
     const totalsWidth = 220;
     const totalsX = left + pageWidth - totalsWidth;
     function totalRow(label, value, bold) {
-      doc.font(bold ? 'Helvetica-Bold' : 'Helvetica').fontSize(bold ? 12 : 10).fillColor(INK)
-        .text(label, totalsX, y, { width: totalsWidth - 90 })
-        .text(value, totalsX + totalsWidth - 90, y, { width: 90, align: 'right' });
+      doc.fontSize(bold ? 12 : 10).fillColor(INK)
+        .text(label, totalsX, y, { width: totalsWidth - 90, ...RTL })
+        .text(value, totalsX + totalsWidth - 90, y, { width: 90, align: 'right', ...RTL });
       y += bold ? 20 : 16;
     }
     totalRow('Sous-total', formatPrice(order.subtotal, currency), false);
@@ -147,7 +160,7 @@ function generateBonCommandePdf(order, config) {
 
     y += 8;
     doc.rect(left, y, 200, 26).fillColor('#F7F4ED').fill();
-    doc.fillColor(MOSS).font('Helvetica-Bold').fontSize(10).text(order.payment_method, left + 10, y + 8);
+    doc.fillColor(MOSS).fontSize(10).text(order.payment_method, left + 10, y + 8, RTL);
     y += 26 + 40;
 
     // ---------- Signatures ----------
@@ -155,9 +168,9 @@ function generateBonCommandePdf(order, config) {
     const half = pageWidth / 2;
     doc.moveTo(left, y).lineTo(left + half - 16, y).strokeColor(INK_SOFT).lineWidth(1).stroke();
     doc.moveTo(left + half + 16, y).lineTo(left + pageWidth, y).strokeColor(INK_SOFT).lineWidth(1).stroke();
-    doc.fillColor(INK_SOFT).font('Helvetica').fontSize(8)
-      .text('Confirmé par le client', left, y + 4, { width: half - 16 })
-      .text('Préparé par le dépôt', left + half + 16, y + 4, { width: half - 16 });
+    doc.fillColor(INK_SOFT).fontSize(8)
+      .text('Confirmé par le client', left, y + 4, { width: half - 16, ...RTL })
+      .text('Préparé par le dépôt', left + half + 16, y + 4, { width: half - 16, ...RTL });
 
     doc.end();
   });

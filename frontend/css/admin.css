@@ -44,6 +44,8 @@ table.admin-table { width: 100%; border-collapse: collapse; min-width: 640px; }
 .icon-btn { display: inline-block; background: none; border: 1.5px solid var(--sand-deep); border-radius: var(--radius-sm); padding: 0.35rem 0.6rem; font-size: var(--fs-xs); font-weight: 700; color: var(--ink-soft); text-decoration: none; white-space: nowrap; }
 .icon-btn:hover { border-color: var(--moss); color: var(--moss); }
 .icon-btn.danger:hover { border-color: #A3402A; color: #A3402A; }
+.btn-outline.danger { border-color: #A3402A; color: #A3402A; }
+.btn-outline.danger:hover { background: #A3402A; color: #fff; }
 
 .status-select[data-status="Nouvelle commande"] { color: var(--clay); font-weight:700; }
 .status-select[data-status="Livrée"] { color: var(--moss-dark); font-weight:700; }
