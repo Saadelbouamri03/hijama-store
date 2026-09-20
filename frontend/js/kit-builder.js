@@ -206,7 +206,7 @@ const KitBuilder = (() => {
     renderSummary();
     updateCardBadges();
     showToast(`Ajouté ✓ — votre kit (${itemCount} article${itemCount > 1 ? 's' : ''}) a été ajouté au panier`);
-    if (window.MiniCart) window.MiniCart.open();
+    if (typeof MiniCart !== 'undefined') MiniCart.open();
   }
 
   async function init(cfg) {

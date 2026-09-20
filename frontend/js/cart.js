@@ -124,7 +124,12 @@ const Cart = (() => {
         badge.classList.add('bump');
       }
     }
-    if (window.MiniCart) window.MiniCart.sync();
+    // "MiniCart" (déclaré avec const dans mini-cart.js) est visible ici par
+    // son nom simple — les scripts classiques d'une même page partagent le
+    // même environnement global pour let/const — mais jamais via window.MiniCart
+    // (const n'attache rien à window) : c'était le bug, sync() n'était donc
+    // jamais réellement appelée.
+    if (typeof MiniCart !== 'undefined') MiniCart.sync();
   }
 
   document.addEventListener('partials:ready', () => refreshBadge(false));
