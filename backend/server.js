@@ -57,6 +57,16 @@ app.get('/produit/:slug', (req, res) => {
   res.sendFile(path.join(FRONTEND_DIR, 'produit.html'));
 });
 
+// --- Sous-domaine admin.<domaine> : raccourci facile à retenir/taper sur
+// téléphone, redirige vers l'espace admin habituel (même app, même session).
+// Fonctionne dès que ce sous-domaine est configuré chez l'hébergeur (DNS +
+// domaine personnalisé sur Render) ; sans ça, personne n'y accède jamais,
+// donc aucun impact si ce n'est pas mis en place.
+app.get('/', (req, res, next) => {
+  if (req.hostname.startsWith('admin.')) return res.redirect('/admin/login');
+  next();
+});
+
 // --- /admin -> redirige vers le tableau de bord (protégé côté client + API) ---
 app.get('/admin', (req, res) => res.redirect('/admin/dashboard'));
 
