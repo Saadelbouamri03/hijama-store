@@ -84,6 +84,16 @@ document.addEventListener('config:ready', async (e) => {
   document.getElementById('page-title').textContent = `${product.name}`;
   document.getElementById('page-description').setAttribute('content', (product.description || '').slice(0, 155));
 
+  if (typeof fbq === 'function') {
+    fbq('track', 'ViewContent', {
+      value: product.price,
+      currency: 'MAD',
+      content_ids: [product.id],
+      content_type: 'product',
+      content_name: product.name,
+    });
+  }
+
   const breadcrumb = document.getElementById('breadcrumb');
   breadcrumb.innerHTML = `<a href="/">Accueil</a> / <a href="/produits">Produits</a>` +
     (product.category_slug ? ` / <a href="/produits?categorie=${product.category_slug}">${escapeHtml(product.category_name)}</a>` : '') +

@@ -72,6 +72,16 @@ document.addEventListener('config:ready', async (e) => {
     return;
   }
 
+  if (typeof fbq === 'function') {
+    fbq('track', 'InitiateCheckout', {
+      value: Cart.getSubtotal(),
+      currency: 'MAD',
+      num_items: items.reduce((sum, i) => sum + i.quantity, 0),
+      contents: items.map((i) => ({ id: i.productId, quantity: i.quantity })),
+      content_type: 'product',
+    });
+  }
+
   try {
     const res = await Api.get('/api/delivery-fees');
     deliveryFees = res.fees || [];

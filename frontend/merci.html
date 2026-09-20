@@ -10,6 +10,23 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/style.css">
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '8482376721812747');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=8482376721812747&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
 </head>
 <body>
 <div data-include="header"></div>
@@ -52,6 +69,19 @@ document.addEventListener('config:ready', (e) => {
   if (order) {
     ref.textContent = `Commande n°${order.id} — Total : ${formatPrice(order.total, config.currency)}`;
     waMessage = `Bonjour, je viens de passer la commande n°${order.id} (${formatPrice(order.total, config.currency)}) sur le site.`;
+
+    if (typeof fbq === 'function') {
+      const firedKey = `fbq_purchase_${order.id}`;
+      if (!sessionStorage.getItem(firedKey)) {
+        fbq('track', 'Purchase', {
+          value: order.total,
+          currency: 'MAD',
+          contents: (order.items || []).map((i) => ({ id: i.product_id, quantity: i.quantity })),
+          content_type: 'product',
+        });
+        sessionStorage.setItem(firedKey, '1');
+      }
+    }
   }
   document.getElementById('merci-whatsapp').href = Api.whatsappLink(config.whatsappNumber, waMessage);
 });

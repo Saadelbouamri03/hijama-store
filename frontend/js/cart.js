@@ -49,6 +49,17 @@ const Cart = (() => {
       });
     }
     saveItems(items);
+
+    if (typeof fbq === 'function') {
+      fbq('track', 'AddToCart', {
+        value: unitPrice * quantity,
+        currency: 'MAD',
+        contents: [{ id: product.id, quantity }],
+        content_type: 'product',
+        content_name: product.name,
+      });
+    }
+
     return items;
   }
 
