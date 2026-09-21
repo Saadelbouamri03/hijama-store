@@ -66,7 +66,7 @@ src="https://www.facebook.com/tr?id=8482376721812747&ev=PageView&noscript=1"
 document.addEventListener('config:ready', async () => {
   const grid = document.getElementById('categories-grid');
   try {
-    const categories = await Api.get('/api/categories');
+    const categories = window.__INITIAL__ ? window.__INITIAL__.categories : await Api.get('/api/categories');
     grid.innerHTML = categories.map(renderCategoryCard).join('') + renderNouveautesCard();
   } catch (err) {
     grid.innerHTML = `<p>${I18N.t('categories.loadError', 'Impossible de charger les catégories pour le moment.')}</p>`;

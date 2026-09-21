@@ -75,7 +75,7 @@ src="https://www.facebook.com/tr?id=8482376721812747&ev=PageView&noscript=1"
 document.addEventListener('config:ready', async () => {
   const grid = document.getElementById('reviews-grid');
   try {
-    const reviews = await Api.get('/api/reviews');
+    const reviews = window.__INITIAL__ ? window.__INITIAL__.reviews : await Api.get('/api/reviews');
     grid.innerHTML = reviews.length ? reviews.map(renderReviewCard).join('') : `<p>${I18N.t('avis.none', "Pas encore d'avis.")}</p>`;
   } catch (err) {
     grid.innerHTML = `<p>${I18N.t('avis.loadError', 'Impossible de charger les avis pour le moment.')}</p>`;

@@ -3,6 +3,11 @@
 // (?categorie=... ou ?filter=...) pour que les liens soient partageables.
 
 let currentCurrency = 'DH';
+// window.__INITIAL__.products (voir backend/server.js) correspond exactement
+// aux filtres de l'URL au moment du chargement de la page — valable une
+// seule fois, pour le tout premier appel ; tout changement de filtre côté
+// client (chip, recherche) doit refetcher normalement.
+let initialProductsUsed = false;
 
 function getQueryParams() {
   return new URLSearchParams(window.location.search);
@@ -10,15 +15,25 @@ function getQueryParams() {
 
 async function loadProducts() {
   const params = getQueryParams();
+  const banner = document.getElementById('hijama-context-banner');
+  if (banner) banner.hidden = params.get('categorie') !== 'koub-hijama';
+
+  const grid = document.getElementById('products-grid');
+
+  if (window.__INITIAL__ && !initialProductsUsed) {
+    initialProductsUsed = true;
+    const products = window.__INITIAL__.products;
+    grid.innerHTML = products.length
+      ? products.map((p) => renderProductCard(p, currentCurrency)).join('')
+      : `<p>${I18N.t('products.noResults', 'Aucun produit ne correspond à votre recherche.')}</p>`;
+    return;
+  }
+
   const apiParams = new URLSearchParams();
   if (params.get('categorie')) apiParams.set('category', params.get('categorie'));
   if (params.get('filter')) apiParams.set('filter', params.get('filter'));
   if (params.get('q')) apiParams.set('search', params.get('q'));
 
-  const banner = document.getElementById('hijama-context-banner');
-  if (banner) banner.hidden = params.get('categorie') !== 'koub-hijama';
-
-  const grid = document.getElementById('products-grid');
   grid.innerHTML = `<p>${I18N.t('common.loadingProducts', 'Chargement des produits…')}</p>`;
   try {
     const products = await Api.get(`/api/products?${apiParams.toString()}`);
@@ -41,7 +56,7 @@ function setActiveChip() {
 async function buildChips() {
   const container = document.getElementById('category-chips');
   try {
-    const categories = await Api.get('/api/categories');
+    const categories = window.__INITIAL__ ? window.__INITIAL__.categories : await Api.get('/api/categories');
     const chipsHtml = categories.map((c) =>
       `<button class="chip" data-value="cat:${c.slug}" data-categorie="${c.slug}">${escapeHtml(c.name)}</button>`
     ).join('');

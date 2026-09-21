@@ -6,16 +6,9 @@ const { requireAdmin } = require('../middleware/auth');
 const { upload, UPLOAD_DIR } = require('../middleware/upload');
 const { slugify } = require('../utils/slugify');
 const { isNonEmptyString, isPositiveNumber } = require('../utils/validators');
+const { queryProducts, parseImages } = require('../utils/query-products');
 
 const router = express.Router();
-
-function parseImages(row) {
-  try {
-    return { ...row, images: JSON.parse(row.images || '[]') };
-  } catch {
-    return { ...row, images: [] };
-  }
-}
 
 function getVariants(productId) {
   return db.prepare('SELECT * FROM product_variants WHERE product_id = ? ORDER BY display_order, id').all(productId);
@@ -59,33 +52,8 @@ function parseVariantsField(raw) {
 //   ?search=texte       -> recherche dans le nom
 //   ?includeInactive=1  -> (admin) inclut aussi les produits désactivés
 router.get('/', (req, res) => {
-  const { category, filter, search, includeInactive } = req.query;
-  const conditions = [];
-  const params = {};
-
-  if (!(includeInactive === '1' && req.session && req.session.isAdmin)) {
-    conditions.push('p.active = 1');
-  }
-  if (category) {
-    conditions.push('c.slug = @category');
-    params.category = category;
-  }
-  if (filter === 'nouveautes') conditions.push('p.badge_new = 1');
-  if (filter === 'bestsellers') conditions.push('p.badge_bestseller = 1');
-  if (search) {
-    conditions.push('LOWER(p.name) LIKE @search');
-    params.search = `%${String(search).toLowerCase()}%`;
-  }
-
-  const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
-  const rows = db.prepare(`
-    SELECT p.*, c.name AS category_name, c.slug AS category_slug
-    FROM products p LEFT JOIN categories c ON c.id = p.category_id
-    ${where}
-    ORDER BY p.created_at DESC
-  `).all(params);
-
-  res.json(rows.map(parseImages));
+  const isAdmin = !!(req.session && req.session.isAdmin);
+  res.json(queryProducts(req.query, isAdmin));
 });
 
 // GET /api/products/:idOrSlug - détail public + produits similaires

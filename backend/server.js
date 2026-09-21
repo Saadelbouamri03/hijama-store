@@ -7,6 +7,8 @@ const { config, checkConfig } = require('./config');
 const db = require('./db/database');
 const { injectProductMeta } = require('./utils/seo-meta');
 const { generateSitemap } = require('./utils/sitemap');
+const { injectInitialData } = require('./utils/ssr-inject');
+const { queryProducts } = require('./utils/query-products');
 
 const configRoute = require('./routes/config');
 const authRoute = require('./routes/auth');
@@ -86,6 +88,23 @@ app.get('/sitemap.xml', (req, res) => {
   res.type('application/xml').send(generateSitemap(baseUrl));
 });
 
+// --- SSR-lite : données réelles injectées avant envoi (window.__INITIAL__),
+// pour que le contenu soit déjà là au premier rendu plutôt qu'après un fetch
+// côté client (voir utils/ssr-inject.js et, côté client, main.js/products.js/
+// categories.html/avis.html qui lisent window.__INITIAL__ en priorité). Le
+// HTML de base de chaque page est lu une fois au démarrage.
+const INDEX_TEMPLATE = fs.readFileSync(path.join(FRONTEND_DIR, 'index.html'), 'utf8');
+const PRODUITS_TEMPLATE = fs.readFileSync(path.join(FRONTEND_DIR, 'produits.html'), 'utf8');
+const CATEGORIES_TEMPLATE = fs.readFileSync(path.join(FRONTEND_DIR, 'categories.html'), 'utf8');
+const AVIS_TEMPLATE = fs.readFileSync(path.join(FRONTEND_DIR, 'avis.html'), 'utf8');
+
+function getRealReviews() {
+  const query = config.reviews.showDemo
+    ? 'SELECT * FROM reviews WHERE active = 1 ORDER BY display_order ASC, id DESC'
+    : 'SELECT * FROM reviews WHERE active = 1 AND is_demo = 0 ORDER BY display_order ASC, id DESC';
+  return db.prepare(query).all();
+}
+
 // --- Sous-domaine admin.<domaine> : raccourci facile à retenir/taper sur
 // téléphone, redirige vers l'espace admin habituel (même app, même session).
 // Fonctionne dès que ce sous-domaine est configuré chez l'hébergeur (DNS +
@@ -93,7 +112,42 @@ app.get('/sitemap.xml', (req, res) => {
 // donc aucun impact si ce n'est pas mis en place.
 app.get('/', (req, res, next) => {
   if (req.hostname.startsWith('admin.')) return res.redirect('/admin/login');
-  next();
+
+  // Sous-ensembles précalculés (mêmes règles que main.js) plutôt que le
+  // catalogue complet : la home n'affiche que 8 produits + 4 meilleures
+  // ventes, pas la peine d'alourdir le HTML avec les 130+ fiches.
+  const categories = db.prepare('SELECT * FROM categories ORDER BY display_order').all();
+  const allProducts = queryProducts({}, false);
+  const popularProducts = allProducts.slice(0, 8);
+  const bestsellerProducts = allProducts.filter((p) => p.badge_bestseller).slice(0, 4);
+  const reviews = getRealReviews().slice(0, 3);
+
+  res.send(injectInitialData(INDEX_TEMPLATE, { categories, popularProducts, bestsellerProducts, reviews }));
+});
+
+// --- /produits : injecte le résultat exact du filtre demandé (mêmes règles
+// que GET /api/products, voir utils/query-products.js) + la liste des
+// catégories pour les filtres (chips). L'URL utilise ?categorie=/?q= (voir
+// frontend/js/products.js), traduits ici vers category=/search= comme le
+// fait le client avant d'appeler l'API — sinon le filtre est silencieusement
+// ignoré côté SSR alors qu'il fonctionne côté client.
+app.get('/produits', (req, res) => {
+  const categories = db.prepare('SELECT * FROM categories ORDER BY display_order').all();
+  const products = queryProducts({
+    category: req.query.categorie,
+    filter: req.query.filter,
+    search: req.query.q,
+  }, false);
+  res.send(injectInitialData(PRODUITS_TEMPLATE, { categories, products }));
+});
+
+app.get('/categories', (req, res) => {
+  const categories = db.prepare('SELECT * FROM categories ORDER BY display_order').all();
+  res.send(injectInitialData(CATEGORIES_TEMPLATE, { categories }));
+});
+
+app.get('/avis', (req, res) => {
+  res.send(injectInitialData(AVIS_TEMPLATE, { reviews: getRealReviews() }));
 });
 
 // --- /admin -> redirige vers le tableau de bord ---
