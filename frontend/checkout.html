@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Finaliser ma commande — Hijama Store</title>
-<meta name="description" content="Finalisez votre commande — paiement à la livraison.">
+<title>كمّل الطلب — Hijama Store</title>
+<meta name="description" content="كمّل الطلب ديالك — الدفع عند الاستلام.">
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="preload" href="/fonts/cairo-arabic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/css/style.css">
@@ -27,19 +27,19 @@ src="https://www.facebook.com/tr?id=8482376721812747&ev=PageView&noscript=1"
 <!-- End Meta Pixel Code -->
 </head>
 <body>
-<a href="#main" class="skip-link">Aller au contenu</a>
+<a href="#main" class="skip-link" data-i18n="common.skipToContent">Aller au contenu</a>
 <div data-include="header"></div>
 
 <main id="main">
   <section class="section-cream">
     <div class="container">
-      <p class="breadcrumb"><a href="/">Accueil</a> / <a href="/panier">Panier</a> / Checkout</p>
-      <h1>Finaliser ma commande</h1>
+      <p class="breadcrumb"><a href="/" data-i18n="nav.home">Accueil</a> / <a href="/panier" data-i18n="cart.title">Panier</a> / <span data-i18n="checkout.title">Checkout</span></p>
+      <h1 data-i18n="checkout.title">كمّل الطلب</h1>
 
       <div id="checkout-empty" class="empty-state" hidden>
-        <h2>Votre panier est vide</h2>
-        <p>Ajoutez des produits avant de passer commande.</p>
-        <a href="/produits" class="btn btn-primary">Découvrir nos produits</a>
+        <h2 data-i18n="cart.empty">الپانييه ديالك خاوي</h2>
+        <p data-i18n="checkout.emptyText">زيد منتوجات قبل ما تكمل الطلب.</p>
+        <a href="/produits" class="btn btn-primary" data-i18n="home.discoverProducts">اكتشف منتوجاتنا</a>
       </div>
 
       <form id="checkout-form" class="checkout-layout" novalidate hidden>
@@ -47,62 +47,62 @@ src="https://www.facebook.com/tr?id=8482376721812747&ev=PageView&noscript=1"
           <div id="form-error-banner" class="payment-note" style="background:#F6DDD3; display:none"></div>
 
           <div class="field">
-            <label for="customerName">Nom complet</label>
+            <label for="customerName" data-i18n="checkout.fullName">الاسم الكامل</label>
             <input type="text" id="customerName" name="customerName" required autocomplete="name">
-            <p class="error-msg">Merci d'indiquer votre nom complet.</p>
+            <p class="error-msg" data-i18n="checkout.fullNameError">عافاك دخّل الاسم الكامل ديالك.</p>
           </div>
 
           <div class="field">
-            <label for="phone">Numéro de téléphone</label>
+            <label for="phone" data-i18n="checkout.phone">رقم الهاتف</label>
             <input type="tel" id="phone" name="phone" placeholder="06XXXXXXXX" required autocomplete="tel">
-            <p class="hint">Format marocain, ex : 0612345678</p>
-            <p class="error-msg">Merci d'indiquer un numéro de téléphone marocain valide.</p>
+            <p class="hint" data-i18n="checkout.phoneHint">فورمات مغربي، مثال: 0612345678</p>
+            <p class="error-msg" data-i18n="checkout.phoneError">عافاك دخّل رقم هاتف مغربي صحيح.</p>
           </div>
 
           <div class="field-row field-row-2">
             <div class="field">
-              <label for="city">Ville</label>
+              <label for="city" data-i18n="checkout.city">المدينة</label>
               <input type="text" id="city" name="city" required autocomplete="address-level2">
-              <p class="error-msg">Merci d'indiquer votre ville.</p>
+              <p class="error-msg" data-i18n="checkout.cityError">عافاك دخّل المدينة ديالك.</p>
             </div>
             <div class="field">
-              <label for="region">Région <span class="hint">(facultatif)</span></label>
+              <label for="region"><span data-i18n="checkout.region">الجهة</span> <span class="hint" data-i18n="checkout.optional">(اختياري)</span></label>
               <input type="text" id="region" name="region" autocomplete="address-level1">
             </div>
           </div>
 
           <div class="field">
-            <label for="address">Adresse complète</label>
+            <label for="address" data-i18n="checkout.address">العنوان الكامل</label>
             <textarea id="address" name="address" rows="2" required autocomplete="street-address"></textarea>
-            <p class="error-msg">Merci d'indiquer votre adresse complète.</p>
+            <p class="error-msg" data-i18n="checkout.addressError">عافاك دخّل العنوان الكامل ديالك.</p>
           </div>
 
           <div class="field-row field-row-2">
             <div class="field">
-              <label for="postalCode">Code postal <span class="hint">(facultatif)</span></label>
+              <label for="postalCode"><span data-i18n="checkout.postalCode">الرمز البريدي</span> <span class="hint" data-i18n="checkout.optional">(اختياري)</span></label>
               <input type="text" id="postalCode" name="postalCode" autocomplete="postal-code">
             </div>
           </div>
 
           <div class="field">
-            <label for="comment">Commentaire <span class="hint">(facultatif)</span></label>
-            <textarea id="comment" name="comment" rows="2" placeholder="Étage, horaire de livraison préféré…"></textarea>
+            <label for="comment"><span data-i18n="checkout.comment">ملاحظة</span> <span class="hint" data-i18n="checkout.optional">(اختياري)</span></label>
+            <textarea id="comment" name="comment" rows="2" placeholder="الطابق، الوقت المفضل للتوصيل…" data-i18n-attr="placeholder:checkout.commentPlaceholder"></textarea>
           </div>
         </div>
 
         <div class="summary-card">
-          <h3>Résumé de la commande</h3>
+          <h3 data-i18n="cart.summary">ملخص الطلب</h3>
           <div id="order-lines"></div>
-          <div class="summary-row" style="margin-top: var(--space-3)"><span>Sous-total</span><span id="checkout-subtotal">0 DH</span></div>
-          <div class="summary-row"><span>Livraison</span><span id="checkout-delivery">—</span></div>
-          <div class="summary-row total"><span>Total</span><span id="checkout-total">0 DH</span></div>
+          <div class="summary-row" style="margin-top: var(--space-3)"><span data-i18n="cart.subtotal">المجموع</span><span id="checkout-subtotal">0 DH</span></div>
+          <div class="summary-row"><span data-i18n="checkout.delivery">التوصيل</span><span id="checkout-delivery">—</span></div>
+          <div class="summary-row total"><span data-i18n="cart.total">المجموع الكلي</span><span id="checkout-total">0 DH</span></div>
 
           <div class="payment-note">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
-            Paiement à la livraison
+            <span data-i18n="common.cod">الدفع عند الاستلام</span>
           </div>
 
-          <button type="submit" class="btn btn-primary btn-block" id="submit-order-btn">CONFIRMER MA COMMANDE</button>
+          <button type="submit" class="btn btn-primary btn-block" id="submit-order-btn" data-i18n="checkout.submit">أكّد الطلب</button>
         </div>
       </form>
     </div>

@@ -100,14 +100,14 @@ document.addEventListener('config:ready', async (e) => {
     errorBanner.style.display = 'none';
 
     if (!validateForm()) {
-      errorBanner.textContent = 'Merci de corriger les champs indiqués ci-dessous.';
+      errorBanner.textContent = I18N.t('checkout.fixFields', 'Merci de corriger les champs indiqués ci-dessous.');
       errorBanner.style.display = 'flex';
       return;
     }
 
     const submitBtn = document.getElementById('submit-order-btn');
     submitBtn.disabled = true;
-    submitBtn.innerHTML = '<span class="spinner"></span> Envoi en cours…';
+    submitBtn.innerHTML = `<span class="spinner"></span> ${I18N.t('checkout.sending', 'Envoi en cours…')}`;
 
     const payload = {
       customerName: document.getElementById('customerName').value.trim(),
@@ -118,6 +118,7 @@ document.addEventListener('config:ready', async (e) => {
       postalCode: document.getElementById('postalCode').value.trim(),
       comment: document.getElementById('comment').value.trim(),
       items: Cart.getItems().map((i) => ({ productId: i.productId, variantId: i.variantId || undefined, quantity: i.quantity })),
+      ...Attribution.toOrderFields(),
     };
 
     try {
@@ -126,10 +127,10 @@ document.addEventListener('config:ready', async (e) => {
       Cart.clear();
       window.location.href = '/merci';
     } catch (err) {
-      errorBanner.textContent = err.message || 'Une erreur est survenue. Merci de réessayer.';
+      errorBanner.textContent = err.message || I18N.t('checkout.genericError', 'Une erreur est survenue. Merci de réessayer.');
       errorBanner.style.display = 'flex';
       submitBtn.disabled = false;
-      submitBtn.textContent = 'CONFIRMER MA COMMANDE';
+      submitBtn.textContent = I18N.t('checkout.submit', 'CONFIRMER MA COMMANDE');
     }
   });
 });

@@ -18,8 +18,8 @@ function renderVideoSection(product) {
   if (yt) {
     return `
       <div class="product-video" data-embed="https://www.youtube-nocookie.com/embed/${yt[1]}?autoplay=1&rel=0" data-facade="true">
-        <img src="https://i.ytimg.com/vi/${yt[1]}/hqdefault.jpg" alt="Aperçu de la vidéo produit" loading="lazy">
-        <button type="button" class="video-play-btn" aria-label="Lire la vidéo">
+        <img src="https://i.ytimg.com/vi/${yt[1]}/hqdefault.jpg" alt="${I18N.t('product.videoPreview', 'Aperçu de la vidéo produit')}" loading="lazy">
+        <button type="button" class="video-play-btn" aria-label="${I18N.t('product.playVideo', 'Lire la vidéo')}">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
         </button>
       </div>`;
@@ -27,8 +27,8 @@ function renderVideoSection(product) {
   if (vimeo) {
     return `
       <div class="product-video" data-embed="https://player.vimeo.com/video/${vimeo[1]}?autoplay=1" data-facade="true">
-        <img src="${poster}" alt="Aperçu de la vidéo produit" loading="lazy">
-        <button type="button" class="video-play-btn" aria-label="Lire la vidéo">
+        <img src="${poster}" alt="${I18N.t('product.videoPreview', 'Aperçu de la vidéo produit')}" loading="lazy">
+        <button type="button" class="video-play-btn" aria-label="${I18N.t('product.playVideo', 'Lire la vidéo')}">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
         </button>
       </div>`;
@@ -46,7 +46,7 @@ function wireVideoFacades(root) {
     box.querySelector('.video-play-btn').addEventListener('click', () => {
       const iframe = document.createElement('iframe');
       iframe.src = box.dataset.embed;
-      iframe.title = 'Vidéo produit';
+      iframe.title = I18N.t('product.videoTitle', 'Vidéo produit');
       iframe.allow = 'autoplay; encrypted-media; picture-in-picture';
       iframe.allowFullscreen = true;
       iframe.loading = 'lazy';
@@ -57,9 +57,9 @@ function wireVideoFacades(root) {
 }
 
 function stockLine(stock) {
-  if (stock <= 0) return '<p class="stock-line stock-out">Rupture de stock</p>';
-  if (stock <= 5) return `<p class="stock-line stock-low">Plus que ${stock} en stock</p>`;
-  return '<p class="stock-line stock-ok">En stock</p>';
+  if (stock <= 0) return `<p class="stock-line stock-out">${I18N.t('product.outOfStock', 'Rupture de stock')}</p>`;
+  if (stock <= 5) return `<p class="stock-line stock-low">${I18N.t('product.lowStock', 'Plus que')} ${stock} ${I18N.t('product.inStockSuffix', 'en stock')}</p>`;
+  return `<p class="stock-line stock-ok">${I18N.t('product.inStock', 'En stock')}</p>`;
 }
 
 document.addEventListener('config:ready', async (e) => {
@@ -73,9 +73,9 @@ document.addEventListener('config:ready', async (e) => {
   } catch (err) {
     content.innerHTML = `
       <div class="empty-state">
-        <h2>Produit introuvable</h2>
-        <p>Ce produit n'existe pas ou n'est plus disponible.</p>
-        <a href="/produits" class="btn btn-primary">Voir tous les produits</a>
+        <h2>${I18N.t('product.notFound', 'Produit introuvable')}</h2>
+        <p>${I18N.t('product.notFoundText', "Ce produit n'existe pas ou n'est plus disponible.")}</p>
+        <a href="/produits" class="btn btn-primary">${I18N.t('product.seeAllProducts', 'Voir tous les produits')}</a>
       </div>`;
     return;
   }
@@ -104,7 +104,7 @@ document.addEventListener('config:ready', async (e) => {
   }
 
   const breadcrumb = document.getElementById('breadcrumb');
-  breadcrumb.innerHTML = `<a href="/">Accueil</a> / <a href="/produits">Produits</a>` +
+  breadcrumb.innerHTML = `<a href="/">${I18N.t('nav.home', 'Accueil')}</a> / <a href="/produits">${I18N.t('nav.products', 'Produits')}</a>` +
     (product.category_slug ? ` / <a href="/produits?categorie=${product.category_slug}"${bidiAttr(product.category_name)}>${escapeHtml(product.category_name)}</a>` : '') +
     ` / <span${bidiAttr(product.name)}>${escapeHtml(product.name)}</span>`;
 
@@ -145,36 +145,36 @@ document.addEventListener('config:ready', async (e) => {
 
         ${hasVariants ? `
         <div class="field" style="margin-bottom: var(--space-3)">
-          <label id="variant-label">Choisissez une option</label>
+          <label id="variant-label">${I18N.t('product.chooseOption', 'Choisissez une option')}</label>
           <div class="variant-pills" role="radiogroup" aria-labelledby="variant-label">
             ${variants.map((v) => `<button type="button" class="variant-pill ${selectedVariant && v.id === selectedVariant.id ? 'selected' : ''}" role="radio" aria-checked="${selectedVariant && v.id === selectedVariant.id ? 'true' : 'false'}" data-variant-id="${v.id}" ${v.stock <= 0 ? 'disabled' : ''}>
-              ${escapeHtml(v.label)}${v.stock <= 0 ? ' · rupture' : ''}
+              ${escapeHtml(v.label)}${v.stock <= 0 ? ' · ' + I18N.t('product.outOfStockShort', 'rupture') : ''}
             </button>`).join('')}
           </div>
         </div>` : ''}
 
-        ${product.category_slug === 'koub-hijama' ? `<p><a href="/guide-tailles-ventouses" class="btn-text">📏 Voir le guide des tailles de ventouses</a></p>` : ''}
-        ${(product.slug === 'produit-hs-114' || product.slug === 'produit-hs-115') ? `<p><a href="/comparer?a=produit-hs-114&b=produit-hs-115" class="btn-text">⇄ Comparer les coffrets Safaa et Al Assala</a></p>` : ''}
+        ${product.category_slug === 'koub-hijama' ? `<p><a href="/guide-tailles-ventouses" class="btn-text">📏 ${I18N.t('product.sizeGuideLink', 'Voir le guide des tailles de ventouses')}</a></p>` : ''}
+        ${(product.slug === 'produit-hs-114' || product.slug === 'produit-hs-115') ? `<p><a href="/comparer?a=produit-hs-114&b=produit-hs-115" class="btn-text">⇄ ${I18N.t('product.compareSafaaAssala', 'Comparer les coffrets Safaa et Al Assala')}</a></p>` : ''}
 
         <div id="stock-line">${stockLine(currentStock())}</div>
         <p${bidiAttr(product.description)}>${escapeHtml(product.description || '')}</p>
 
         <div class="qty-selector">
-          <span style="font-weight:700; font-size: var(--fs-sm)">Quantité</span>
+          <span style="font-weight:700; font-size: var(--fs-sm)">${I18N.t('product.quantity', 'Quantité')}</span>
           <div class="qty-control">
-            <button type="button" id="qty-minus" aria-label="Diminuer la quantité">−</button>
+            <button type="button" id="qty-minus" aria-label="${I18N.t('common.decreaseQty', 'Diminuer la quantité')}">−</button>
             <span id="qty-value">1</span>
-            <button type="button" id="qty-plus" aria-label="Augmenter la quantité">+</button>
+            <button type="button" id="qty-plus" aria-label="${I18N.t('common.increaseQty', 'Augmenter la quantité')}">+</button>
           </div>
         </div>
 
         <div class="btn-group">
           <button class="btn btn-primary btn-block" id="add-to-cart-btn" ${isOutOfStock() ? 'disabled' : ''}>
-            ${isOutOfStock() ? 'Indisponible' : 'Ajouter au panier'}
+            ${isOutOfStock() ? I18N.t('product.unavailable', 'Indisponible') : I18N.t('common.addToCart', 'Ajouter au panier')}
           </button>
-          <a href="#" id="product-whatsapp" class="btn btn-whatsapp btn-block" target="_blank" rel="noopener">Commander sur WhatsApp</a>
+          <a href="#" id="product-whatsapp" class="btn btn-whatsapp btn-block" target="_blank" rel="noopener">${I18N.t('common.orderWhatsapp', 'Commander sur WhatsApp')}</a>
         </div>
-        <p class="product-question"><a href="#" id="product-whatsapp-question" target="_blank" rel="noopener">Une question sur ce produit ?</a></p>
+        <p class="product-question"><a href="#" id="product-whatsapp-question" target="_blank" rel="noopener">${I18N.t('product.questionLink', 'Une question sur ce produit ?')}</a></p>
 
         ${!isOutOfStock() ? `
         <div class="divider-motif" aria-hidden="true" style="margin: var(--space-5) 0">
@@ -227,17 +227,17 @@ document.addEventListener('config:ready', async (e) => {
     qtyValueEl.textContent = qty;
     if (isOutOfStock()) {
       addBtn.disabled = true;
-      addBtn.textContent = 'Indisponible';
+      addBtn.textContent = I18N.t('product.unavailable', 'Indisponible');
     } else {
       addBtn.disabled = false;
-      addBtn.textContent = 'Ajouter au panier';
+      addBtn.textContent = I18N.t('common.addToCart', 'Ajouter au panier');
     }
     const label = selectedVariant ? ` (${selectedVariant.label})` : '';
-    const waMessage = `Bonjour, je suis intéressé par le produit ${product.name}${label} au prix de ${currentPrice()} ${config.currency}.`;
+    const waMessage = `${I18N.t('product.waInterested', 'Bonjour, je suis intéressé par le produit')} ${product.name}${label} ${I18N.t('product.waPriceOf', 'au prix de')} ${currentPrice()} ${config.currency}.`;
     waBtn.href = Api.whatsappLink(config.whatsappNumber, waMessage);
 
     if (waQuestionBtn) {
-      const waQuestionMessage = `Bonjour, j'ai une question sur le produit ${product.name}${label}.\n${productUrl}`;
+      const waQuestionMessage = `${I18N.t('product.waQuestion', "Bonjour, j'ai une question sur le produit")} ${product.name}${label}.\n${productUrl}`;
       waQuestionBtn.href = Api.whatsappLink(config.whatsappNumber, waQuestionMessage);
     }
 
@@ -247,7 +247,7 @@ document.addEventListener('config:ready', async (e) => {
       mobileBar.querySelector('.mobile-add-bar-price').textContent = formatPrice(currentPrice(), config.currency);
       const mobileAddBtn = mobileBar.querySelector('.mobile-add-bar-btn');
       mobileAddBtn.disabled = isOutOfStock();
-      mobileAddBtn.textContent = isOutOfStock() ? 'Indisponible' : 'Ajouter au panier';
+      mobileAddBtn.textContent = isOutOfStock() ? I18N.t('product.unavailable', 'Indisponible') : I18N.t('common.addToCart', 'Ajouter au panier');
     }
   }
 
@@ -268,7 +268,7 @@ document.addEventListener('config:ready', async (e) => {
   function addToCart() {
     Cart.add(product, qty, selectedVariant);
     const label = selectedVariant ? ` (${selectedVariant.label})` : '';
-    showToast(`Ajouté ✓ — ${product.name}${label}`);
+    showToast(`${I18N.t('common.added', 'Ajouté ✓')} — ${product.name}${label}`);
   }
 
   // Ajouter au panier
@@ -285,7 +285,7 @@ document.addEventListener('config:ready', async (e) => {
     mobileBar.className = 'mobile-add-bar';
     mobileBar.innerHTML = `
       <span class="price mobile-add-bar-price"></span>
-      <button type="button" class="btn btn-primary mobile-add-bar-btn">${orderFormMountEl ? 'Commander' : 'Ajouter au panier'}</button>`;
+      <button type="button" class="btn btn-primary mobile-add-bar-btn">${orderFormMountEl ? I18N.t('product.order', 'Commander') : I18N.t('common.addToCart', 'Ajouter au panier')}</button>`;
     document.body.appendChild(mobileBar);
     mobileBar.querySelector('.mobile-add-bar-btn').addEventListener('click', () => {
       if (isOutOfStock()) return;
@@ -308,7 +308,7 @@ document.addEventListener('config:ready', async (e) => {
 
   if (orderFormMountEl) {
     OrderForm.mount(orderFormMountEl, {
-      lang: 'fr',
+      lang: I18N.getLocale(),
       getLineItems: () => [{
         productId: product.id,
         variantId: selectedVariant ? selectedVariant.id : null,
