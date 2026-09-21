@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Composez votre kit — Hijama Store</title>
-<meta name="description" content="Composez votre propre kit de hijama : choisissez vos ventouses, ajoutez des accessoires, ajustez les quantités et ajoutez le tout au panier en une seule action.">
+<title>صاوب الكيت ديالك — Hijama Store</title>
+<meta name="description" content="صاوب الكيت ديال الحجامة ديالك: اختار الكؤوس، زيد الأدوات، بدل الكميات وزيد كولشي للپانييه بضغطة وحدة.">
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="preload" href="/fonts/cairo-arabic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/css/style.css">
@@ -27,16 +27,16 @@ src="https://www.facebook.com/tr?id=8482376721812747&ev=PageView&noscript=1"
 <!-- End Meta Pixel Code -->
 </head>
 <body>
-<a href="#main" class="skip-link">Aller au contenu</a>
+<a href="#main" class="skip-link" data-i18n="common.skipToContent">Aller au contenu</a>
 <div data-include="header"></div>
 
 <main id="main">
   <section class="section-cream" style="padding-bottom: var(--space-4)">
     <div class="container">
-      <p class="breadcrumb"><a href="/">Accueil</a> / Composez votre kit</p>
+      <p class="breadcrumb"><a href="/" data-i18n="nav.home">Accueil</a> / <span data-i18n="kit.title">Composez votre kit</span></p>
       <div class="section-head">
-        <h1>Composez votre kit</h1>
-        <p>Choisissez vos ventouses et vos accessoires parmi les produits réellement disponibles, ajustez les quantités, puis ajoutez l'ensemble au panier en une seule fois. Chaque étape est facultative.</p>
+        <h1 data-i18n="kit.title">صاوب الكيت ديالك</h1>
+        <p data-i18n="kit.builderSubtitle">اختار الكؤوس والأدوات من المنتوجات المتوفرة فعلا، بدل الكميات، من بعد زيد كولشي للپانييه بضغطة وحدة. كل خطوة اختيارية.</p>
       </div>
     </div>
   </section>
@@ -46,27 +46,27 @@ src="https://www.facebook.com/tr?id=8482376721812747&ev=PageView&noscript=1"
       <div class="kit-layout">
         <div>
           <div class="kit-step">
-            <h2>Vos ventouses</h2>
+            <h2 data-i18n="kit.yourCups">الكؤوس ديالك</h2>
             <div class="kit-picker-grid" id="kit-cups-grid">
-              <p>Chargement des produits…</p>
+              <p data-i18n="common.loadingProducts">كيتحمّل...</p>
             </div>
           </div>
 
           <div class="kit-step">
             <div class="kit-step-head">
-              <h2>Vos accessoires</h2>
-              <select id="kit-accessory-category" aria-label="Catégorie d'accessoires"></select>
+              <h2 data-i18n="kit.yourAccessories">الأدوات ديالك</h2>
+              <select id="kit-accessory-category" aria-label="فئة الأدوات" data-i18n-attr="aria-label:kit.accessoryCategory"></select>
             </div>
             <div class="kit-picker-grid" id="kit-accessories-grid">
-              <p>Chargement des produits…</p>
+              <p data-i18n="common.loadingProducts">كيتحمّل...</p>
             </div>
           </div>
         </div>
 
-        <aside class="kit-summary" aria-label="Récapitulatif de votre kit">
-          <h3>Votre kit</h3>
+        <aside class="kit-summary" aria-label="ملخص الكيت ديالك" data-i18n-attr="aria-label:kit.summaryAria">
+          <h3 data-i18n="kit.yourKit">الكيت ديالك</h3>
           <div id="kit-summary-body">
-            <p class="kit-summary-empty">Aucun article sélectionné pour le moment.</p>
+            <p class="kit-summary-empty" data-i18n="kit.noneSelected">مازال ماخترتيش شي حاجة.</p>
           </div>
           <div id="kit-summary-foot"></div>
         </aside>

@@ -67,11 +67,11 @@ const KitBuilder = (() => {
         <h4>${escapeHtml(product.name)}</h4>
         <span class="price">${priceLabel}</span>
         ${hasVariants ? `
-          <select class="kit-variant-select" aria-label="Choisir une taille/option">
-            ${variants.map((v) => `<option value="${v.id}" ${v.stock <= 0 ? 'disabled' : ''}>${escapeHtml(v.label)}${v.stock <= 0 ? ' · rupture' : ''}</option>`).join('')}
+          <select class="kit-variant-select" aria-label="${I18N.t('kit.chooseSizeOption', 'Choisir une taille/option')}">
+            ${variants.map((v) => `<option value="${v.id}" ${v.stock <= 0 ? 'disabled' : ''}>${escapeHtml(v.label)}${v.stock <= 0 ? ' · ' + I18N.t('product.outOfStockShort', 'rupture') : ''}</option>`).join('')}
           </select>` : ''}
         <button type="button" class="btn btn-outline btn-sm kit-add-btn" ${outOfStock ? 'disabled' : ''}>
-          ${outOfStock ? 'Épuisé' : 'Ajouter au kit'}
+          ${outOfStock ? I18N.t('common.outOfStock', 'Épuisé') : I18N.t('kit.addToKit', 'Ajouter au kit')}
         </button>
       </div>`;
   }
@@ -104,7 +104,7 @@ const KitBuilder = (() => {
         const variant = currentVariant();
         if (variants.length && !variant) return;
         addLine(product, variant, 1);
-        showToast(`Ajouté ✓ — ${product.name}${variant ? ' (' + variant.label + ')' : ''}`);
+        showToast(`${I18N.t('common.added', 'Ajouté ✓')} — ${product.name}${variant ? ' (' + variant.label + ')' : ''}`);
       });
     }
 
@@ -123,18 +123,18 @@ const KitBuilder = (() => {
   }
 
   async function renderGrid(gridEl, categorySlug) {
-    gridEl.innerHTML = '<p>Chargement des produits…</p>';
+    gridEl.innerHTML = `<p>${I18N.t('common.loadingProducts', 'Chargement des produits…')}</p>`;
     try {
       const products = await loadProductsWithVariants(categorySlug);
       if (!products.length) {
-        gridEl.innerHTML = '<p>Aucun produit disponible dans cette catégorie pour le moment.</p>';
+        gridEl.innerHTML = `<p>${I18N.t('kit.noProductsInCategory', 'Aucun produit disponible dans cette catégorie pour le moment.')}</p>`;
         return;
       }
       gridEl.innerHTML = products.map(renderPickCard).join('');
       gridEl.querySelectorAll('.kit-pick-card').forEach((cardEl, i) => wirePickCard(cardEl, products[i]));
     } catch (err) {
       console.error(err);
-      gridEl.innerHTML = '<p>Impossible de charger ces produits pour le moment.</p>';
+      gridEl.innerHTML = `<p>${I18N.t('kit.loadError', 'Impossible de charger ces produits pour le moment.')}</p>`;
     }
   }
 
@@ -146,7 +146,7 @@ const KitBuilder = (() => {
     const lines = Array.from(kitLines.entries());
 
     if (!lines.length) {
-      body.innerHTML = '<p class="kit-summary-empty">Aucun article sélectionné pour le moment.</p>';
+      body.innerHTML = `<p class="kit-summary-empty">${I18N.t('kit.noneSelected', 'Aucun article sélectionné pour le moment.')}</p>`;
       foot.innerHTML = '';
       return;
     }
@@ -161,14 +161,14 @@ const KitBuilder = (() => {
             <div class="kit-summary-item-name">${escapeHtml(line.product.name)}</div>
             ${line.variant ? `<div class="kit-summary-item-variant">${escapeHtml(line.variant.label)}</div>` : ''}
             <div class="qty-control qty-control-sm">
-              <button type="button" class="kit-sum-dec" aria-label="Diminuer la quantité">−</button>
+              <button type="button" class="kit-sum-dec" aria-label="${I18N.t('common.decreaseQty', 'Diminuer la quantité')}">−</button>
               <span>${line.quantity}</span>
-              <button type="button" class="kit-sum-inc" aria-label="Augmenter la quantité">+</button>
+              <button type="button" class="kit-sum-inc" aria-label="${I18N.t('common.increaseQty', 'Augmenter la quantité')}">+</button>
             </div>
           </div>
           <div style="text-align:right">
             <div style="font-weight:700; font-size: var(--fs-xs)">${formatPrice(price * line.quantity, currency)}</div>
-            <button type="button" class="remove-link kit-sum-remove">Retirer</button>
+            <button type="button" class="remove-link kit-sum-remove">${I18N.t('common.remove', 'Retirer')}</button>
           </div>
         </div>`;
     }).join('');
@@ -178,10 +178,10 @@ const KitBuilder = (() => {
     const deliveryFee = config ? config.defaultDeliveryFee : null;
 
     foot.innerHTML = `
-      <div class="summary-row"><span>Sous-total</span><span>${formatPrice(subtotal, currency)}</span></div>
-      <div class="summary-row"><span>Livraison</span><span>${deliveryFee != null ? 'à partir de ' + formatPrice(deliveryFee, currency) : 'à déterminer'}</span></div>
-      <p class="hint">La livraison exacte est calculée à l'étape suivante selon votre ville.</p>
-      <button type="button" class="btn btn-primary btn-block" id="kit-add-all-btn">Ajouter le kit au panier (${itemCount})</button>`;
+      <div class="summary-row"><span>${I18N.t('cart.subtotal', 'Sous-total')}</span><span>${formatPrice(subtotal, currency)}</span></div>
+      <div class="summary-row"><span>${I18N.t('checkout.delivery', 'Livraison')}</span><span>${deliveryFee != null ? I18N.t('kit.deliveryFrom', 'à partir de') + ' ' + formatPrice(deliveryFee, currency) : I18N.t('kit.deliveryTbd', 'à déterminer')}</span></div>
+      <p class="hint">${I18N.t('kit.deliveryNote', 'La livraison exacte est calculée à l\'étape suivante selon votre ville.')}</p>
+      <button type="button" class="btn btn-primary btn-block" id="kit-add-all-btn">${I18N.t('kit.addAllToCart', 'Ajouter le kit au panier')} (${itemCount})</button>`;
 
     document.getElementById('kit-add-all-btn').addEventListener('click', addAllToCart);
   }
@@ -205,7 +205,7 @@ const KitBuilder = (() => {
     kitLines.clear();
     renderSummary();
     updateCardBadges();
-    showToast(`Ajouté ✓ — votre kit (${itemCount} article${itemCount > 1 ? 's' : ''}) a été ajouté au panier`);
+    showToast(`${I18N.t('common.added', 'Ajouté ✓')} — ${I18N.t('kit.kitAddedToCart', 'votre kit')} (${itemCount} ${I18N.t('kit.items', 'articles')})`);
     if (typeof MiniCart !== 'undefined') MiniCart.open();
   }
 
@@ -232,7 +232,7 @@ const KitBuilder = (() => {
       accessoryCategorySelect.addEventListener('change', () => renderGrid(accessoriesGrid, accessoryCategorySelect.value));
     } catch (err) {
       console.error(err);
-      accessoriesGrid.innerHTML = '<p>Impossible de charger les accessoires pour le moment.</p>';
+      accessoriesGrid.innerHTML = `<p>${I18N.t('kit.accessoriesLoadError', 'Impossible de charger les accessoires pour le moment.')}</p>`;
     }
   }
 

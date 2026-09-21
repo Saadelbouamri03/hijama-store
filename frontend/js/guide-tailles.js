@@ -11,7 +11,7 @@ function renderSizeSwatches(product, variants, currency) {
         <a class="size-swatch ${v.stock <= 0 ? 'out' : ''}" href="/produit/${encodeURIComponent(product.slug)}">
           <span class="dot" style="width:${Math.min(38, 16 + Number(parseFloat(v.label)) * 2.6)}px; height:${Math.min(38, 16 + Number(parseFloat(v.label)) * 2.6)}px"></span>
           <span class="label">${escapeHtml(v.label)}</span>
-          <span class="stock-note">${formatPrice(v.price, currency)}${v.stock <= 0 ? ' · rupture' : ''}</span>
+          <span class="stock-note">${formatPrice(v.price, currency)}${v.stock <= 0 ? ' · ' + I18N.t('product.outOfStockShort', 'rupture') : ''}</span>
         </a>`).join('')}
     </div>`;
 }
@@ -31,16 +31,16 @@ function renderSizeGuideCard(product, variants, currency) {
         <div>
           <h3>${escapeHtml(product.name)}</h3>
           <div class="size-guide-meta">
-            Réf. ${ref ? escapeHtml(ref) : 'Non renseigné'} ·
-            ${brand ? escapeHtml(brand) : 'Non renseigné'} ·
+            ${I18N.t('sizeGuide.ref', 'Réf.')} ${ref ? escapeHtml(ref) : I18N.t('compare.notSpecified', 'Non renseigné')} ·
+            ${brand ? escapeHtml(brand) : I18N.t('compare.notSpecified', 'Non renseigné')} ·
             ${escapeHtml(conditioningLabel(product))}
           </div>
         </div>
       </div>
       ${hasStructuredSizes
         ? renderSizeSwatches(product, variants, currency)
-        : `<p class="size-guide-meta">Tailles indiquées par le fournisseur : ${escapeHtml(freeTextSizes)}</p>`}
-      <a href="/produit/${encodeURIComponent(product.slug)}" class="btn btn-outline btn-sm">Voir le produit</a>
+        : `<p class="size-guide-meta">${I18N.t('sizeGuide.supplierSizes', 'Tailles indiquées par le fournisseur')} : ${escapeHtml(freeTextSizes)}</p>`}
+      <a href="/produit/${encodeURIComponent(product.slug)}" class="btn btn-outline btn-sm">${I18N.t('compare.seeProduct', 'Voir le produit')}</a>
     </article>`;
 }
 
@@ -61,9 +61,9 @@ document.addEventListener('config:ready', async (e) => {
 
     container.innerHTML = cards.length
       ? `<div class="size-guide-grid">${cards.join('')}</div>`
-      : `<p>Aucune référence avec des tailles renseignées pour le moment. Écrivez-nous sur WhatsApp pour connaître les dimensions disponibles.</p>`;
+      : `<p>${I18N.t('sizeGuide.none', 'Aucune référence avec des tailles renseignées pour le moment. Écrivez-nous sur WhatsApp pour connaître les dimensions disponibles.')}</p>`;
   } catch (err) {
     console.error(err);
-    container.innerHTML = '<p>Impossible de charger le guide des tailles pour le moment.</p>';
+    container.innerHTML = `<p>${I18N.t('sizeGuide.loadError', 'Impossible de charger le guide des tailles pour le moment.')}</p>`;
   }
 });
