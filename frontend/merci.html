@@ -34,7 +34,7 @@ src="https://www.facebook.com/tr?id=8482376721812747&ev=PageView&noscript=1"
 <main id="main">
   <section class="section-cream">
     <div class="container">
-      <div class="success-box">
+      <div class="success-box" id="success-box" hidden>
         <div class="success-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
         </div>
@@ -64,23 +64,29 @@ document.addEventListener('config:ready', (e) => {
   let order = null;
   try { order = JSON.parse(sessionStorage.getItem('lastOrder') || 'null'); } catch {}
 
-  const ref = document.getElementById('order-ref');
-  let waMessage = 'Bonjour, je viens de passer une commande sur le site.';
-  if (order) {
-    ref.textContent = `Commande n°${order.id} — Total : ${formatPrice(order.total, config.currency)}`;
-    waMessage = `Bonjour, je viens de passer la commande n°${order.id} (${formatPrice(order.total, config.currency)}) sur le site.`;
+  // Accès direct à /merci sans commande réelle (lien partagé, retour arrière,
+  // favori...) : on ne montre jamais une confirmation de commande fictive.
+  if (!order) {
+    window.location.replace('/');
+    return;
+  }
 
-    if (typeof fbq === 'function') {
-      const firedKey = `fbq_purchase_${order.id}`;
-      if (!sessionStorage.getItem(firedKey)) {
-        fbq('track', 'Purchase', {
-          value: order.total,
-          currency: 'MAD',
-          contents: (order.items || []).map((i) => ({ id: i.product_id, quantity: i.quantity })),
-          content_type: 'product',
-        }, { eventID: `purchase_${order.id}` });
-        sessionStorage.setItem(firedKey, '1');
-      }
+  document.getElementById('success-box').hidden = false;
+
+  const ref = document.getElementById('order-ref');
+  ref.textContent = `Commande n°${order.id} — Total : ${formatPrice(order.total, config.currency)}`;
+  const waMessage = `Bonjour, je viens de passer la commande n°${order.id} (${formatPrice(order.total, config.currency)}) sur le site.`;
+
+  if (typeof fbq === 'function') {
+    const firedKey = `fbq_purchase_${order.id}`;
+    if (!sessionStorage.getItem(firedKey)) {
+      fbq('track', 'Purchase', {
+        value: order.total,
+        currency: 'MAD',
+        contents: (order.items || []).map((i) => ({ id: i.product_id, quantity: i.quantity })),
+        content_type: 'product',
+      }, { eventID: `purchase_${order.id}` });
+      sessionStorage.setItem(firedKey, '1');
     }
   }
   document.getElementById('merci-whatsapp').href = Api.whatsappLink(config.whatsappNumber, waMessage);
