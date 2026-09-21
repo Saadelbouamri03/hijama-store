@@ -487,9 +487,10 @@ async function deleteReview(id) {
   } catch (err) { showToast(err.message); }
 }
 
-function openReviewForm(id = null) {
+async function openReviewForm(id = null) {
   const isEdit = id !== null;
   const review = isEdit ? reviewsCache.find((r) => r.id === id) : null;
+  const products = await Api.get('/api/products?includeInactive=1');
   openModal(`
     <button class="modal-close" data-close>&times;</button>
     <h2>${isEdit ? "Modifier l'avis" : 'Ajouter un avis'}</h2>
@@ -498,7 +499,12 @@ function openReviewForm(id = null) {
       <div class="field"><label for="r-rating">Note</label>
         <select id="r-rating">${[5, 4, 3, 2, 1].map((n) => `<option value="${n}" ${isEdit && review.rating === n ? 'selected' : ''}>${n} étoile${n > 1 ? 's' : ''}</option>`).join('')}</select></div>
       <div class="field"><label for="r-comment">Commentaire</label><textarea id="r-comment" rows="3" required>${isEdit ? escapeHtml(review.comment) : ''}</textarea></div>
-      <div class="checkbox-row"><input type="checkbox" id="r-demo" ${!isEdit || review.is_demo ? 'checked' : ''}><label for="r-demo">Avis DEMO (contenu d'exemple, pas un vrai client)</label></div>
+      <div class="field"><label for="r-product">Produit concerné (facultatif)</label>
+        <select id="r-product">
+          <option value="">Aucun (avis général)</option>
+          ${products.map((p) => `<option value="${p.id}" ${isEdit && review.product_id === p.id ? 'selected' : ''}>${escapeHtml(p.name)}</option>`).join('')}
+        </select></div>
+      <div class="checkbox-row"><input type="checkbox" id="r-demo" ${isEdit && review.is_demo ? 'checked' : ''}><label for="r-demo">Avis DEMO (contenu d'exemple, pas un vrai client)</label></div>
       <div class="checkbox-row"><input type="checkbox" id="r-active" ${!isEdit || review.active ? 'checked' : ''}><label for="r-active">Visible sur le site</label></div>
       <button type="submit" class="btn btn-primary btn-block">Enregistrer</button>
     </form>
@@ -506,10 +512,12 @@ function openReviewForm(id = null) {
   wireModalClose();
   document.getElementById('review-form').addEventListener('submit', async (e) => {
     e.preventDefault();
+    const productId = document.getElementById('r-product').value;
     const payload = {
       customer_name: document.getElementById('r-name').value.trim(),
       rating: Number(document.getElementById('r-rating').value),
       comment: document.getElementById('r-comment').value.trim(),
+      product_id: productId ? Number(productId) : null,
       is_demo: document.getElementById('r-demo').checked,
       active: document.getElementById('r-active').checked,
     };
