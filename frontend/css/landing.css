@@ -1,0 +1,146 @@
+/* Landing page publicitaire (/pack-hajjam-pro) : arabe/RTL, sans navigation,
+   un seul produit. Réutilise les tokens et classes partagées de style.css
+   (.btn, .field, .section-cream/sand, .order-form, .why-grid, .grid-reviews,
+   .reveal...) — uniquement le layout propre à ce gabarit vit ici. */
+
+@font-face {
+  font-family: 'Cairo';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts/cairo-arabic.woff2') format('woff2');
+  unicode-range: U+0600-06FF, U+0750-077F, U+FB50-FDFF, U+FE70-FEFC, U+200C-200E;
+}
+@font-face {
+  font-family: 'Cairo';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts/cairo-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+2000-206F, U+20AC;
+}
+
+body.landing-page {
+  font-family: 'Cairo', var(--font-body);
+  background: var(--cream);
+}
+body.landing-page h1, body.landing-page h2, body.landing-page h3 {
+  font-family: 'Cairo', var(--font-display);
+}
+
+/* ---------- Bandeau + en-tête minimal ---------- */
+.landing-announce { position: static; }
+.landing-header {
+  display: flex; justify-content: center; padding: var(--space-4) 0;
+  background: var(--cream);
+}
+.landing-header .logo { display: flex; align-items: center; gap: var(--space-2); font-weight: 700; font-size: var(--fs-md); color: var(--ink); text-decoration: none; }
+
+/* ---------- Hero ---------- */
+.landing-hero { padding-top: var(--space-5); }
+.landing-hero-grid {
+  display: grid; grid-template-columns: 1fr; gap: var(--space-6);
+}
+@media (min-width: 860px) {
+  .landing-hero-grid { grid-template-columns: 1fr 1fr; align-items: center; }
+}
+.landing-hero-copy h1 { font-size: var(--fs-2xl); line-height: 1.25; margin-bottom: var(--space-3); }
+.landing-hero-media img { width: 100%; height: auto; border-radius: var(--radius-lg); object-fit: cover; aspect-ratio: 1 / 1; }
+.landing-hero-media-mobile { display: block; margin: var(--space-4) 0; }
+.landing-hero-media-desktop { display: none; }
+@media (min-width: 860px) {
+  .landing-hero-media-mobile { display: none; }
+  .landing-hero-media-desktop { display: block; }
+}
+
+/* ---------- Bloc prix ---------- */
+.landing-price-box {
+  background: var(--white); border: 1px solid var(--sand-deep); border-radius: var(--radius-md);
+  padding: var(--space-4); margin: var(--space-4) 0;
+}
+.landing-price-row { display: flex; align-items: baseline; gap: var(--space-3); }
+.landing-price-old { text-decoration: line-through; color: var(--ink-soft); font-size: var(--fs-md); }
+.landing-price-now { font-size: var(--fs-2xl); font-weight: 700; color: var(--moss); }
+.landing-savings { color: var(--moss); font-weight: 700; margin-top: var(--space-1); }
+.landing-delivery-line { margin-top: var(--space-2); font-weight: 600; }
+
+/* ---------- Sélecteur quantité / upsell ---------- */
+.landing-options { margin-bottom: var(--space-4); }
+.landing-qty-choice { display: flex; gap: var(--space-2); margin-bottom: var(--space-3); }
+.landing-qty-pill {
+  flex: 1; padding: var(--space-3); border-radius: var(--radius-sm); border: 1.5px solid var(--sand-deep);
+  background: var(--white); font-weight: 700; font-size: var(--fs-sm); min-height: 44px;
+}
+.landing-qty-pill.selected { background: var(--moss); border-color: var(--moss); color: var(--white); }
+.landing-upsell-check {
+  display: flex; align-items: center; gap: var(--space-2); padding: var(--space-3);
+  background: var(--sand); border-radius: var(--radius-sm); font-weight: 600; font-size: var(--fs-sm);
+  cursor: pointer;
+}
+.landing-upsell-check input { width: 20px; height: 20px; }
+
+/* ---------- Réassurance ---------- */
+.reassurance-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); text-align: center;
+}
+@media (min-width: 640px) { .reassurance-grid { grid-template-columns: repeat(4, 1fr); } }
+.reassurance-item { padding: var(--space-3); font-weight: 600; font-size: var(--fs-sm); }
+
+/* ---------- Contenu du pack ---------- */
+.landing-contents-grid { grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+@media (min-width: 640px) { .landing-contents-grid { grid-template-columns: repeat(4, 1fr); } }
+.landing-content-card { text-align: center; }
+.landing-content-card img {
+  width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: var(--radius-md);
+  margin-bottom: var(--space-3); background: var(--sand);
+}
+.landing-content-card h3 { font-size: var(--fs-sm); margin-bottom: var(--space-1); }
+.landing-content-card p { font-size: var(--fs-xs); color: var(--ink-soft); }
+
+/* ---------- Argument chiffré ---------- */
+.landing-math-text { font-size: var(--fs-lg); font-weight: 600; line-height: 1.9; text-align: center; max-width: 50ch; margin: 0 auto; }
+
+/* ---------- Étapes d'utilisation ---------- */
+.landing-steps { list-style: none; display: flex; flex-direction: column; gap: var(--space-3); max-width: 60ch; margin: 0 auto; }
+.landing-steps li { display: flex; align-items: flex-start; gap: var(--space-3); font-size: var(--fs-md); }
+.landing-step-num {
+  flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%;
+  background: var(--moss); color: var(--white); font-weight: 700; font-size: var(--fs-sm);
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* ---------- FAQ ---------- */
+.landing-faq { max-width: 70ch; margin: 0 auto; }
+.faq-item { border-bottom: 1px solid var(--sand-deep); padding: var(--space-3) 0; }
+.faq-item summary { font-weight: 700; cursor: pointer; list-style: none; }
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary::after { content: '+'; float: left; font-size: var(--fs-lg); }
+.faq-item[open] summary::after { content: '−'; }
+.faq-item p { margin-top: var(--space-2); color: var(--ink-soft); }
+
+/* ---------- Dernier frein ---------- */
+.landing-trust { text-align: center; }
+.landing-trust p { max-width: 50ch; margin: 0 auto; }
+
+/* ---------- Formulaire (narrow, centré) ---------- */
+.landing-form-narrow { max-width: 480px; margin: 0 auto; }
+
+/* ---------- Barre collante mobile ---------- */
+.landing-sticky-bar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
+  display: flex; align-items: center; justify-content: space-between; gap: var(--space-3);
+  background: var(--white); border-top: 1px solid var(--sand-deep);
+  padding: var(--space-3) var(--space-4);
+  padding-bottom: calc(var(--space-3) + env(safe-area-inset-bottom));
+  box-shadow: 0 -4px 16px rgba(0,0,0,0.08);
+}
+.landing-sticky-price { font-size: var(--fs-lg); font-weight: 700; }
+@media (min-width: 720px) { .landing-sticky-bar { display: none !important; } }
+/* Le bouton WhatsApp flottant remonte au-dessus de la barre collante. */
+body.landing-page .wa-float { bottom: calc(var(--space-4) + env(safe-area-inset-bottom) + 68px); }
+@media (min-width: 720px) { body.landing-page .wa-float { bottom: calc(var(--space-4) + env(safe-area-inset-bottom)); } }
+
+/* ---------- Footer minimal ---------- */
+.landing-footer { padding: var(--space-6) 0 calc(var(--space-6) + 70px); text-align: center; color: var(--ink-soft); font-size: var(--fs-xs); }
+.landing-footer-inner { display: flex; flex-direction: column; gap: var(--space-2); }
+@media (min-width: 720px) { .landing-footer { padding-bottom: var(--space-6); } }

@@ -117,6 +117,17 @@ function renderReviewCard(review) {
     </article>`;
 }
 
+// Accordéon FAQ natif (<details>/<summary>, pas de JS nécessaire pour
+// ouvrir/fermer) — réutilisé par la landing du pack et, plus tard, par les
+// FAQ de fiches produits.
+function renderFaqItem(question, answer) {
+  return `
+    <details class="faq-item">
+      <summary${bidiAttr(question)}>${escapeHtml(question)}</summary>
+      <p${bidiAttr(answer)}>${escapeHtml(answer)}</p>
+    </details>`;
+}
+
 // Délégation d'événement : gère "Ajouter au panier" sur n'importe quelle
 // grille de produits injectée dynamiquement (accueil, liste produits...).
 document.addEventListener('click', (e) => {

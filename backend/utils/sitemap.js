@@ -13,6 +13,7 @@ const STATIC_PAGES = [
   { path: '/guide-tailles-ventouses', changefreq: 'monthly', priority: '0.5' },
   { path: '/comparer', changefreq: 'monthly', priority: '0.4' },
   { path: '/avis', changefreq: 'weekly', priority: '0.5' },
+  { path: '/pack-hajjam-pro', changefreq: 'weekly', priority: '0.8' },
   { path: '/a-propos', changefreq: 'monthly', priority: '0.5' },
   { path: '/contact', changefreq: 'monthly', priority: '0.5' },
 ];

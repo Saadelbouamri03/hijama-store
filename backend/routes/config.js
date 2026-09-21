@@ -26,4 +26,15 @@ router.get('/', (req, res) => {
   });
 });
 
+// GET /api/config/pack - valeurs nécessaires à la landing page /pack-hajjam-pro
+// (montant de la remise 2e unité, id du produit d'upsell) : séparé du reste
+// de la config générale, chargé uniquement par cette page.
+router.get('/pack', (req, res) => {
+  res.json({
+    productSlug: config.pack.productSlug,
+    secondUnitDiscount: config.pack.secondUnitDiscount,
+    upsellProductId: config.pack.upsellProductId,
+  });
+});
+
 module.exports = router;
