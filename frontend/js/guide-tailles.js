@@ -60,7 +60,7 @@ document.addEventListener('config:ready', async (e) => {
       .filter(Boolean);
 
     container.innerHTML = cards.length
-      ? `<div class="size-guide-grid">${cards.join('')}</div>`
+      ? cards.join('')
       : `<p>${I18N.t('sizeGuide.none', 'Aucune référence avec des tailles renseignées pour le moment. Écrivez-nous sur WhatsApp pour connaître les dimensions disponibles.')}</p>`;
   } catch (err) {
     console.error(err);

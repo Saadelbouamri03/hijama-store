@@ -36,7 +36,15 @@ src="https://www.facebook.com/tr?id=8482376721812747&ev=PageView&noscript=1"
       <p class="breadcrumb" id="breadcrumb"><a href="/" data-i18n="nav.home">Accueil</a> / <a href="/produits" data-i18n="nav.products">Produits</a> / …</p>
 
       <div id="product-content">
-        <p data-i18n="product.loading">كيتحمّل...</p>
+        <div class="product-detail">
+          <div class="skeleton-card" style="aspect-ratio:1/1"></div>
+          <div>
+            <div class="skeleton-line" style="width:40%"></div>
+            <div class="skeleton-line" style="width:80%; height:1.6em; margin-top:var(--space-3)"></div>
+            <div class="skeleton-line" style="width:30%; margin-top:var(--space-4)"></div>
+            <div class="skeleton-card" style="height:48px; margin-top:var(--space-5); border-radius:var(--radius-sm)"></div>
+          </div>
+        </div>
       </div>
     </div>
   </section>

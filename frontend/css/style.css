@@ -677,6 +677,27 @@ html.no-scroll, html.no-scroll body { overflow: hidden; }
 .product-faq h2 { font-size: var(--fs-lg); margin-bottom: var(--space-3); }
 .product-reviews { margin-top: var(--space-6); }
 .product-reviews h2 { font-size: var(--fs-lg); margin-bottom: var(--space-3); }
+
+/* ---------- Squelette de chargement ---------- */
+.skeleton-card {
+  aspect-ratio: 3/4; border-radius: var(--radius-md);
+  background: linear-gradient(90deg, var(--sand) 25%, var(--sand-deep) 50%, var(--sand) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-pulse 1.4s ease-in-out infinite;
+}
+@keyframes skeleton-pulse {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.skeleton-line {
+  height: 1em; border-radius: var(--radius-sm); margin-bottom: var(--space-2);
+  background: linear-gradient(90deg, var(--sand) 25%, var(--sand-deep) 50%, var(--sand) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-pulse 1.4s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-card, .skeleton-line { animation: none; background: var(--sand); }
+}
 .gallery-thumbs { display: flex; gap: var(--space-2); }
 .gallery-thumbs button { width: 64px; height: 64px; border-radius: var(--radius-sm); overflow: hidden; border: 2px solid transparent; padding: 0; background: var(--sand); }
 .gallery-thumbs button.active { border-color: var(--moss); }

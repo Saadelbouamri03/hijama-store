@@ -117,6 +117,15 @@ function renderReviewCard(review) {
     </article>`;
 }
 
+// Squelette de chargement (blocs gris animés) pour les grilles encore
+// chargées uniquement côté client (comparateur, guide des tailles, kit) —
+// remplace le texte "Chargement…" par une forme qui préfigure le contenu
+// réel, sans layout shift quand celui-ci arrive. Respecte
+// prefers-reduced-motion (voir .skeleton-card dans style.css).
+function renderSkeletonCards(count = 4) {
+  return Array.from({ length: count }, () => '<div class="skeleton-card"></div>').join('');
+}
+
 // Accordéon FAQ natif (<details>/<summary>, pas de JS nécessaire pour
 // ouvrir/fermer) — réutilisé par la landing du pack et, plus tard, par les
 // FAQ de fiches produits.

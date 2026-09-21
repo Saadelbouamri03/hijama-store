@@ -123,7 +123,7 @@ const KitBuilder = (() => {
   }
 
   async function renderGrid(gridEl, categorySlug) {
-    gridEl.innerHTML = `<p>${I18N.t('common.loadingProducts', 'Chargement des produits…')}</p>`;
+    gridEl.innerHTML = renderSkeletonCards(4);
     try {
       const products = await loadProductsWithVariants(categorySlug);
       if (!products.length) {
