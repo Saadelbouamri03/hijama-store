@@ -10,7 +10,7 @@ function sizesLine(product, variants) {
   const sizeVariants = variants.filter((v) => isSizeVariantLabel(v.label));
   if (sizeVariants.length) return sizeVariants.map((v) => v.label).join(', ');
   const freeText = extractSizesParenthetical(product.description);
-  return freeText || 'Non renseigné';
+  return freeText || I18N.t('compare.notSpecified', 'Non renseigné');
 }
 
 function priceLine(product, variants, currency) {
@@ -25,25 +25,26 @@ function priceLine(product, variants, currency) {
 function availabilityLine(product, variants) {
   if (variants.length) {
     const anyInStock = variants.some((v) => v.stock > 0);
-    return anyInStock ? 'En stock (selon la taille choisie)' : 'Rupture de stock';
+    return anyInStock ? I18N.t('compare.inStockBySize', 'En stock (selon la taille choisie)') : I18N.t('product.outOfStock', 'Rupture de stock');
   }
   return availabilityLabel(product.stock).text;
 }
 
-const ROWS = [
-  { key: 'ref', label: 'Référence', get: (p) => extractRef(p.description) || 'Non renseigné' },
-  { key: 'sizes', label: 'Tailles disponibles', get: (p, v) => sizesLine(p, v) },
-  { key: 'material', label: 'Matière / marque', get: (p) => materialOrBrandLabel(p.name) || 'Non renseigné' },
-  { key: 'conditioning', label: 'Conditionnement', get: (p) => conditioningLabel(p) },
-  { key: 'price', label: 'Prix et unité de vente', get: (p, v, currency) => priceLine(p, v, currency) },
-  { key: 'availability', label: 'Disponibilité', get: (p, v) => availabilityLine(p, v) },
+const ROWS = () => [
+  { key: 'ref', label: I18N.t('compare.reference', 'Référence'), get: (p) => extractRef(p.description) || I18N.t('compare.notSpecified', 'Non renseigné') },
+  { key: 'sizes', label: I18N.t('compare.availableSizes', 'Tailles disponibles'), get: (p, v) => sizesLine(p, v) },
+  { key: 'material', label: I18N.t('compare.materialBrand', 'Matière / marque'), get: (p) => materialOrBrandLabel(p.name) || I18N.t('compare.notSpecified', 'Non renseigné') },
+  { key: 'conditioning', label: I18N.t('compare.conditioning', 'Conditionnement'), get: (p) => conditioningLabel(p) },
+  { key: 'price', label: I18N.t('compare.priceUnit', 'Prix et unité de vente'), get: (p, v, currency) => priceLine(p, v, currency) },
+  { key: 'availability', label: I18N.t('compare.availability', 'Disponibilité'), get: (p, v) => availabilityLine(p, v) },
 ];
 
 function renderCompareTable(products, currency) {
+  const rowDefs = ROWS();
   const head = `<tr><th class="compare-row-label"></th>${products.map((p) => `
     <th><img src="${productImageSrc(p)}" alt="">${escapeHtml(p.name)}</th>`).join('')}</tr>`;
 
-  const rows = ROWS.map((row) => `
+  const rows = rowDefs.map((row) => `
     <tr>
       <th class="compare-row-label">${row.label}</th>
       ${products.map((p) => `<td>${escapeHtml(String(row.get(p, p.variants || [], currency)))}</td>`).join('')}
@@ -52,16 +53,16 @@ function renderCompareTable(products, currency) {
   const linksRow = `
     <tr>
       <th class="compare-row-label"></th>
-      ${products.map((p) => `<td><a href="/produit/${encodeURIComponent(p.slug)}" class="btn btn-primary btn-sm">Voir le produit</a></td>`).join('')}
+      ${products.map((p) => `<td><a href="/produit/${encodeURIComponent(p.slug)}" class="btn btn-primary btn-sm">${I18N.t('compare.seeProduct', 'Voir le produit')}</a></td>`).join('')}
     </tr>`;
 
   const cards = products.map((p) => `
     <div class="compare-card">
       <h3>${escapeHtml(p.name)}</h3>
-      ${ROWS.map((row) => `
+      ${rowDefs.map((row) => `
         <div class="compare-card-row"><span>${row.label}</span><span>${escapeHtml(String(row.get(p, p.variants || [], currency)))}</span></div>
       `).join('')}
-      <p class="mt-6"><a href="/produit/${encodeURIComponent(p.slug)}" class="btn btn-primary btn-block">Voir le produit</a></p>
+      <p class="mt-6"><a href="/produit/${encodeURIComponent(p.slug)}" class="btn btn-primary btn-block">${I18N.t('compare.seeProduct', 'Voir le produit')}</a></p>
     </div>`).join('');
 
   return `
@@ -103,15 +104,15 @@ document.addEventListener('config:ready', async (e) => {
   async function runComparison() {
     const slugs = [selectA.value, selectB.value, selectC.value].filter(Boolean);
     if (slugs.length < 2) {
-      result.innerHTML = '<p>Sélectionnez au moins deux produits pour lancer la comparaison.</p>';
+      result.innerHTML = `<p>${I18N.t('compare.selectPrompt', 'Sélectionnez au moins deux produits pour lancer la comparaison.')}</p>`;
       return;
     }
-    result.innerHTML = '<p>Comparaison en cours…</p>';
+    result.innerHTML = `<p>${I18N.t('compare.loading', 'Comparaison en cours…')}</p>`;
     try {
       const products = await Promise.all(slugs.map((s) => Api.get(`/api/products/${encodeURIComponent(s)}`)));
       result.innerHTML = renderCompareTable(products, config.currency);
     } catch (err) {
-      result.innerHTML = '<p>Impossible de charger la comparaison pour le moment.</p>';
+      result.innerHTML = `<p>${I18N.t('compare.loadError', 'Impossible de charger la comparaison pour le moment.')}</p>`;
     }
   }
 
@@ -140,7 +141,7 @@ document.addEventListener('config:ready', async (e) => {
     await onCategoryChange(preselect);
   } catch (err) {
     console.error(err);
-    result.innerHTML = '<p>Impossible de charger les catégories pour le moment.</p>';
+    result.innerHTML = `<p>${I18N.t('categories.loadError', 'Impossible de charger les catégories pour le moment.')}</p>`;
   }
 
   categorySelect.addEventListener('change', () => onCategoryChange());

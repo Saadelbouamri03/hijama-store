@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Contact — Hijama Store</title>
-<meta name="description" content="Contactez-nous sur WhatsApp ou via nos réseaux sociaux pour toute question sur nos produits ou votre commande.">
+<title>تواصل معانا — Hijama Store</title>
+<meta name="description" content="تواصل معانا على واتساب ولا عبر الشبكات الاجتماعية لأي سؤال على المنتوجات ولا الطلب ديالك.">
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="preload" href="/fonts/cairo-arabic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/css/style.css">
@@ -27,39 +27,39 @@ src="https://www.facebook.com/tr?id=8482376721812747&ev=PageView&noscript=1"
 <!-- End Meta Pixel Code -->
 </head>
 <body>
-<a href="#main" class="skip-link">Aller au contenu</a>
+<a href="#main" class="skip-link" data-i18n="common.skipToContent">Aller au contenu</a>
 <div data-include="header"></div>
 
 <main id="main">
   <section class="section-cream">
     <div class="container">
-      <p class="breadcrumb"><a href="/">Accueil</a> / Contact</p>
+      <p class="breadcrumb"><a href="/" data-i18n="nav.home">Accueil</a> / <span data-i18n="nav.contact">Contact</span></p>
       <div class="section-head">
-        <h1>Contact</h1>
-        <p>Une question sur un produit, une commande ou une livraison ? Écrivez-nous, nous vous répondons rapidement.</p>
+        <h1 data-i18n="nav.contact">تواصل معانا</h1>
+        <p data-i18n="contact.subtitle">عندك سؤال على منتوج، طلب ولا التوصيل؟ كتبلنا، كنجاوبوك دغيا.</p>
       </div>
 
       <div class="cart-layout">
         <form id="contact-form">
           <div class="field">
-            <label for="contactName">Nom</label>
+            <label for="contactName" data-i18n="contact.name">الاسم</label>
             <input type="text" id="contactName" required>
           </div>
           <div class="field">
-            <label for="contactMessage">Votre message</label>
-            <textarea id="contactMessage" rows="4" required placeholder="Bonjour, j'aurais une question à propos de..."></textarea>
+            <label for="contactMessage" data-i18n="contact.message">الرسالة ديالك</label>
+            <textarea id="contactMessage" rows="4" required placeholder="السلام، عندي سؤال على..." data-i18n-attr="placeholder:contact.messagePlaceholder"></textarea>
           </div>
-          <button type="submit" class="btn btn-whatsapp">Envoyer sur WhatsApp</button>
-          <p class="hint">Ce formulaire ouvre WhatsApp avec votre message déjà rempli — il ne vous reste qu'à l'envoyer.</p>
+          <button type="submit" class="btn btn-whatsapp" data-i18n="contact.send">صيفط على واتساب</button>
+          <p class="hint" data-i18n="contact.formHint">هاد الفورم كيحل واتساب بالرسالة ديالك معمرة — غير خاصك تصيفطها.</p>
         </form>
 
         <div class="summary-card">
-          <h3>Nos coordonnées</h3>
-          <p><a href="#" id="contact-whatsapp-link" class="btn-text" target="_blank" rel="noopener">Écrire sur WhatsApp</a></p>
+          <h3 data-i18n="contact.infoTitle">المعلومات ديالنا</h3>
+          <p><a href="#" id="contact-whatsapp-link" class="btn-text" target="_blank" rel="noopener" data-i18n="footer.whatsapp">كتبلنا على واتساب</a></p>
           <p id="contact-phone" style="margin-top: var(--space-2)" hidden><a href="#" id="contact-phone-link" class="btn-text"></a></p>
           <p id="contact-hours" class="hint" style="margin-top: var(--space-2)" hidden></p>
-          <p id="contact-delivery" style="margin-top: var(--space-4)">Livraison partout au Maroc — paiement à la livraison.</p>
-          <h3 style="margin-top: var(--space-6)">Suivez-nous</h3>
+          <p id="contact-delivery" style="margin-top: var(--space-4)" data-i18n="common.deliveryAllCities">التوصيل لجميع المدن</p>
+          <h3 style="margin-top: var(--space-6)" data-i18n="home.followTitle">تابعونا</h3>
           <div class="social-row" id="contact-socials"></div>
         </div>
       </div>

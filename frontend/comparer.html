@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Comparer des produits — Hijama Store</title>
-<meta name="description" content="Comparez côte à côte deux ou trois produits d'une même catégorie : tailles, prix, conditionnement et disponibilité.">
+<title>قارن بين المنتوجات — Hijama Store</title>
+<meta name="description" content="قارن جنب لجنب بين منتوجين ولا 3 ديال نفس الفئة: المقاسات، الثمن، التغليف والتوفر.">
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="preload" href="/fonts/cairo-arabic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/css/style.css">
@@ -27,16 +27,16 @@ src="https://www.facebook.com/tr?id=8482376721812747&ev=PageView&noscript=1"
 <!-- End Meta Pixel Code -->
 </head>
 <body>
-<a href="#main" class="skip-link">Aller au contenu</a>
+<a href="#main" class="skip-link" data-i18n="common.skipToContent">Aller au contenu</a>
 <div data-include="header"></div>
 
 <main id="main">
   <section class="section-cream" style="padding-bottom: var(--space-4)">
     <div class="container">
-      <p class="breadcrumb"><a href="/">Accueil</a> / <a href="/produits">Produits</a> / Comparer</p>
+      <p class="breadcrumb"><a href="/" data-i18n="nav.home">Accueil</a> / <a href="/produits" data-i18n="nav.products">Produits</a> / <span data-i18n="compare.title">Comparer</span></p>
       <div class="section-head">
-        <h1>Comparer des produits</h1>
-        <p>Choisissez une catégorie puis deux ou trois produits à comparer côte à côte, sur la base des informations réellement renseignées dans notre catalogue.</p>
+        <h1 data-i18n="compare.title">قارن بين المنتوجات</h1>
+        <p data-i18n="compare.subtitle">اختار فئة، من بعد منتوجين ولا 3 باش تقارن بيناتهم، على أساس المعلومات الحقيقية فالكتالوگ ديالنا.</p>
       </div>
     </div>
   </section>
@@ -45,25 +45,25 @@ src="https://www.facebook.com/tr?id=8482376721812747&ev=PageView&noscript=1"
     <div class="container">
       <div class="compare-picker">
         <div class="field">
-          <label for="compare-category">Catégorie</label>
+          <label for="compare-category" data-i18n="nav.categories">Catégorie</label>
           <select id="compare-category"></select>
         </div>
         <div class="field">
-          <label for="compare-a">Produit 1</label>
+          <label for="compare-a" data-i18n="compare.product1">Produit 1</label>
           <select id="compare-a"></select>
         </div>
         <div class="field">
-          <label for="compare-b">Produit 2</label>
+          <label for="compare-b" data-i18n="compare.product2">Produit 2</label>
           <select id="compare-b"></select>
         </div>
         <div class="field">
-          <label for="compare-c">Produit 3 (optionnel)</label>
+          <label for="compare-c" data-i18n="compare.product3">Produit 3 (optionnel)</label>
           <select id="compare-c"><option value="">—</option></select>
         </div>
       </div>
 
       <div id="compare-result">
-        <p>Sélectionnez au moins deux produits pour lancer la comparaison.</p>
+        <p data-i18n="compare.selectPrompt">اختار جوج منتوجات على الأقل باش تبدا المقارنة.</p>
       </div>
     </div>
   </section>

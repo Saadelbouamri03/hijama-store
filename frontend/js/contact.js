@@ -2,13 +2,13 @@ document.addEventListener('config:ready', (e) => {
   const config = e.detail;
 
   const link = document.getElementById('contact-whatsapp-link');
-  if (link) link.href = Api.whatsappLink(config.whatsappNumber, 'Bonjour, j\'aurais une question à propos de vos produits.');
+  if (link) link.href = Api.whatsappLink(config.whatsappNumber, I18N.t('contact.waDefaultMessage', "Bonjour, j'aurais une question à propos de vos produits."));
 
   const phoneWrap = document.getElementById('contact-phone');
   const phoneLink = document.getElementById('contact-phone-link');
   if (phoneWrap && phoneLink && config.phoneNumber && !config.phoneNumber.startsWith('[')) {
     phoneLink.href = Api.phoneHref(config.phoneNumber);
-    phoneLink.textContent = `Appeler le ${Api.phoneDisplay(config.phoneNumber)}`;
+    phoneLink.textContent = `${I18N.t('contact.call', 'Appeler le')} ${Api.phoneDisplay(config.phoneNumber)}`;
     phoneWrap.hidden = false;
   }
   const hoursEl = document.getElementById('contact-hours');
@@ -18,7 +18,7 @@ document.addEventListener('config:ready', (e) => {
   }
 
   const deliveryEl = document.getElementById('contact-delivery');
-  if (deliveryEl) deliveryEl.textContent = `Livraison partout au ${config.deliveryCountry} — paiement à la livraison.`;
+  if (deliveryEl) deliveryEl.textContent = `${I18N.t('common.deliveryAllCities', 'Livraison partout au ' + config.deliveryCountry)} — ${I18N.t('common.cod', 'paiement à la livraison')}.`;
 
   const socialsEl = document.getElementById('contact-socials');
   const icons = {
@@ -38,7 +38,7 @@ document.addEventListener('config:ready', (e) => {
     const name = document.getElementById('contactName').value.trim();
     const message = document.getElementById('contactMessage').value.trim();
     if (!name || !message) return;
-    const fullMessage = `Bonjour, je m'appelle ${name}. ${message}`;
+    const fullMessage = `${I18N.t('contact.waIntro', "Bonjour, je m'appelle")} ${name}. ${message}`;
     window.open(Api.whatsappLink(config.whatsappNumber, fullMessage), '_blank', 'noopener');
   });
 });

@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Avis clients — Hijama Store</title>
-<meta name="description" content="Découvrez les avis de nos clients sur nos produits de hijama, massage et bien-être.">
+<title>آراء الزبناء — Hijama Store</title>
+<meta name="description" content="اكتشف آراء الزبناء ديالنا على منتوجات الحجامة والمساج والعناية بالجسم.">
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="preload" href="/fonts/cairo-arabic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/css/style.css">
@@ -27,16 +27,16 @@ src="https://www.facebook.com/tr?id=8482376721812747&ev=PageView&noscript=1"
 <!-- End Meta Pixel Code -->
 </head>
 <body>
-<a href="#main" class="skip-link">Aller au contenu</a>
+<a href="#main" class="skip-link" data-i18n="common.skipToContent">Aller au contenu</a>
 <div data-include="header"></div>
 
 <main id="main">
   <section class="section-cream" style="padding-bottom: var(--space-4)">
     <div class="container">
-      <p class="breadcrumb"><a href="/">Accueil</a> / Avis clients</p>
+      <p class="breadcrumb"><a href="/" data-i18n="nav.home">Accueil</a> / <span data-i18n="nav.reviews">Avis clients</span></p>
       <div class="section-head">
-        <h1>Ce que nos clients pensent de nous</h1>
-        <p>Les retours de nos clientes et clients après réception de leurs produits.</p>
+        <h1 data-i18n="home.reviewsTitle">شنو كيقولو الزبناء ديالنا</h1>
+        <p data-i18n="avis.subtitle">آراء الزبناء ديالنا من بعد ما توصلهم المنتوجات.</p>
       </div>
     </div>
   </section>
@@ -44,7 +44,7 @@ src="https://www.facebook.com/tr?id=8482376721812747&ev=PageView&noscript=1"
   <section class="section-cream" style="padding-top:0">
     <div class="container">
       <div class="grid grid-reviews" id="reviews-grid">
-        <p>Chargement des avis…</p>
+        <p data-i18n="avis.loading">كيتحمّل...</p>
       </div>
     </div>
   </section>
@@ -52,8 +52,8 @@ src="https://www.facebook.com/tr?id=8482376721812747&ev=PageView&noscript=1"
   <section class="section-sand">
     <div class="container">
       <div class="cta-band">
-        <h2>Envie de commander ?</h2>
-        <a href="/produits" class="btn btn-primary">Voir la boutique</a>
+        <h2 data-i18n="avis.ctaTitle">بغيتي تطلب؟</h2>
+        <a href="/produits" class="btn btn-primary" data-i18n="avis.ctaButton">شوف البوتيك</a>
       </div>
     </div>
   </section>
@@ -76,9 +76,9 @@ document.addEventListener('config:ready', async () => {
   const grid = document.getElementById('reviews-grid');
   try {
     const reviews = await Api.get('/api/reviews');
-    grid.innerHTML = reviews.length ? reviews.map(renderReviewCard).join('') : '<p>Pas encore d\'avis.</p>';
+    grid.innerHTML = reviews.length ? reviews.map(renderReviewCard).join('') : `<p>${I18N.t('avis.none', "Pas encore d'avis.")}</p>`;
   } catch (err) {
-    grid.innerHTML = '<p>Impossible de charger les avis pour le moment.</p>';
+    grid.innerHTML = `<p>${I18N.t('avis.loadError', 'Impossible de charger les avis pour le moment.')}</p>`;
   }
 });
 </script>

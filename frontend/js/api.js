@@ -72,10 +72,14 @@ document.addEventListener('partials:ready', async () => {
     const year = document.getElementById('footer-year');
     if (year) year.textContent = new Date().getFullYear();
     const copy = document.getElementById('footer-copyright');
-    if (copy) copy.innerHTML = `© <span id="footer-year">${new Date().getFullYear()}</span> ${config.storeName}. Tous droits réservés.`;
+    if (copy) copy.innerHTML = `© <span id="footer-year">${new Date().getFullYear()}</span> ${config.storeName}. ${I18N.t('footer.rightsReserved', 'Tous droits réservés.')}`;
 
+    // Le nom du pays (config.deliveryCountry, ex. "Maroc") reste en français
+    // dans .env : plutôt que de le mélanger au texte arabe, on réutilise la
+    // formulation déjà utilisée partout ailleurs sur le site ("توصيل لجميع
+    // المدن"), correcte dans les deux langues sans dépendre de cette valeur.
     const deliveryCountry = document.getElementById('footer-delivery-country');
-    if (deliveryCountry) deliveryCountry.textContent = `Livraison partout au ${config.deliveryCountry}`;
+    if (deliveryCountry) deliveryCountry.textContent = I18N.t('common.deliveryAllCities', 'Livraison partout au ' + config.deliveryCountry);
 
     const phoneLink = document.getElementById('footer-phone-link');
     if (phoneLink && config.phoneNumber && !config.phoneNumber.startsWith('[')) {

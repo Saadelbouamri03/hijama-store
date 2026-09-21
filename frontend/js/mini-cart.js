@@ -15,10 +15,10 @@ const MiniCart = (() => {
     const wrap = document.createElement('div');
     wrap.innerHTML = `
       <div class="minicart-backdrop" id="minicart-backdrop"></div>
-      <aside class="minicart" id="minicart" role="dialog" aria-modal="true" aria-label="Votre panier" aria-hidden="true">
+      <aside class="minicart" id="minicart" role="dialog" aria-modal="true" aria-label="${I18N.t('cart.title', 'Votre panier')}" aria-hidden="true">
         <div class="minicart-head">
-          <h2>Votre panier</h2>
-          <button type="button" class="minicart-close" id="minicart-close" aria-label="Fermer le panier">
+          <h2>${I18N.t('cart.title', 'Votre panier')}</h2>
+          <button type="button" class="minicart-close" id="minicart-close" aria-label="${I18N.t('minicart.close', 'Fermer le panier')}">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
           </button>
         </div>
@@ -63,8 +63,8 @@ const MiniCart = (() => {
     if (!items.length) {
       body.innerHTML = `
         <div class="minicart-empty">
-          <p>Votre panier est vide.</p>
-          <a href="/produits" class="btn btn-primary btn-sm">Voir les produits</a>
+          <p>${I18N.t('cart.empty', 'Votre panier est vide.')}</p>
+          <a href="/produits" class="btn btn-primary btn-sm">${I18N.t('common.seeProducts', 'Voir les produits')}</a>
         </div>`;
       foot.innerHTML = '';
       return;
@@ -80,12 +80,12 @@ const MiniCart = (() => {
           ${i.variantLabel ? `<span class="minicart-item-variant">${escapeHtml(i.variantLabel)}</span>` : ''}
           <span class="minicart-item-price">${formatPrice(i.price, currency)}</span>
           <div class="qty-control qty-control-sm">
-            <button type="button" class="minicart-dec" aria-label="Diminuer la quantité">−</button>
+            <button type="button" class="minicart-dec" aria-label="${I18N.t('common.decreaseQty', 'Diminuer la quantité')}">−</button>
             <span>${i.quantity}</span>
-            <button type="button" class="minicart-inc" aria-label="Augmenter la quantité">+</button>
+            <button type="button" class="minicart-inc" aria-label="${I18N.t('common.increaseQty', 'Augmenter la quantité')}">+</button>
           </div>
         </div>
-        <button type="button" class="minicart-remove" aria-label="Retirer ${escapeHtml(i.name)} du panier">
+        <button type="button" class="minicart-remove" aria-label="${I18N.t('minicart.removeItem', 'Retirer')} ${escapeHtml(i.name)} ${I18N.t('minicart.fromCart', 'du panier')}">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
         </button>
       </div>`;
@@ -93,10 +93,10 @@ const MiniCart = (() => {
 
     const subtotal = Cart.getSubtotal();
     foot.innerHTML = `
-      <div class="summary-row"><span>Sous-total</span><span>${formatPrice(subtotal, currency)}</span></div>
-      <p class="hint">Livraison calculée à l'étape suivante selon votre ville.</p>
-      <a href="/panier" class="btn btn-outline btn-block">Voir le panier</a>
-      <a href="/checkout" class="btn btn-primary btn-block">Commander</a>`;
+      <div class="summary-row"><span>${I18N.t('cart.subtotal', 'Sous-total')}</span><span>${formatPrice(subtotal, currency)}</span></div>
+      <p class="hint">${I18N.t('minicart.deliveryNote', 'Livraison calculée à l\'étape suivante selon votre ville.')}</p>
+      <a href="/panier" class="btn btn-outline btn-block">${I18N.t('minicart.viewCart', 'Voir le panier')}</a>
+      <a href="/checkout" class="btn btn-primary btn-block">${I18N.t('product.order', 'Commander')}</a>`;
   }
 
   function open() {
