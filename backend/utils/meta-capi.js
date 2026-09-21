@@ -31,7 +31,7 @@ function getCookie(req, name) {
   return match ? decodeURIComponent(match[1]) : null;
 }
 
-async function sendPurchaseEventCapi(order, req) {
+async function sendEventCapi(eventName, eventId, order, req) {
   if (!config.metaPixel.capiAccessToken) return;
 
   const nameParts = String(order.customer_name || '').trim().split(/\s+/).filter(Boolean);
@@ -54,9 +54,9 @@ async function sendPurchaseEventCapi(order, req) {
 
   const payload = {
     data: [{
-      event_name: 'Purchase',
+      event_name: eventName,
       event_time: Math.floor(Date.now() / 1000),
-      event_id: `purchase_${order.id}`,
+      event_id: eventId,
       action_source: 'website',
       event_source_url: 'https://hijamastore.com/merci',
       user_data: userData,
@@ -78,11 +78,23 @@ async function sendPurchaseEventCapi(order, req) {
     });
     if (!res.ok) {
       const text = await res.text();
-      console.error('Meta CAPI: échec envoi évènement Purchase —', res.status, text);
+      console.error(`Meta CAPI: échec envoi évènement ${eventName} —`, res.status, text);
     }
   } catch (err) {
-    console.error('Meta CAPI: erreur réseau —', err.message);
+    console.error(`Meta CAPI: erreur réseau (${eventName}) —`, err.message);
   }
 }
 
-module.exports = { sendPurchaseEventCapi };
+function sendPurchaseEventCapi(order, req) {
+  return sendEventCapi('Purchase', `purchase_${order.id}`, order, req);
+}
+
+// Évènement custom envoyé quand une commande passe au statut "Confirmée"
+// dans l'admin (donc après un vrai appel de confirmation), plutôt qu'à la
+// simple création — sert plus tard à optimiser les campagnes publicitaires
+// sur les commandes confirmées plutôt que sur les commandes brutes.
+function sendConfirmedOrderEventCapi(order, req) {
+  return sendEventCapi('ConfirmedOrder', `confirmed_${order.id}`, order, req);
+}
+
+module.exports = { sendPurchaseEventCapi, sendConfirmedOrderEventCapi };

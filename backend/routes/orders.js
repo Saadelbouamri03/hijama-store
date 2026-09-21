@@ -5,7 +5,8 @@ const { requireAdmin } = require('../middleware/auth');
 const { validateOrderInput } = require('../utils/validators');
 const { ordersToCsv } = require('../utils/csv');
 const { notifyNewOrder } = require('../utils/notify');
-const { sendPurchaseEventCapi } = require('../utils/meta-capi');
+const { sendPurchaseEventCapi, sendConfirmedOrderEventCapi } = require('../utils/meta-capi');
+const { sendPurchaseEventTikTok, sendConfirmedOrderEventTikTok } = require('../utils/tiktok-events');
 const { renderBonCommande } = require('../utils/bon-commande');
 const { generateBonCommandePdf } = require('../utils/bon-commande-pdf');
 const { config } = require('../config');
@@ -187,6 +188,7 @@ router.post('/', orderLimiter, (req, res) => {
   const order = getOrderWithItems(orderId);
   notifyNewOrder(order);
   sendPurchaseEventCapi(order, req);
+  sendPurchaseEventTikTok(order, req);
   res.status(201).json(order);
 });
 
@@ -250,7 +252,16 @@ router.put('/:id/status', requireAdmin, (req, res) => {
   if (!existing) return res.status(404).json({ error: 'Commande introuvable.' });
 
   db.prepare('UPDATE orders SET status = ? WHERE id = ?').run(status, req.params.id);
-  res.json(getOrderWithItems(req.params.id));
+  const order = getOrderWithItems(req.params.id);
+
+  // Évènement "ConfirmedOrder" uniquement lors du vrai passage à "Confirmée"
+  // (jamais si la commande était déjà confirmée et qu'on la ressauvegarde).
+  if (status === 'Confirmée' && existing.status !== 'Confirmée') {
+    sendConfirmedOrderEventCapi(order, req);
+    sendConfirmedOrderEventTikTok(order, req);
+  }
+
+  res.json(order);
 });
 
 // DELETE /api/orders/:id - admin, suppression définitive (ex. commandes de test).
