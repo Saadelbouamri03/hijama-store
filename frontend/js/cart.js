@@ -103,12 +103,12 @@ const Cart = (() => {
   function isBoxedItem(name) {
     return /\(\d+\s*(?:كأس|قطعة|pièces?|pcs?)\)/i.test(String(name || ''));
   }
-  function estimateDeliveryFee(baseFee) {
+  function estimateDeliveryFee(baseFee, itemsOverride = null) {
     let furnitureUnits = 0;
     let boxUnits = 0;
     let hasOtherItems = false;
 
-    getItems().forEach((i) => {
+    (itemsOverride || getItems()).forEach((i) => {
       if (i.categorySlug === 'athath-tajhizat') furnitureUnits += i.quantity;
       else if (isBoxedItem(i.name)) boxUnits += i.quantity;
       else hasOtherItems = true;

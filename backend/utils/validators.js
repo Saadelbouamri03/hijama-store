@@ -33,7 +33,11 @@ function validateOrderInput(body) {
   if (!isNonEmptyString(body.customerName, 120)) errors.push('Le nom complet est requis.');
   if (!isValidMoroccanPhone(body.phone || '')) errors.push('Le numéro de téléphone n\'est pas valide.');
   if (!isNonEmptyString(body.city, 80)) errors.push('La ville est requise.');
-  if (!isNonEmptyString(body.address, 300)) errors.push('L\'adresse complète est requise.');
+  // L'adresse détaillée est requise sur le checkout complet, mais facultative
+  // sur le formulaire de commande rapide (nom/téléphone/ville uniquement,
+  // voir OrderForm) : l'adresse précise est alors confirmée par téléphone
+  // après la commande. Si elle est fournie, sa longueur reste validée.
+  if (body.address && !isNonEmptyString(body.address, 300)) errors.push('L\'adresse est invalide.');
   if (body.comment && typeof body.comment !== 'string') errors.push('Le commentaire est invalide.');
   if (!Array.isArray(body.items) || body.items.length === 0) errors.push('Le panier est vide.');
 

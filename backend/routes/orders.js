@@ -150,7 +150,7 @@ router.post('/', orderLimiter, (req, res) => {
       customer_name: body.customerName.trim(),
       phone: cleanPhone,
       city: body.city.trim(),
-      address: body.address.trim(),
+      address: body.address && body.address.trim() ? body.address.trim() : 'Adresse à confirmer par téléphone',
       region: body.region || '',
       postal_code: body.postalCode || '',
       comment: body.comment || '',
