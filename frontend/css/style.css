@@ -601,6 +601,22 @@ html.no-scroll, html.no-scroll body { overflow: hidden; }
 .empty-state { text-align: center; padding: var(--space-9) var(--space-4); }
 .empty-state svg { width: 64px; height: 64px; color: var(--sand-deep); margin: 0 auto var(--space-4); }
 
+/* ---------- Formulaire de commande rapide (nom/téléphone/ville) ---------- */
+.order-form {
+  background: var(--white); border: 1px solid var(--sand-deep); border-radius: var(--radius-lg);
+  padding: var(--space-5); box-shadow: var(--shadow-lift);
+}
+.order-form-title { margin-bottom: var(--space-4); }
+.order-form-summary {
+  background: var(--cream); border-radius: var(--radius-sm);
+  padding: var(--space-4); margin: var(--space-4) 0;
+}
+.order-form-summary .summary-row:last-child { margin-bottom: 0; }
+.order-form-submit { min-height: 52px; font-size: var(--fs-md); }
+/* Honeypot anti-bot : invisible pour une personne, toujours dans le DOM
+   (un display:none est parfois ignoré par les robots les plus simples). */
+.order-form-honeypot { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
 /* ---------- Détail produit ---------- */
 .product-detail { display: grid; gap: var(--space-7); grid-template-columns: 1fr; }
 @media (min-width: 860px) { .product-detail { grid-template-columns: 1fr 1fr; } }
