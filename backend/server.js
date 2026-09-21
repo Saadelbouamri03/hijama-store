@@ -9,6 +9,7 @@ const { injectProductMeta } = require('./utils/seo-meta');
 const { generateSitemap } = require('./utils/sitemap');
 const { injectInitialData } = require('./utils/ssr-inject');
 const { queryProducts } = require('./utils/query-products');
+const { escapeHtml } = require('./utils/seo-meta');
 
 const configRoute = require('./routes/config');
 const authRoute = require('./routes/auth');
@@ -138,7 +139,21 @@ app.get('/produits', (req, res) => {
     filter: req.query.filter,
     search: req.query.q,
   }, false);
-  res.send(injectInitialData(PRODUITS_TEMPLATE, { categories, products }));
+
+  let html = PRODUITS_TEMPLATE;
+  // Titre/description réels par catégorie plutôt que le titre générique de
+  // /produits, pour un partage/indexation pertinents sur chaque filtre.
+  const activeCategory = req.query.categorie ? categories.find((c) => c.slug === req.query.categorie) : null;
+  if (activeCategory) {
+    const title = `${activeCategory.name} — Hijama Store`;
+    const description = activeCategory.description
+      || `${activeCategory.name} : ${products.length} منتوج. التوصيل لجميع المدن، الدفع عند الاستلام.`;
+    html = html
+      .replace(/<title id="page-title">[^<]*<\/title>/, `<title id="page-title">${escapeHtml(title)}</title>`)
+      .replace(/<meta name="description" id="page-description" content="[^"]*">/, `<meta name="description" id="page-description" content="${escapeHtml(description)}">`);
+  }
+
+  res.send(injectInitialData(html, { categories, products }));
 });
 
 app.get('/categories', (req, res) => {
