@@ -2,15 +2,22 @@ const express = require('express');
 const db = require('../db/database');
 const { requireAdmin } = require('../middleware/auth');
 const { isNonEmptyString } = require('../utils/validators');
+const { config } = require('../config');
 
 const router = express.Router();
 
 // GET /api/reviews - public, avis actifs uniquement (?all=1 pour l'admin -> tous, actifs et inactifs)
+// Les avis DEMO (voir seed.js) ne sont jamais envoyés aux visiteurs, sauf si
+// SHOW_DEMO_REVIEWS=true dans .env (test de mise en page uniquement) : on ne
+// montre jamais un faux avis à un vrai client.
 router.get('/', (req, res) => {
   if (req.query.all === '1' && req.session && req.session.isAdmin) {
     return res.json(db.prepare('SELECT * FROM reviews ORDER BY display_order ASC, id DESC').all());
   }
-  res.json(db.prepare('SELECT * FROM reviews WHERE active = 1 ORDER BY display_order ASC, id DESC').all());
+  const query = config.reviews.showDemo
+    ? 'SELECT * FROM reviews WHERE active = 1 ORDER BY display_order ASC, id DESC'
+    : 'SELECT * FROM reviews WHERE active = 1 AND is_demo = 0 ORDER BY display_order ASC, id DESC';
+  res.json(db.prepare(query).all());
 });
 
 // POST /api/reviews - admin

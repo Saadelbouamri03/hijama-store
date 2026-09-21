@@ -53,9 +53,11 @@ document.addEventListener('config:ready', async (e) => {
 
   try {
     const reviews = await Api.get('/api/reviews');
+    const reviewSection = document.getElementById('home-reviews-section');
     const reviewGrid = document.getElementById('home-reviews-grid');
-    if (reviewGrid) {
-      reviewGrid.innerHTML = reviews.slice(0, 3).map(renderReviewCard).join('') || '<p>Pas encore d\'avis.</p>';
+    if (reviewSection && reviewGrid && reviews.length) {
+      reviewGrid.innerHTML = reviews.slice(0, 3).map(renderReviewCard).join('');
+      reviewSection.hidden = false;
     }
   } catch (err) {
     console.error(err);

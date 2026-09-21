@@ -102,7 +102,6 @@ function renderReviewCard(review) {
       <div class="stars" aria-label="${review.rating} sur 5">${starString(review.rating)}</div>
       <p>« ${escapeHtml(review.comment)} »</p>
       <div class="review-name">${escapeHtml(review.customer_name)}</div>
-      ${review.is_demo ? '<span class="demo-tag">Avis DEMO — à remplacer par un vrai avis client</span>' : ''}
     </article>`;
 }
 

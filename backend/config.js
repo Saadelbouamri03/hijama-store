@@ -51,6 +51,14 @@ const config = {
     to: required('NOTIFY_EMAIL_TO', required('NOTIFY_EMAIL_USER', '')),
   },
 
+  // Avis "DEMO" livrés avec le site au premier lancement (voir backend/db/seed.js) :
+  // masqués aux visiteurs par défaut tant qu'aucun vrai avis n'a été saisi dans
+  // l'admin. Mettre SHOW_DEMO_REVIEWS=true pour les réafficher temporairement
+  // (ex. pour visualiser la mise en page avant d'avoir de vrais avis).
+  reviews: {
+    showDemo: required('SHOW_DEMO_REVIEWS', 'false') === 'true',
+  },
+
   // Meta Pixel + Conversions API (suivi des commandes pour les publicités
   // Facebook/Instagram). META_CAPI_ACCESS_TOKEN active l'envoi côté serveur
   // (recommandé, contourne les bloqueurs de pub) ; laissez-le vide pour
