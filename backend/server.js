@@ -90,8 +90,17 @@ app.get('/', (req, res, next) => {
   next();
 });
 
-// --- /admin -> redirige vers le tableau de bord (protégé côté client + API) ---
+// --- /admin -> redirige vers le tableau de bord ---
 app.get('/admin', (req, res) => res.redirect('/admin/dashboard'));
+
+// --- Le tableau de bord lui-même exige une session valide avant même de
+// servir la page (les appels API qu'il fait sont déjà protégés par
+// requireAdmin, mais ceci évite d'envoyer la coquille HTML à un visiteur non
+// connecté).
+app.get(['/admin/dashboard', '/admin/dashboard.html'], (req, res, next) => {
+  if (req.session && req.session.isAdmin) return next();
+  res.redirect('/admin/login');
+});
 
 // --- Fichiers statiques (HTML/CSS/JS/images) -----------------------------
 // "extensions: ['html']" permet des URLs propres : /produits sert produits.html
