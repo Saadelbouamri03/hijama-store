@@ -70,8 +70,14 @@ app.get('/produit/:slug', (req, res) => {
   let images = [];
   try { images = JSON.parse(row.images || '[]'); } catch { /* images reste vide */ }
 
+  // AggregateRating : uniquement à partir de vrais avis liés à ce produit
+  // (jamais de note affichée sans avis réels derrière).
+  const reviewStats = db.prepare(
+    'SELECT COUNT(*) AS count, AVG(rating) AS avg FROM reviews WHERE product_id = ? AND is_demo = 0 AND active = 1'
+  ).get(row.id);
+
   const baseUrl = `${req.protocol}://${req.get('host')}`;
-  res.send(injectProductMeta(PRODUIT_TEMPLATE, { ...row, images, currency: config.currency }, baseUrl));
+  res.send(injectProductMeta(PRODUIT_TEMPLATE, { ...row, images, currency: config.currency, reviewStats }, baseUrl));
 });
 
 // --- sitemap.xml généré à la volée depuis le catalogue réel (voir utils/sitemap.js) ---

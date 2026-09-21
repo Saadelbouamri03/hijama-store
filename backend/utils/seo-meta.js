@@ -49,6 +49,16 @@ function injectProductMeta(html, product, baseUrl) {
     },
   };
 
+  // AggregateRating uniquement si de vrais avis existent pour ce produit
+  // précis (jamais de note affichée sans avis réels derrière).
+  if (product.reviewStats && product.reviewStats.count > 0) {
+    jsonLd.aggregateRating = {
+      '@type': 'AggregateRating',
+      ratingValue: Number(product.reviewStats.avg).toFixed(1),
+      reviewCount: product.reviewStats.count,
+    };
+  }
+
   const extraTags = `
 <link rel="canonical" href="${url}">
 <meta property="og:type" content="product">

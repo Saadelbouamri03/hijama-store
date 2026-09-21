@@ -49,8 +49,8 @@ function materialOrBrandLabel(name) {
 
 function conditioningLabel(product) {
   const boxQty = extractBoxQty(product.name);
-  if (boxQty) return `Boîte de ${boxQty}`;
-  return 'À l\'unité';
+  if (boxQty) return `${I18N.t('catalog.boxOf', 'Boîte de')} ${boxQty}`;
+  return I18N.t('catalog.singleUnit', "À l'unité");
 }
 
 // Certaines fiches décrivent les tailles en texte libre plutôt qu'en
@@ -74,7 +74,7 @@ function extractSizesParenthetical(description) {
 }
 
 function availabilityLabel(stock) {
-  if (stock <= 0) return { text: 'Rupture de stock', cls: 'stock-out' };
-  if (stock <= 5) return { text: `Stock limité (${stock})`, cls: 'stock-low' };
-  return { text: 'En stock', cls: 'stock-ok' };
+  if (stock <= 0) return { text: I18N.t('product.outOfStock', 'Rupture de stock'), cls: 'stock-out' };
+  if (stock <= 5) return { text: `${I18N.t('catalog.limitedStock', 'Stock limité')} (${stock})`, cls: 'stock-low' };
+  return { text: I18N.t('product.inStock', 'En stock'), cls: 'stock-ok' };
 }

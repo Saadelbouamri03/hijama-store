@@ -56,6 +56,34 @@ function wireVideoFacades(root) {
   });
 }
 
+// Fiche technique : faits réels dérivés du catalogue (même logique que le
+// comparateur/guide des tailles), jamais de champ inventé (usage, entretien...)
+// pour lequel aucune donnée réelle n'existe. Une ligne n'apparaît que si une
+// vraie valeur a été trouvée — pas de "Non renseigné" ici (contrairement au
+// comparateur, où l'alignement entre produits le justifie).
+function renderSpecSheet(product, variants) {
+  const rows = [];
+  const ref = extractRef(product.description);
+  if (ref) rows.push([I18N.t('compare.reference', 'Référence'), ref]);
+
+  const material = materialOrBrandLabel(product.name);
+  if (material) rows.push([I18N.t('compare.materialBrand', 'Matière / marque'), material]);
+
+  rows.push([I18N.t('compare.conditioning', 'Conditionnement'), conditioningLabel(product)]);
+
+  const sizeVariants = variants.filter((v) => isSizeVariantLabel(v.label));
+  const sizesText = sizeVariants.length
+    ? sizeVariants.map((v) => v.label).join(', ')
+    : extractSizesParenthetical(product.description);
+  if (sizesText) rows.push([I18N.t('compare.availableSizes', 'Tailles disponibles'), sizesText]);
+
+  if (!rows.length) return '';
+  return `
+    <div class="spec-sheet">
+      ${rows.map(([label, value]) => `<div class="spec-row"><span class="spec-label">${escapeHtml(label)}</span><span class="spec-value"${bidiAttr(value)}>${escapeHtml(value)}</span></div>`).join('')}
+    </div>`;
+}
+
 function stockLine(stock) {
   if (stock <= 0) return `<p class="stock-line stock-out">${I18N.t('product.outOfStock', 'Rupture de stock')}</p>`;
   if (stock <= 5) return `<p class="stock-line stock-low">${I18N.t('product.lowStock', 'Plus que')} ${stock} ${I18N.t('product.inStockSuffix', 'en stock')}</p>`;
@@ -130,7 +158,7 @@ document.addEventListener('config:ready', async (e) => {
   content.innerHTML = `
     <div class="product-detail" data-category-slug="${escapeHtml(product.category_slug || '')}">
       <div>
-        <div class="gallery-main"><img id="gallery-main-img" src="/images/products/${images[0]}" alt="${escapeHtml(product.name)}"></div>
+        <button type="button" class="gallery-main" id="gallery-zoom-trigger" aria-label="${I18N.t('product.zoomImage', "Agrandir l'image")}"><img id="gallery-main-img" src="/images/products/${images[0]}" alt="${escapeHtml(product.name)}"></button>
         ${images.length > 1 ? `<div class="gallery-thumbs">${images.map((img, i) =>
           `<button data-src="/images/products/${img}" class="${i === 0 ? 'active' : ''}"><img src="/images/products/${img}" alt=""></button>`
         ).join('')}</div>` : ''}
@@ -158,6 +186,7 @@ document.addEventListener('config:ready', async (e) => {
 
         <div id="stock-line">${stockLine(currentStock())}</div>
         <p${bidiAttr(product.description)}>${escapeHtml(product.description || '')}</p>
+        ${renderSpecSheet(product, variants)}
 
         <div class="qty-selector">
           <span style="font-weight:700; font-size: var(--fs-sm)">${I18N.t('product.quantity', 'Quantité')}</span>
@@ -183,7 +212,25 @@ document.addEventListener('config:ready', async (e) => {
         <div id="order-form-mount"></div>` : ''}
 
         ${renderVideoSection(product)}
+
+        <div class="product-faq">
+          <h2>${I18N.t('product.faqTitle', 'Questions fréquentes')}</h2>
+          ${renderFaqItem(I18N.t('product.faqDeliveryQ', 'Quel est le délai de livraison ?'), I18N.t('product.faqDeliveryA', '24 à 48 heures après confirmation de la commande.'))}
+          ${renderFaqItem(I18N.t('product.faqPaymentQ', 'Dois-je payer maintenant ?'), I18N.t('product.faqPaymentA', "Non. Vous payez uniquement à la réception, en espèces."))}
+          ${renderFaqItem(I18N.t('product.faqReturnQ', 'Puis-je retourner ce produit ?'), I18N.t('product.faqReturnA', "S'il est défectueux, endommagé ou différent de votre commande, contactez-nous sur WhatsApp dans les 48h suivant la réception avec une photo."))}
+        </div>
+
+        <div class="product-reviews" id="product-reviews-section" hidden>
+          <h2>${I18N.t('product.reviewsTitle', 'Avis sur ce produit')}</h2>
+          <div class="grid grid-reviews" id="product-reviews-grid"></div>
+        </div>
       </div>
+    </div>
+    <div class="gallery-lightbox" id="gallery-lightbox">
+      <button type="button" class="gallery-lightbox-close" id="gallery-lightbox-close" aria-label="${I18N.t('common.close', 'Fermer')}">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
+      </button>
+      <img id="gallery-lightbox-img" src="" alt="${escapeHtml(product.name)}">
     </div>`;
 
   // Vidéo produit : n'attache l'iframe qu'au clic (voir renderVideoSection)
@@ -197,6 +244,22 @@ document.addEventListener('config:ready', async (e) => {
       btn.classList.add('active');
     });
   });
+
+  // Zoom : ouverture au clic uniquement (jamais automatique), image courante
+  // de la galerie affichée en plein écran.
+  const lightbox = document.getElementById('gallery-lightbox');
+  const lightboxImg = document.getElementById('gallery-lightbox-img');
+  function openLightbox() {
+    lightboxImg.src = document.getElementById('gallery-main-img').src;
+    lightbox.classList.add('open');
+  }
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+  }
+  document.getElementById('gallery-zoom-trigger').addEventListener('click', openLightbox);
+  document.getElementById('gallery-lightbox-close').addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
 
   // Sélecteur de quantité
   let qty = 1;
@@ -327,4 +390,14 @@ document.addEventListener('config:ready', async (e) => {
     document.getElementById('related-section').hidden = false;
     document.getElementById('related-grid').innerHTML = product.related.map((p) => renderProductCard(p, config.currency)).join('');
   }
+
+  // Avis sur ce produit précis (masqués tant qu'aucun vrai avis n'existe,
+  // même logique que la section avis de l'accueil).
+  try {
+    const reviews = await Api.get(`/api/reviews?productId=${product.id}`);
+    if (reviews.length) {
+      document.getElementById('product-reviews-grid').innerHTML = reviews.map(renderReviewCard).join('');
+      document.getElementById('product-reviews-section').hidden = false;
+    }
+  } catch (err) { console.error(err); }
 });

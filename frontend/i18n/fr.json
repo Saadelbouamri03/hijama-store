@@ -320,5 +320,20 @@
   "launch.sizeGuideLink": "Voir le guide →",
   "launch.compareText": "Comparez plusieurs produits d'une même catégorie — tailles, prix, disponibilité — avant de choisir.",
   "launch.compareLink": "Comparer →",
-  "launch.waMessage": "Bonjour, je viens de découvrir votre nouveau site et je souhaite passer commande."
+  "launch.waMessage": "Bonjour, je viens de découvrir votre nouveau site et je souhaite passer commande.",
+
+  "catalog.boxOf": "Boîte de",
+  "catalog.singleUnit": "À l'unité",
+  "catalog.limitedStock": "Stock limité",
+
+  "product.faqTitle": "Questions fréquentes",
+  "product.faqDeliveryQ": "Quel est le délai de livraison ?",
+  "product.faqDeliveryA": "24 à 48 heures après confirmation de la commande.",
+  "product.faqPaymentQ": "Dois-je payer maintenant ?",
+  "product.faqPaymentA": "Non. Vous payez uniquement à la réception, en espèces.",
+  "product.faqReturnQ": "Puis-je retourner ce produit ?",
+  "product.faqReturnA": "S'il est défectueux, endommagé ou différent de votre commande, contactez-nous sur WhatsApp dans les 48h suivant la réception avec une photo.",
+  "product.zoomImage": "Agrandir l'image",
+  "common.close": "Fermer",
+  "product.reviewsTitle": "Avis sur ce produit"
 }

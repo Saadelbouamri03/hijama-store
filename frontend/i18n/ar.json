@@ -320,5 +320,20 @@
   "launch.sizeGuideLink": "شوف الدليل ←",
   "launch.compareText": "قارن بين عدة منتوجات ديال نفس الفئة — المقاسات، الثمن، التوفر — قبل ما تختار.",
   "launch.compareLink": "قارن ←",
-  "launch.waMessage": "السلام، اكتشفت الموقع الجديد ديالكم وبغيت نطلب."
+  "launch.waMessage": "السلام، اكتشفت الموقع الجديد ديالكم وبغيت نطلب.",
+
+  "catalog.boxOf": "علبة ديال",
+  "catalog.singleUnit": "بالوحدة",
+  "catalog.limitedStock": "ستوك محدود",
+
+  "product.faqTitle": "الأسئلة الشائعة",
+  "product.faqDeliveryQ": "شحال ديال الوقت كياخد التوصيل؟",
+  "product.faqDeliveryA": "24 إلى 48 ساعة من بعد تأكيد الطلب.",
+  "product.faqPaymentQ": "خاصني نخلص دابا؟",
+  "product.faqPaymentA": "لا. كتخلص غير منين توصلك السلعة، نقدا.",
+  "product.faqReturnQ": "نقدر نرجع هاد المنتوج؟",
+  "product.faqReturnA": "إلا وصلك معيوب، متضرر ولا مختلف عن الطلب، تواصل معانا على واتساب فظرف 48 ساعة من التوصيل مع تصويرة.",
+  "product.zoomImage": "كبّر التصويرة",
+  "common.close": "سد",
+  "product.reviewsTitle": "آراء على هاد المنتوج"
 }
