@@ -19,6 +19,10 @@ const config = {
   storeTagline: required('STORE_TAGLINE', 'Produits de hijama, massage et bien-être'),
 
   whatsappNumber: required('WHATSAPP_NUMBER', '[NUMERO WHATSAPP]'),
+  // Numéro affiché comme lien "tel:" cliquable (footer, page contact) ;
+  // même numéro que WhatsApp par défaut, sauf si un numéro d'appel dédié est renseigné.
+  phoneNumber: required('PHONE_NUMBER', required('WHATSAPP_NUMBER', '[NUMERO WHATSAPP]')),
+  storeHours: required('STORE_HOURS', ''),
 
   socials: {
     instagram: required('INSTAGRAM_URL', '[LIEN INSTAGRAM]'),

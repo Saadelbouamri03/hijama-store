@@ -4,6 +4,19 @@ document.addEventListener('config:ready', (e) => {
   const link = document.getElementById('contact-whatsapp-link');
   if (link) link.href = Api.whatsappLink(config.whatsappNumber, 'Bonjour, j\'aurais une question à propos de vos produits.');
 
+  const phoneWrap = document.getElementById('contact-phone');
+  const phoneLink = document.getElementById('contact-phone-link');
+  if (phoneWrap && phoneLink && config.phoneNumber && !config.phoneNumber.startsWith('[')) {
+    phoneLink.href = Api.phoneHref(config.phoneNumber);
+    phoneLink.textContent = `Appeler le ${Api.phoneDisplay(config.phoneNumber)}`;
+    phoneWrap.hidden = false;
+  }
+  const hoursEl = document.getElementById('contact-hours');
+  if (hoursEl && config.storeHours) {
+    hoursEl.textContent = config.storeHours;
+    hoursEl.hidden = false;
+  }
+
   const deliveryEl = document.getElementById('contact-delivery');
   if (deliveryEl) deliveryEl.textContent = `Livraison partout au ${config.deliveryCountry} — paiement à la livraison.`;
 

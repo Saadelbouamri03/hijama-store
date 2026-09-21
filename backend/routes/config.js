@@ -13,6 +13,8 @@ router.get('/', (req, res) => {
     storeName: config.storeName,
     storeTagline: config.storeTagline,
     whatsappNumber: config.whatsappNumber,
+    phoneNumber: config.phoneNumber,
+    storeHours: config.storeHours,
     socials: config.socials,
     currency: config.currency,
     deliveryCountry: config.deliveryCountry,
