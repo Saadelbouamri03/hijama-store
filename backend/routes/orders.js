@@ -116,23 +116,52 @@ router.post('/', orderLimiter, (req, res) => {
     lineItems.push({ product, variant, quantity: item.quantity });
   }
 
-  const subtotal = lineItems.reduce((sum, li) => sum + (li.variant ? li.variant.price : li.product.price) * li.quantity, 0);
+  // Anti-doublon : un même téléphone qui recommande un produit déjà commandé
+  // il y a moins de 10 minutes est presque toujours un double clic / un
+  // rechargement de page plutôt qu'une vraie 2e commande volontaire.
+  const cleanPhone = body.phone.trim();
+  const productIds = [...new Set(lineItems.map((li) => li.product.id))];
+  const duplicatePlaceholders = productIds.map(() => '?').join(',');
+  const duplicate = db.prepare(`
+    SELECT o.id FROM orders o
+    JOIN order_items oi ON oi.order_id = o.id
+    WHERE o.phone = ? AND oi.product_id IN (${duplicatePlaceholders})
+      AND o.created_at >= datetime('now', '-10 minutes')
+    LIMIT 1
+  `).get(cleanPhone, ...productIds);
+  if (duplicate) {
+    return res.status(429).json({ error: 'Une commande avec ce numéro et ce(s) produit(s) vient déjà d\'être envoyée. Nous vous contactons très vite — merci de ne pas renvoyer.' });
+  }
+
+  // Remise pack : 2e unité du pack "Hajjam Pro" moins chère (voir config.pack).
+  // Ne s'applique qu'à ce produit précis, jamais inventée pour un autre.
+  const packLine = lineItems.find((li) => li.product.slug === config.pack.productSlug);
+  const packDiscount = (packLine && packLine.quantity >= 2) ? config.pack.secondUnitDiscount : 0;
+
+  const subtotal = lineItems.reduce((sum, li) => sum + (li.variant ? li.variant.price : li.product.price) * li.quantity, 0) - packDiscount;
   const deliveryFee = computeDeliveryFee(body.city, lineItems);
   const total = subtotal + deliveryFee;
 
   const createOrder = db.transaction(() => {
     const info = db.prepare(`
-      INSERT INTO orders (customer_name, phone, city, address, region, postal_code, comment, subtotal, delivery_fee, total, payment_method, status)
-      VALUES (@customer_name, @phone, @city, @address, @region, @postal_code, @comment, @subtotal, @delivery_fee, @total, 'Paiement à la livraison', 'Nouvelle commande')
+      INSERT INTO orders (customer_name, phone, city, address, region, postal_code, comment, subtotal, delivery_fee, total, payment_method, status, utm_source, utm_medium, utm_campaign, fbclid, ttclid, landing_page, ab_variant)
+      VALUES (@customer_name, @phone, @city, @address, @region, @postal_code, @comment, @subtotal, @delivery_fee, @total, 'Paiement à la livraison', 'Nouvelle commande', @utm_source, @utm_medium, @utm_campaign, @fbclid, @ttclid, @landing_page, @ab_variant)
     `).run({
       customer_name: body.customerName.trim(),
-      phone: body.phone.trim(),
+      phone: cleanPhone,
       city: body.city.trim(),
       address: body.address.trim(),
       region: body.region || '',
       postal_code: body.postalCode || '',
       comment: body.comment || '',
       subtotal, delivery_fee: deliveryFee, total,
+      utm_source: body.utmSource || '',
+      utm_medium: body.utmMedium || '',
+      utm_campaign: body.utmCampaign || '',
+      fbclid: body.fbclid || '',
+      ttclid: body.ttclid || '',
+      landing_page: body.landingPage || '',
+      ab_variant: body.abVariant || '',
     });
 
     const orderId = info.lastInsertRowid;

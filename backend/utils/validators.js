@@ -47,6 +47,11 @@ function validateOrderInput(body) {
     });
   }
 
+  // Honeypot anti-bot : champ invisible pour un vrai visiteur, que seuls les
+  // robots remplissent automatiquement. Rempli => on rejette sans détailler
+  // pourquoi (ne pas indiquer aux robots qu'ils ont été détectés).
+  if (isNonEmptyString(body.honeypot, 200)) errors.push('Requête invalide.');
+
   return { valid: errors.length === 0, errors };
 }
 
