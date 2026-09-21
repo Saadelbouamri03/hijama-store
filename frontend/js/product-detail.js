@@ -167,6 +167,12 @@ document.addEventListener('config:ready', async (e) => {
         </div>
         <p class="product-question"><a href="#" id="product-whatsapp-question" target="_blank" rel="noopener">Une question sur ce produit ?</a></p>
 
+        ${!isOutOfStock() ? `
+        <div class="divider-motif" aria-hidden="true" style="margin: var(--space-5) 0">
+          <svg width="120" height="16" viewBox="0 0 120 16"><path d="M0 8 H45 M75 8 H120" stroke="currentColor" stroke-width="1.5"/><circle cx="60" cy="8" r="4" fill="#B58A45"/></svg>
+        </div>
+        <div id="order-form-mount"></div>` : ''}
+
         ${renderVideoSection(product)}
       </div>
     </div>`;
@@ -185,14 +191,17 @@ document.addEventListener('config:ready', async (e) => {
 
   // Sélecteur de quantité
   let qty = 1;
+  let orderFormInstance = null;
   const qtyValueEl = document.getElementById('qty-value');
   document.getElementById('qty-minus').addEventListener('click', () => {
     qty = Math.max(1, qty - 1);
     qtyValueEl.textContent = qty;
+    if (orderFormInstance) orderFormInstance.refresh();
   });
   document.getElementById('qty-plus').addEventListener('click', () => {
     qty = Math.min(currentStock() || 1, qty + 1);
     qtyValueEl.textContent = qty;
+    if (orderFormInstance) orderFormInstance.refresh();
   });
 
   const addBtn = document.getElementById('add-to-cart-btn');
@@ -222,6 +231,8 @@ document.addEventListener('config:ready', async (e) => {
       const waQuestionMessage = `Bonjour, j'ai une question sur le produit ${product.name}${label}.\n${productUrl}`;
       waQuestionBtn.href = Api.whatsappLink(config.whatsappNumber, waQuestionMessage);
     }
+
+    if (orderFormInstance) orderFormInstance.refresh();
 
     if (mobileBar) {
       mobileBar.querySelector('.mobile-add-bar-price').textContent = formatPrice(currentPrice(), config.currency);
@@ -254,28 +265,50 @@ document.addEventListener('config:ready', async (e) => {
   // Ajouter au panier
   if (addBtn) addBtn.addEventListener('click', addToCart);
 
-  // Barre mobile "Ajouter au panier" : discrète, apparaît une fois le bouton
-  // principal (dans le contenu) sorti de l'écran, pour rester utile sans
-  // dupliquer l'action visible ni masquer le panier/le bouton WhatsApp flottant.
+  // Barre mobile collante : discrète, apparaît une fois le bouton principal
+  // (dans le contenu) sorti de l'écran. Mène directement au formulaire de
+  // commande rapide (voir OrderForm) plutôt que d'ajouter au panier en
+  // silence, pour rester cohérent avec le chemin d'achat principal du produit.
   let mobileBar = null;
+  const orderFormMountEl = document.getElementById('order-form-mount');
   if (window.matchMedia('(max-width: 719px)').matches && 'IntersectionObserver' in window) {
     mobileBar = document.createElement('div');
     mobileBar.className = 'mobile-add-bar';
     mobileBar.innerHTML = `
       <span class="price mobile-add-bar-price"></span>
-      <button type="button" class="btn btn-primary mobile-add-bar-btn">Ajouter au panier</button>`;
+      <button type="button" class="btn btn-primary mobile-add-bar-btn">${orderFormMountEl ? 'Commander' : 'Ajouter au panier'}</button>`;
     document.body.appendChild(mobileBar);
     mobileBar.querySelector('.mobile-add-bar-btn').addEventListener('click', () => {
-      if (!isOutOfStock()) addToCart();
+      if (isOutOfStock()) return;
+      if (orderFormMountEl) {
+        orderFormMountEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        orderFormMountEl.querySelector('input')?.focus({ preventScroll: true });
+      } else {
+        addToCart();
+      }
     });
     const observer = new IntersectionObserver(([entry]) => {
       const visible = !entry.isIntersecting;
       mobileBar.classList.toggle('visible', visible);
       // Le bouton WhatsApp flottant remonte tant que la barre occupe le bas
-      // de l'écran, pour ne jamais se superposer à "Ajouter au panier".
+      // de l'écran, pour ne jamais se superposer à "Commander"/"Ajouter au panier".
       document.body.classList.toggle('has-mobile-add-bar', visible);
     }, { threshold: 0 });
     observer.observe(addBtn);
+  }
+
+  if (orderFormMountEl) {
+    OrderForm.mount(orderFormMountEl, {
+      lang: 'fr',
+      getLineItems: () => [{
+        productId: product.id,
+        variantId: selectedVariant ? selectedVariant.id : null,
+        quantity: qty,
+        name: product.name,
+        categorySlug: product.category_slug || '',
+      }],
+      getSubtotal: () => currentPrice() * qty,
+    }).then((instance) => { orderFormInstance = instance; });
   }
 
   refreshForVariant();
