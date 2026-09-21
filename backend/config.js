@@ -71,6 +71,21 @@ const config = {
     id: required('META_PIXEL_ID', '8482376721812747'),
     capiAccessToken: required('META_CAPI_ACCESS_TOKEN', ''),
   },
+
+  tiktokPixel: {
+    id: required('TIKTOK_PIXEL_ID', ''),
+    accessToken: required('TIKTOK_ACCESS_TOKEN', ''),
+  },
+
+  // Landing page /pack-hajjam-pro : le pack lui-même est un produit normal du
+  // catalogue (créé une fois via l'admin, voir son slug ci-dessous) — ceci ne
+  // configure que la règle de remise sur la 2e unité et le produit d'upsell,
+  // pour ne rien coder en dur dans les routes de commande.
+  pack: {
+    productSlug: required('PACK_PRODUCT_SLUG', 'pack-hajjam-pro'),
+    secondUnitDiscount: parseFloat(required('PACK_SECOND_UNIT_DISCOUNT', '49')),
+    upsellProductId: parseInt(required('PACK_UPSELL_PRODUCT_ID', '95'), 10),
+  },
 };
 
 // Avertissements de sécurité au démarrage si la config par défaut n'a pas été changée.

@@ -34,4 +34,20 @@ function ensureColumn(table, column, definition) {
 }
 ensureColumn('products', 'video_url', "TEXT DEFAULT ''");
 
+// Attribution publicitaire (UTM/fbclid/ttclid) et variante A/B, capturés à
+// l'arrivée sur le site et renvoyés avec la commande — sert à savoir quelle
+// pub/campagne a généré quelle vente (voir frontend/js/attribution.js).
+ensureColumn('orders', 'utm_source', "TEXT DEFAULT ''");
+ensureColumn('orders', 'utm_medium', "TEXT DEFAULT ''");
+ensureColumn('orders', 'utm_campaign', "TEXT DEFAULT ''");
+ensureColumn('orders', 'fbclid', "TEXT DEFAULT ''");
+ensureColumn('orders', 'ttclid', "TEXT DEFAULT ''");
+ensureColumn('orders', 'landing_page', "TEXT DEFAULT ''");
+ensureColumn('orders', 'ab_variant', "TEXT DEFAULT ''");
+
+// Lien optionnel avis -> produit (nullable : les avis existants restent des
+// témoignages généraux). Sert à afficher les avis d'un produit sur sa fiche
+// et sur la landing, et plus tard à calculer un AggregateRating par produit.
+ensureColumn('reviews', 'product_id', 'INTEGER REFERENCES products(id) ON DELETE SET NULL');
+
 module.exports = db;
