@@ -115,8 +115,10 @@ router.post('/', requireAdmin, upload.array('images', 6), (req, res) => {
   if (!isPositiveNumber(price)) return res.status(400).json({ error: 'Le prix est invalide.' });
 
   // slugify() ne garde que les caractères latins : un nom entièrement en
-  // arabe (le cas courant ici) donnerait sinon un slug vide.
-  let slug = slugify(b.name) || 'produit';
+  // arabe (le cas courant ici) donnerait sinon un slug vide, d'où le
+  // fallback 'produit'. Un slug explicite (b.slug) permet de choisir une
+  // URL lisible pour ces cas plutôt que de subir "produit"/"produit-1234".
+  let slug = (isNonEmptyString(b.slug, 150) ? slugify(b.slug) : '') || slugify(b.name) || 'produit';
   if (db.prepare('SELECT id FROM products WHERE slug = ?').get(slug)) {
     slug = `${slug}-${Date.now().toString().slice(-4)}`;
   }
