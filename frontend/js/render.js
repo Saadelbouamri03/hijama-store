@@ -39,9 +39,9 @@ function productImageSrc(product) {
 function renderProductCard(product, currency) {
   const outOfStock = product.stock <= 0;
   const badges = [];
-  if (outOfStock) badges.push('<span class="badge badge-outofstock">Épuisé</span>');
-  else if (product.badge_bestseller) badges.push('<span class="badge badge-best">Meilleure vente</span>');
-  if (product.badge_new && !outOfStock) badges.push('<span class="badge badge-new">Nouveau</span>');
+  if (outOfStock) badges.push(`<span class="badge badge-outofstock">${I18N.t('common.outOfStock', 'Épuisé')}</span>`);
+  else if (product.badge_bestseller) badges.push(`<span class="badge badge-best">${I18N.t('common.bestseller', 'Meilleure vente')}</span>`);
+  if (product.badge_new && !outOfStock) badges.push(`<span class="badge badge-new">${I18N.t('common.new', 'Nouveau')}</span>`);
 
   return `
     <article class="product-card" data-category-slug="${escapeHtml(product.category_slug || '')}">
@@ -59,7 +59,7 @@ function renderProductCard(product, currency) {
       </div>
       <div class="product-actions">
         <button class="btn btn-primary btn-add-cart" data-product-id="${product.id}" ${outOfStock ? 'disabled' : ''}>
-          ${outOfStock ? 'Épuisé' : 'Ajouter au panier'}
+          ${outOfStock ? I18N.t('common.outOfStock', 'Épuisé') : I18N.t('common.addToCart', 'Ajouter au panier')}
         </button>
       </div>
     </article>`;
@@ -74,7 +74,7 @@ function renderCategoryCard(category) {
       ${icon}
       <h3${bidiAttr(category.name)}>${escapeHtml(category.name)}</h3>
       ${category.description ? `<p${bidiAttr(category.description)}>${escapeHtml(category.description)}</p>` : ''}
-      <span class="btn-text">Voir les produits</span>
+      <span class="btn-text">${I18N.t('common.seeProducts', 'Voir les produits')}</span>
     </a>`;
 }
 
@@ -93,7 +93,7 @@ function renderUniverseCard(category, index) {
       <div class="universe-copy">
         <h3${bidiAttr(category.name)}>${escapeHtml(category.name)}</h3>
         ${category.description ? `<p${bidiAttr(category.description)}>${escapeHtml(category.description)}</p>` : ''}
-        <span class="btn-text">Voir les produits →</span>
+        <span class="btn-text">${I18N.t('common.seeProductsArrow', 'Voir les produits →')}</span>
       </div>
     </a>`;
 }
@@ -102,16 +102,16 @@ function renderNouveautesCard() {
   return `
     <a class="cat-card" href="/produits?filter=nouveautes">
       <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#183D32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg>
-      <h3>Nouveautés</h3>
-      <p>Les derniers produits ajoutés à la boutique.</p>
-      <span class="btn-text">Voir les produits</span>
+      <h3>${I18N.t('common.newArrivals', 'Nouveautés')}</h3>
+      <p>${I18N.t('common.newArrivalsText', 'Les derniers produits ajoutés à la boutique.')}</p>
+      <span class="btn-text">${I18N.t('common.seeProducts', 'Voir les produits')}</span>
     </a>`;
 }
 
 function renderReviewCard(review) {
   return `
     <article class="review-card">
-      <div class="stars" aria-label="${review.rating} sur 5">${starString(review.rating)}</div>
+      <div class="stars" aria-label="${review.rating} ${I18N.t('common.outOf5', 'sur 5')}">${starString(review.rating)}</div>
       <p${bidiAttr(review.comment)}>« ${escapeHtml(review.comment)} »</p>
       <div class="review-name">${escapeHtml(review.customer_name)}</div>
     </article>`;
@@ -135,10 +135,10 @@ document.addEventListener('click', (e) => {
   if (!btn || btn.disabled) return;
   const id = Number(btn.dataset.productId);
   const card = btn.closest('.product-card');
-  const name = card ? card.querySelector('h3 a')?.textContent : 'Produit';
+  const name = card ? card.querySelector('h3 a')?.textContent : I18N.t('common.product', 'Produit');
 
   Api.get(`/api/products/${id}`).then((product) => {
     Cart.add(product, 1);
-    showToast(`Ajouté ✓ — ${name}`);
-  }).catch(() => showToast("Impossible d'ajouter ce produit pour le moment."));
+    showToast(`${I18N.t('common.added', 'Ajouté ✓')} — ${name}`);
+  }).catch(() => showToast(I18N.t('common.addToCartError', "Impossible d'ajouter ce produit pour le moment.")));
 });

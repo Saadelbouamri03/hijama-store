@@ -1,14 +1,12 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Catégories — Hijama Store</title>
-<meta name="description" content="Toutes les catégories de produits : ventouses de hijama, appareils de massage, mobilier et fournitures pour cabinet.">
+<title>الفئات — Hijama Store</title>
+<meta name="description" content="جميع فئات المنتوجات: كؤوس الحجامة، أجهزة المساج، أثاث ومستلزمات الكابينة.">
 <link rel="icon" type="image/png" href="/favicon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preload" href="/fonts/cairo-arabic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/css/style.css">
 <!-- Meta Pixel Code -->
 <script>
@@ -29,16 +27,16 @@ src="https://www.facebook.com/tr?id=8482376721812747&ev=PageView&noscript=1"
 <!-- End Meta Pixel Code -->
 </head>
 <body>
-<a href="#main" class="skip-link">Aller au contenu</a>
+<a href="#main" class="skip-link" data-i18n="common.skipToContent">Aller au contenu</a>
 <div data-include="header"></div>
 
 <main id="main">
   <section class="section-cream" style="padding-bottom: var(--space-4)">
     <div class="container">
-      <p class="breadcrumb"><a href="/">Accueil</a> / Catégories</p>
+      <p class="breadcrumb"><a href="/" data-i18n="nav.home">Accueil</a> / <span data-i18n="nav.categories">Catégories</span></p>
       <div class="section-head">
-        <h1>Catégories</h1>
-        <p>Explorez notre boutique par univers de produits.</p>
+        <h1 data-i18n="categories.title">الفئات</h1>
+        <p data-i18n="categories.subtitle">تصفح البوتيك ديالنا حسب فئة المنتوجات.</p>
       </div>
     </div>
   </section>
@@ -46,7 +44,7 @@ src="https://www.facebook.com/tr?id=8482376721812747&ev=PageView&noscript=1"
   <section class="section-cream" style="padding-top:0">
     <div class="container">
       <div class="grid grid-cats" id="categories-grid">
-        <p>Chargement des catégories…</p>
+        <p data-i18n="common.loadingCategories">كيتحمّل...</p>
       </div>
     </div>
   </section>
@@ -57,6 +55,7 @@ src="https://www.facebook.com/tr?id=8482376721812747&ev=PageView&noscript=1"
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <script src="/js/include.js"></script>
+<script src="/js/i18n.js"></script>
 <script src="/js/attribution.js"></script>
 <script src="/js/api.js"></script>
 <script src="/js/cart.js"></script>
@@ -70,7 +69,7 @@ document.addEventListener('config:ready', async () => {
     const categories = await Api.get('/api/categories');
     grid.innerHTML = categories.map(renderCategoryCard).join('') + renderNouveautesCard();
   } catch (err) {
-    grid.innerHTML = '<p>Impossible de charger les catégories pour le moment.</p>';
+    grid.innerHTML = `<p>${I18N.t('categories.loadError', 'Impossible de charger les catégories pour le moment.')}</p>`;
   }
 });
 </script>

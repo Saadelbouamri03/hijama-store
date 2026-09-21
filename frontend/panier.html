@@ -1,14 +1,12 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Panier — Hijama Store</title>
-<meta name="description" content="Votre panier d'achats.">
+<title>الپانييه — Hijama Store</title>
+<meta name="description" content="الپانييه ديالك.">
 <link rel="icon" type="image/png" href="/favicon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preload" href="/fonts/cairo-arabic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/css/style.css">
 <!-- Meta Pixel Code -->
 <script>
@@ -29,34 +27,34 @@ src="https://www.facebook.com/tr?id=8482376721812747&ev=PageView&noscript=1"
 <!-- End Meta Pixel Code -->
 </head>
 <body>
-<a href="#main" class="skip-link">Aller au contenu</a>
+<a href="#main" class="skip-link" data-i18n="common.skipToContent">Aller au contenu</a>
 <div data-include="header"></div>
 
 <main id="main">
   <section class="section-cream">
     <div class="container">
-      <p class="breadcrumb"><a href="/">Accueil</a> / Panier</p>
-      <h1>Votre panier</h1>
+      <p class="breadcrumb"><a href="/" data-i18n="nav.home">Accueil</a> / <span data-i18n="cart.title">Panier</span></p>
+      <h1 data-i18n="cart.title">الپانييه ديالك</h1>
 
       <div id="cart-empty" class="empty-state" hidden>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l1 13a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L6 7z"/><path d="M9 7V5a3 3 0 0 1 6 0v2"/></svg>
-        <h2>Votre panier est vide</h2>
-        <p>Parcourez nos produits pour commencer votre commande.</p>
-        <a href="/produits" class="btn btn-primary">Découvrir nos produits</a>
+        <h2 data-i18n="cart.empty">الپانييه ديالك خاوي</h2>
+        <p data-i18n="cart.emptyText">تصفح المنتوجات ديالنا باش تبدا الطلب ديالك.</p>
+        <a href="/produits" class="btn btn-primary" data-i18n="home.discoverProducts">اكتشف منتوجاتنا</a>
       </div>
 
       <div id="cart-full" class="cart-layout" hidden>
         <div>
           <div id="cart-items-list"></div>
-          <a href="/produits" class="btn-text mt-6" style="display:inline-block">← Continuer mes achats</a>
+          <a href="/produits" class="btn-text mt-6" style="display:inline-block" data-i18n="cart.continueShopping">→ كمل التسوق</a>
         </div>
         <div class="summary-card">
-          <h3>Résumé de la commande</h3>
-          <div class="summary-row"><span>Sous-total</span><span id="summary-subtotal">0 DH</span></div>
-          <div class="summary-row"><span>Livraison (estimation)</span><span id="summary-delivery">0 DH</span></div>
-          <div class="summary-row total"><span>Total</span><span id="summary-total">0 DH</span></div>
-          <p class="hint">La livraison est recalculée précisément selon votre ville à l'étape suivante.</p>
-          <a href="/checkout" class="btn btn-primary btn-block">Passer la commande</a>
+          <h3 data-i18n="cart.summary">ملخص الطلب</h3>
+          <div class="summary-row"><span data-i18n="cart.subtotal">المجموع</span><span id="summary-subtotal">0 DH</span></div>
+          <div class="summary-row"><span data-i18n="cart.deliveryEstimate">التوصيل (تقديري)</span><span id="summary-delivery">0 DH</span></div>
+          <div class="summary-row total"><span data-i18n="cart.total">المجموع الكلي</span><span id="summary-total">0 DH</span></div>
+          <p class="hint" data-i18n="cart.deliveryNote">التوصيل غادي يتحسب بالضبط حسب المدينة ديالك فالخطوة الجاية.</p>
+          <a href="/checkout" class="btn btn-primary btn-block" data-i18n="cart.checkout">كمل الطلب</a>
         </div>
       </div>
     </div>
@@ -68,6 +66,7 @@ src="https://www.facebook.com/tr?id=8482376721812747&ev=PageView&noscript=1"
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <script src="/js/include.js"></script>
+<script src="/js/i18n.js"></script>
 <script src="/js/attribution.js"></script>
 <script src="/js/api.js"></script>
 <script src="/js/cart.js"></script>

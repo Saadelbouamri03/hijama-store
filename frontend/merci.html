@@ -1,14 +1,12 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Commande confirmée — Hijama Store</title>
+<title>تأكيد الطلب — Hijama Store</title>
 <meta name="robots" content="noindex">
 <link rel="icon" type="image/png" href="/favicon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preload" href="/fonts/cairo-arabic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/css/style.css">
 <!-- Meta Pixel Code -->
 <script>
@@ -38,12 +36,12 @@ src="https://www.facebook.com/tr?id=8482376721812747&ev=PageView&noscript=1"
         <div class="success-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
         </div>
-        <h1>Merci pour votre commande !</h1>
-        <p>Votre commande a bien été enregistrée. Nous allons vous contacter pour confirmer les détails.</p>
+        <h1 data-i18n="merci.title">صيفطنا ليك الطلب، شكرا ليك!</h1>
+        <p data-i18n="merci.text">توصلنا بالطلب ديالك. غادي نعيطو ليك قريب باش نأكدو التفاصيل.</p>
         <p id="order-ref" class="hint"></p>
         <div class="btn-group" style="display:flex; flex-direction:column; gap:12px; margin-top: var(--space-5)">
-          <a href="#" id="merci-whatsapp" class="btn btn-whatsapp" target="_blank" rel="noopener">Contacter sur WhatsApp</a>
-          <a href="/produits" class="btn btn-outline">Continuer mes achats</a>
+          <a href="#" id="merci-whatsapp" class="btn btn-whatsapp" target="_blank" rel="noopener" data-i18n="common.contactWhatsapp">تواصل معانا على واتساب</a>
+          <a href="/produits" class="btn btn-outline" data-i18n="merci.continueShopping">كمل التسوق</a>
         </div>
       </div>
     </div>
@@ -54,6 +52,7 @@ src="https://www.facebook.com/tr?id=8482376721812747&ev=PageView&noscript=1"
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <script src="/js/include.js"></script>
+<script src="/js/i18n.js"></script>
 <script src="/js/attribution.js"></script>
 <script src="/js/api.js"></script>
 <script src="/js/cart.js"></script>
@@ -76,8 +75,8 @@ document.addEventListener('config:ready', (e) => {
   document.getElementById('success-box').hidden = false;
 
   const ref = document.getElementById('order-ref');
-  ref.textContent = `Commande n°${order.id} — Total : ${formatPrice(order.total, config.currency)}`;
-  const waMessage = `Bonjour, je viens de passer la commande n°${order.id} (${formatPrice(order.total, config.currency)}) sur le site.`;
+  ref.textContent = `${I18N.t('merci.orderRef', 'Commande n°')}${order.id} — ${I18N.t('merci.total', 'Total')} : ${formatPrice(order.total, config.currency)}`;
+  const waMessage = `${I18N.t('merci.waMessage', 'Bonjour, je viens de passer la commande n°')}${order.id} (${formatPrice(order.total, config.currency)}) ${I18N.t('merci.waMessageSuffix', 'sur le site.')}`;
 
   const firedKey = `purchase_tracked_${order.id}`;
   if (!sessionStorage.getItem(firedKey)) {

@@ -10,14 +10,14 @@ function renderCartItem(item, currency) {
         ${item.variantLabel ? `<div class="hint">${escapeHtml(item.variantLabel)}</div>` : ''}
         <div>${formatPrice(item.price, currency)}</div>
         <div class="qty-control mt-6" style="margin-top:8px">
-          <button type="button" class="qty-dec" aria-label="Diminuer la quantité">−</button>
+          <button type="button" class="qty-dec" aria-label="${I18N.t('common.decreaseQty', 'Diminuer la quantité')}">−</button>
           <span>${item.quantity}</span>
-          <button type="button" class="qty-inc" aria-label="Augmenter la quantité">+</button>
+          <button type="button" class="qty-inc" aria-label="${I18N.t('common.increaseQty', 'Augmenter la quantité')}">+</button>
         </div>
       </div>
       <div style="text-align:right">
         <div style="font-weight:700">${formatPrice(item.price * item.quantity, currency)}</div>
-        <button type="button" class="remove-link remove-item">Retirer</button>
+        <button type="button" class="remove-link remove-item">${I18N.t('common.remove', 'Retirer')}</button>
       </div>
     </div>`;
 }
@@ -68,7 +68,7 @@ document.addEventListener('config:ready', (e) => {
     } else if (evt.target.closest('.remove-item')) {
       Cart.remove(productId, variantId);
       renderCart(config.currency, config.defaultDeliveryFee);
-      showToast('Produit retiré du panier');
+      showToast(I18N.t('cart.itemRemoved', 'Produit retiré du panier'));
     }
   });
 });

@@ -1,14 +1,12 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nos produits — Hijama Store</title>
-<meta name="description" content="Découvrez tous nos produits : ventouses de hijama, appareils de massage, mobilier et fournitures pour cabinet. Livraison partout au Maroc.">
+<title>منتوجاتنا — Hijama Store</title>
+<meta name="description" content="اكتشف جميع منتوجاتنا: كؤوس الحجامة، أجهزة المساج، أثاث ومستلزمات الكابينة. التوصيل لجميع المدن.">
 <link rel="icon" type="image/png" href="/favicon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preload" href="/fonts/cairo-arabic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/css/style.css">
 <style>
   .filter-bar { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; margin-bottom: var(--space-6); }
@@ -40,16 +38,16 @@ src="https://www.facebook.com/tr?id=8482376721812747&ev=PageView&noscript=1"
 <!-- End Meta Pixel Code -->
 </head>
 <body>
-<a href="#main" class="skip-link">Aller au contenu</a>
+<a href="#main" class="skip-link" data-i18n="common.skipToContent">Aller au contenu</a>
 <div data-include="header"></div>
 
 <main id="main">
   <section class="section-cream" style="padding-bottom: var(--space-4)">
     <div class="container">
-      <p class="breadcrumb"><a href="/">Accueil</a> / Produits</p>
+      <p class="breadcrumb"><a href="/" data-i18n="nav.home">Accueil</a> / <span data-i18n="nav.products">Produits</span></p>
       <div class="section-head">
-        <h1 id="page-title">Nos produits</h1>
-        <p>Parcourez notre sélection de produits de hijama, massage et bien-être.</p>
+        <h1 id="page-title" data-i18n="products.title">منتوجاتنا</h1>
+        <p data-i18n="products.subtitle">تصفح المجموعة ديالنا ديال منتوجات الحجامة والمساج والعناية بالجسم.</p>
       </div>
     </div>
   </section>
@@ -58,22 +56,22 @@ src="https://www.facebook.com/tr?id=8482376721812747&ev=PageView&noscript=1"
     <div class="container">
       <div class="filter-bar">
         <div class="chip-row" id="category-chips">
-          <button class="chip" data-filter="" aria-pressed="true">Tous les produits</button>
+          <button class="chip" data-filter="" aria-pressed="true" data-i18n="products.all">جميع المنتوجات</button>
         </div>
         <div class="search-box">
-          <input type="text" id="search-input" placeholder="Rechercher un produit…" aria-label="Rechercher un produit">
+          <input type="text" id="search-input" placeholder="قلب على منتوج…" aria-label="قلب على منتوج" data-i18n-attr="placeholder:products.searchPlaceholder,aria-label:products.searchPlaceholder">
         </div>
       </div>
       <div class="context-banner" id="hijama-context-banner" hidden>
-        <p>Vous parcourez les ventouses et accessoires de hijama.</p>
+        <p data-i18n="products.hijamaContext">راك كتصفح كؤوس ومستلزمات الحجامة.</p>
         <div class="context-links">
-          <a href="/guide-tailles-ventouses" class="btn-text">📏 Guide des tailles</a>
-          <a href="/comparer" class="btn-text">⇄ Comparer des produits</a>
-          <a href="/composez-votre-kit" class="btn-text">🧺 Composer un kit</a>
+          <a href="/guide-tailles-ventouses" class="btn-text" data-i18n="products.sizeGuideLink">📏 دليل المقاسات</a>
+          <a href="/comparer" class="btn-text" data-i18n="products.compareLink">⇄ قارن بين المنتوجات</a>
+          <a href="/composez-votre-kit" class="btn-text" data-i18n="products.buildKitLink">🧺 صاوب كيت</a>
         </div>
       </div>
       <div class="grid grid-products" id="products-grid">
-        <p>Chargement des produits…</p>
+        <p data-i18n="common.loadingProducts">كيتحمّل...</p>
       </div>
     </div>
   </section>
@@ -84,6 +82,7 @@ src="https://www.facebook.com/tr?id=8482376721812747&ev=PageView&noscript=1"
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <script src="/js/include.js"></script>
+<script src="/js/i18n.js"></script>
 <script src="/js/attribution.js"></script>
 <script src="/js/api.js"></script>
 <script src="/js/cart.js"></script>

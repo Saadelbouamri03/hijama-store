@@ -6,7 +6,7 @@ document.addEventListener('config:ready', async (e) => {
 
   const heroWa = document.getElementById('hero-whatsapp');
   const ctaWa = document.getElementById('cta-whatsapp');
-  const waMessage = 'Bonjour, je souhaite passer commande.';
+  const waMessage = I18N.t('common.waGenericMessage', 'Bonjour, je souhaite passer commande.');
   if (heroWa) heroWa.href = Api.whatsappLink(config.whatsappNumber, waMessage);
   if (ctaWa) ctaWa.href = Api.whatsappLink(config.whatsappNumber, waMessage);
 
@@ -28,7 +28,7 @@ document.addEventListener('config:ready', async (e) => {
     const grid = document.getElementById('home-universe-grid');
     if (grid) {
       grid.innerHTML = categories.map(renderUniverseCard).join('')
-        || '<p>Ajoutez des catégories depuis l\'espace admin pour les voir apparaître ici.</p>';
+        || `<p>${I18N.t('home.emptyCategories', "Ajoutez des catégories depuis l'espace admin pour les voir apparaître ici.")}</p>`;
     }
   } catch (err) {
     console.error(err);
@@ -39,13 +39,13 @@ document.addEventListener('config:ready', async (e) => {
     const popularGrid = document.getElementById('home-popular-grid');
     if (popularGrid) {
       popularGrid.innerHTML = products.slice(0, 8).map((p) => renderProductCard(p, config.currency)).join('')
-        || '<p>Aucun produit pour le moment. Ajoutez vos produits depuis l\'espace admin.</p>';
+        || `<p>${I18N.t('home.emptyProducts', "Aucun produit pour le moment. Ajoutez vos produits depuis l'espace admin.")}</p>`;
     }
     const bestsellers = products.filter((p) => p.badge_bestseller).slice(0, 4);
     const bestsellerGrid = document.getElementById('home-bestsellers-grid');
     if (bestsellerGrid) {
       bestsellerGrid.innerHTML = bestsellers.map((p) => renderProductCard(p, config.currency)).join('')
-        || '<p>Marquez un produit comme "Meilleure vente" depuis l\'espace admin pour qu\'il apparaisse ici.</p>';
+        || `<p>${I18N.t('home.emptyBestsellers', 'Marquez un produit comme "Meilleure vente" depuis l\'espace admin pour qu\'il apparaisse ici.')}</p>`;
     }
   } catch (err) {
     console.error(err);

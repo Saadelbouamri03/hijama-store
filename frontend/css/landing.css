@@ -1,32 +1,10 @@
-/* Landing page publicitaire (/pack-hajjam-pro) : arabe/RTL, sans navigation,
-   un seul produit. Réutilise les tokens et classes partagées de style.css
-   (.btn, .field, .section-cream/sand, .order-form, .why-grid, .grid-reviews,
-   .reveal...) — uniquement le layout propre à ce gabarit vit ici. */
+/* Landing page publicitaire (/pack-hajjam-pro) : sans navigation, un seul
+   produit. Réutilise les tokens/classes partagées de style.css (.btn,
+   .field, .section-cream/sand, .order-form, .why-grid, .grid-reviews,
+   .reveal, la police Cairo déjà globale...) — uniquement le layout propre à
+   ce gabarit vit ici. */
 
-@font-face {
-  font-family: 'Cairo';
-  font-style: normal;
-  font-weight: 400 700;
-  font-display: swap;
-  src: url('/fonts/cairo-arabic.woff2') format('woff2');
-  unicode-range: U+0600-06FF, U+0750-077F, U+FB50-FDFF, U+FE70-FEFC, U+200C-200E;
-}
-@font-face {
-  font-family: 'Cairo';
-  font-style: normal;
-  font-weight: 400 700;
-  font-display: swap;
-  src: url('/fonts/cairo-latin.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+2000-206F, U+20AC;
-}
-
-body.landing-page {
-  font-family: 'Cairo', var(--font-body);
-  background: var(--cream);
-}
-body.landing-page h1, body.landing-page h2, body.landing-page h3 {
-  font-family: 'Cairo', var(--font-display);
-}
+body.landing-page { background: var(--cream); }
 
 /* ---------- Bandeau + en-tête minimal ---------- */
 .landing-announce { position: static; }

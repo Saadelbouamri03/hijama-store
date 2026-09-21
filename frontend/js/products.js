@@ -19,14 +19,14 @@ async function loadProducts() {
   if (banner) banner.hidden = params.get('categorie') !== 'koub-hijama';
 
   const grid = document.getElementById('products-grid');
-  grid.innerHTML = '<p>Chargement des produits…</p>';
+  grid.innerHTML = `<p>${I18N.t('common.loadingProducts', 'Chargement des produits…')}</p>`;
   try {
     const products = await Api.get(`/api/products?${apiParams.toString()}`);
     grid.innerHTML = products.length
       ? products.map((p) => renderProductCard(p, currentCurrency)).join('')
-      : '<p>Aucun produit ne correspond à votre recherche.</p>';
+      : `<p>${I18N.t('products.noResults', 'Aucun produit ne correspond à votre recherche.')}</p>`;
   } catch (err) {
-    grid.innerHTML = '<p>Impossible de charger les produits pour le moment.</p>';
+    grid.innerHTML = `<p>${I18N.t('products.loadError', 'Impossible de charger les produits pour le moment.')}</p>`;
   }
 }
 
@@ -46,10 +46,10 @@ async function buildChips() {
       `<button class="chip" data-value="cat:${c.slug}" data-categorie="${c.slug}">${escapeHtml(c.name)}</button>`
     ).join('');
     container.innerHTML =
-      `<button class="chip" data-value="">Tous les produits</button>` +
+      `<button class="chip" data-value="">${I18N.t('products.all', 'Tous les produits')}</button>` +
       chipsHtml +
-      `<button class="chip" data-value="filter:nouveautes" data-filter="nouveautes">Nouveautés</button>` +
-      `<button class="chip" data-value="filter:bestsellers" data-filter="bestsellers">Meilleures ventes</button>`;
+      `<button class="chip" data-value="filter:nouveautes" data-filter="nouveautes">${I18N.t('common.newArrivals', 'Nouveautés')}</button>` +
+      `<button class="chip" data-value="filter:bestsellers" data-filter="bestsellers">${I18N.t('common.bestsellerPlural', 'Meilleures ventes')}</button>`;
   } catch (err) {
     console.error(err);
   }
