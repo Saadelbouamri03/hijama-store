@@ -19,6 +19,10 @@ router.get('/', (req, res) => {
     currency: config.currency,
     deliveryCountry: config.deliveryCountry,
     defaultDeliveryFee: config.defaultDeliveryFee,
+    // L'ID du pixel n'est pas secret (visible dans le code de n'importe quel
+    // site qui l'utilise) ; le token d'accès Events API, lui, reste côté
+    // serveur uniquement (voir backend/utils/tiktok-events.js).
+    tiktokPixelId: config.tiktokPixel.id,
   });
 });
 

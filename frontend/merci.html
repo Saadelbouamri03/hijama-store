@@ -59,6 +59,7 @@ src="https://www.facebook.com/tr?id=8482376721812747&ev=PageView&noscript=1"
 <script src="/js/cart.js"></script>
 <script src="/js/render.js"></script>
 <script src="/js/mini-cart.js"></script>
+<script src="/js/tiktok-pixel.js"></script>
 <script>
 document.addEventListener('config:ready', (e) => {
   const config = e.detail;
@@ -78,17 +79,25 @@ document.addEventListener('config:ready', (e) => {
   ref.textContent = `Commande n°${order.id} — Total : ${formatPrice(order.total, config.currency)}`;
   const waMessage = `Bonjour, je viens de passer la commande n°${order.id} (${formatPrice(order.total, config.currency)}) sur le site.`;
 
-  if (typeof fbq === 'function') {
-    const firedKey = `fbq_purchase_${order.id}`;
-    if (!sessionStorage.getItem(firedKey)) {
+  const firedKey = `purchase_tracked_${order.id}`;
+  if (!sessionStorage.getItem(firedKey)) {
+    if (typeof fbq === 'function') {
       fbq('track', 'Purchase', {
         value: order.total,
         currency: 'MAD',
         contents: (order.items || []).map((i) => ({ id: i.product_id, quantity: i.quantity })),
         content_type: 'product',
       }, { eventID: `purchase_${order.id}` });
-      sessionStorage.setItem(firedKey, '1');
     }
+    if (typeof ttq !== 'undefined' && ttq && typeof ttq.track === 'function') {
+      ttq.track('Purchase', {
+        value: order.total,
+        currency: 'MAD',
+        content_type: 'product',
+        contents: (order.items || []).map((i) => ({ content_id: String(i.product_id), quantity: i.quantity })),
+      }, { event_id: `purchase_${order.id}` });
+    }
+    sessionStorage.setItem(firedKey, '1');
   }
   document.getElementById('merci-whatsapp').href = Api.whatsappLink(config.whatsappNumber, waMessage);
 });

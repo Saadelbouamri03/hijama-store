@@ -93,6 +93,15 @@ document.addEventListener('config:ready', async (e) => {
       content_name: product.name,
     });
   }
+  if (typeof ttq !== 'undefined' && ttq && typeof ttq.track === 'function') {
+    ttq.track('ViewContent', {
+      content_id: String(product.id),
+      content_type: 'product',
+      content_name: product.name,
+      value: product.price,
+      currency: 'MAD',
+    });
+  }
 
   const breadcrumb = document.getElementById('breadcrumb');
   breadcrumb.innerHTML = `<a href="/">Accueil</a> / <a href="/produits">Produits</a>` +

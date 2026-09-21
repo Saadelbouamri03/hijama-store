@@ -59,6 +59,16 @@ const Cart = (() => {
         content_name: product.name,
       });
     }
+    if (typeof ttq !== 'undefined' && ttq && typeof ttq.track === 'function') {
+      ttq.track('AddToCart', {
+        content_id: String(product.id),
+        content_type: 'product',
+        content_name: product.name,
+        quantity,
+        value: unitPrice * quantity,
+        currency: 'MAD',
+      });
+    }
 
     return items;
   }
