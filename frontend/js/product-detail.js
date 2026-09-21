@@ -96,8 +96,8 @@ document.addEventListener('config:ready', async (e) => {
 
   const breadcrumb = document.getElementById('breadcrumb');
   breadcrumb.innerHTML = `<a href="/">Accueil</a> / <a href="/produits">Produits</a>` +
-    (product.category_slug ? ` / <a href="/produits?categorie=${product.category_slug}">${escapeHtml(product.category_name)}</a>` : '') +
-    ` / ${escapeHtml(product.name)}`;
+    (product.category_slug ? ` / <a href="/produits?categorie=${product.category_slug}"${bidiAttr(product.category_name)}>${escapeHtml(product.category_name)}</a>` : '') +
+    ` / <span${bidiAttr(product.name)}>${escapeHtml(product.name)}</span>`;
 
   const images = product.images && product.images.length ? product.images : ['placeholder-hijama.svg'];
   const variants = Array.isArray(product.variants) ? product.variants : [];
@@ -127,8 +127,8 @@ document.addEventListener('config:ready', async (e) => {
         ).join('')}</div>` : ''}
       </div>
       <div>
-        ${product.category_name ? `<span class="product-cat">${escapeHtml(product.category_name)}</span>` : ''}
-        <h1>${escapeHtml(product.name)}</h1>
+        ${product.category_name ? `<span class="product-cat"${bidiAttr(product.category_name)}>${escapeHtml(product.category_name)}</span>` : ''}
+        <h1${bidiAttr(product.name)}>${escapeHtml(product.name)}</h1>
         <div class="price-row" style="margin-bottom: var(--space-3)">
           <span class="price" id="product-price">${formatPrice(currentPrice(), config.currency)}</span>
           ${!hasVariants && product.old_price ? `<span class="price-old">${formatPrice(product.old_price, config.currency)}</span>` : ''}
@@ -148,7 +148,7 @@ document.addEventListener('config:ready', async (e) => {
         ${(product.slug === 'produit-hs-114' || product.slug === 'produit-hs-115') ? `<p><a href="/comparer?a=produit-hs-114&b=produit-hs-115" class="btn-text">⇄ Comparer les coffrets Safaa et Al Assala</a></p>` : ''}
 
         <div id="stock-line">${stockLine(currentStock())}</div>
-        <p>${escapeHtml(product.description || '')}</p>
+        <p${bidiAttr(product.description)}>${escapeHtml(product.description || '')}</p>
 
         <div class="qty-selector">
           <span style="font-weight:700; font-size: var(--fs-sm)">Quantité</span>

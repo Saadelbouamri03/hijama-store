@@ -23,7 +23,7 @@ function renderSummary() {
   const items = Cart.getItems();
   const linesEl = document.getElementById('order-lines');
   linesEl.innerHTML = items.map((i) =>
-    `<div class="order-line"><span>${escapeHtml(i.name)}${i.variantLabel ? ' — ' + escapeHtml(i.variantLabel) : ''} × ${i.quantity}</span><span>${formatPrice(i.price * i.quantity, currentCurrency)}</span></div>`
+    `<div class="order-line"><span${bidiAttr(i.name)}>${escapeHtml(i.name)}${i.variantLabel ? ' — ' + escapeHtml(i.variantLabel) : ''} × ${i.quantity}</span><span>${formatPrice(i.price * i.quantity, currentCurrency)}</span></div>`
   ).join('');
 
   const subtotal = Cart.getSubtotal();

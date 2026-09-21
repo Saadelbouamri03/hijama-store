@@ -76,7 +76,7 @@ const MiniCart = (() => {
       <div class="minicart-item" data-product-id="${i.productId}" data-variant-id="${i.variantId || ''}">
         <img src="${img}" alt="${escapeHtml(i.name)}">
         <div class="minicart-item-info">
-          <span class="minicart-item-name">${escapeHtml(i.name)}</span>
+          <span class="minicart-item-name"${bidiAttr(i.name)}>${escapeHtml(i.name)}</span>
           ${i.variantLabel ? `<span class="minicart-item-variant">${escapeHtml(i.variantLabel)}</span>` : ''}
           <span class="minicart-item-price">${formatPrice(i.price, currency)}</span>
           <div class="qty-control qty-control-sm">

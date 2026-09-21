@@ -6,7 +6,7 @@ function renderCartItem(item, currency) {
     <div class="cart-item" data-product-id="${item.productId}" data-variant-id="${item.variantId || ''}">
       <img src="${img}" alt="${escapeHtml(item.name)}">
       <div>
-        <h3><a href="/produit/${item.slug}">${escapeHtml(item.name)}</a></h3>
+        <h3><a href="/produit/${item.slug}"${bidiAttr(item.name)}>${escapeHtml(item.name)}</a></h3>
         ${item.variantLabel ? `<div class="hint">${escapeHtml(item.variantLabel)}</div>` : ''}
         <div>${formatPrice(item.price, currency)}</div>
         <div class="qty-control mt-6" style="margin-top:8px">

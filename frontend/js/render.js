@@ -8,6 +8,18 @@ function escapeHtml(str) {
   }[c]));
 }
 
+// Le catalogue (noms, descriptions) est en arabe alors que l'interface est en
+// français (LTR) : sans ceci, la ponctuation et les mots latins mélangés au
+// texte arabe s'affichent dans le désordre. À utiliser sur tout conteneur dont
+// le contenu peut être un texte du catalogue : `<h3${bidiAttr(name)}>...`.
+const ARABIC_RE = /[؀-ۿ]/;
+function isArabicText(text) {
+  return ARABIC_RE.test(String(text || ''));
+}
+function bidiAttr(text) {
+  return isArabicText(text) ? ' dir="rtl"' : '';
+}
+
 function formatPrice(amount, currency) {
   const n = Number(amount) || 0;
   const formatted = Number.isInteger(n) ? n.toString() : n.toFixed(2);
@@ -38,8 +50,8 @@ function renderProductCard(product, currency) {
         ${badges.length ? `<div class="product-badges">${badges.join('')}</div>` : ''}
       </a>
       <div class="product-info">
-        ${product.category_name ? `<span class="product-cat">${escapeHtml(product.category_name)}</span>` : ''}
-        <h3><a href="/produit/${encodeURIComponent(product.slug)}">${escapeHtml(product.name)}</a></h3>
+        ${product.category_name ? `<span class="product-cat"${bidiAttr(product.category_name)}>${escapeHtml(product.category_name)}</span>` : ''}
+        <h3><a href="/produit/${encodeURIComponent(product.slug)}"${bidiAttr(product.name)}>${escapeHtml(product.name)}</a></h3>
         <div class="price-row">
           <span class="price">${formatPrice(product.price, currency)}</span>
           ${product.old_price ? `<span class="price-old">${formatPrice(product.old_price, currency)}</span>` : ''}
@@ -60,8 +72,8 @@ function renderCategoryCard(category) {
   return `
     <a class="cat-card" href="/produits?categorie=${encodeURIComponent(category.slug)}" data-slug="${escapeHtml(category.slug)}">
       ${icon}
-      <h3>${escapeHtml(category.name)}</h3>
-      ${category.description ? `<p>${escapeHtml(category.description)}</p>` : ''}
+      <h3${bidiAttr(category.name)}>${escapeHtml(category.name)}</h3>
+      ${category.description ? `<p${bidiAttr(category.description)}>${escapeHtml(category.description)}</p>` : ''}
       <span class="btn-text">Voir les produits</span>
     </a>`;
 }
@@ -79,8 +91,8 @@ function renderUniverseCard(category, index) {
     <a class="universe-card ${isLarge ? 'universe-card-lg' : ''}" href="/produits?categorie=${encodeURIComponent(category.slug)}" data-slug="${escapeHtml(category.slug)}">
       <div class="universe-media">${img}</div>
       <div class="universe-copy">
-        <h3>${escapeHtml(category.name)}</h3>
-        ${category.description ? `<p>${escapeHtml(category.description)}</p>` : ''}
+        <h3${bidiAttr(category.name)}>${escapeHtml(category.name)}</h3>
+        ${category.description ? `<p${bidiAttr(category.description)}>${escapeHtml(category.description)}</p>` : ''}
         <span class="btn-text">Voir les produits →</span>
       </div>
     </a>`;
@@ -100,7 +112,7 @@ function renderReviewCard(review) {
   return `
     <article class="review-card">
       <div class="stars" aria-label="${review.rating} sur 5">${starString(review.rating)}</div>
-      <p>« ${escapeHtml(review.comment)} »</p>
+      <p${bidiAttr(review.comment)}>« ${escapeHtml(review.comment)} »</p>
       <div class="review-name">${escapeHtml(review.customer_name)}</div>
     </article>`;
 }
