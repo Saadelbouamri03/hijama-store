@@ -248,7 +248,7 @@ section { padding: var(--space-8) 0; }
 .header-actions { display: flex; align-items: center; gap: var(--space-4); }
 .cart-link { position: relative; display: inline-flex; padding: var(--space-2); }
 .cart-count {
-  position: absolute; top: -2px; right: -2px;
+  position: absolute; top: -2px; inset-inline-end: -2px;
   background: var(--clay); color: var(--white);
   font-size: 0.65rem; font-weight: 700; line-height: 1;
   min-width: 18px; height: 18px; border-radius: 999px;
@@ -455,11 +455,12 @@ section { padding: var(--space-8) 0; }
 .product-actions { display: flex; gap: var(--space-2); padding: 0 var(--space-4) var(--space-4); }
 .product-actions .btn { flex: 1; padding: 0.6rem 0.5rem; font-size: var(--fs-xs); }
 
-/* ---------- Avis clients : accent bord gauche, pas d'ombre ---------- */
+/* ---------- Avis clients : accent bord côté "début", pas d'ombre ---------- */
 .review-card {
   background: var(--cream);
-  border-left: 3px solid var(--moss);
-  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  border-inline-start: 3px solid var(--moss);
+  border-start-start-radius: 0; border-start-end-radius: var(--radius-md);
+  border-end-end-radius: var(--radius-md); border-end-start-radius: 0;
   padding: var(--space-5);
 }
 .stars { color: var(--clay); font-size: var(--fs-sm); letter-spacing: 2px; margin-bottom: var(--space-2); }
@@ -687,10 +688,10 @@ html.no-scroll, html.no-scroll body { overflow: hidden; }
   clip: rect(0,0,0,0); white-space: nowrap; border: 0; padding: 0; margin: -1px;
 }
 .skip-link {
-  position: absolute; left: -999px; top: 0; background: var(--moss); color: var(--white);
-  padding: var(--space-2) var(--space-4); z-index: 100; border-radius: 0 0 var(--radius-sm) 0;
+  position: absolute; inset-inline-start: -999px; top: 0; background: var(--moss); color: var(--white);
+  padding: var(--space-2) var(--space-4); z-index: 100; border-end-end-radius: var(--radius-sm);
 }
-.skip-link:focus { left: 0; }
+.skip-link:focus { inset-inline-start: 0; }
 .spinner {
   width: 20px; height: 20px; border: 2.5px solid rgba(255,255,255,0.4); border-top-color: var(--white);
   border-radius: 50%; animation: spin 0.7s linear infinite; display: inline-block;
@@ -889,8 +890,7 @@ body.has-mobile-add-bar .wa-float { bottom: calc(var(--space-4) + env(safe-area-
 .compare-picker .field { margin-bottom: 0; min-width: 220px; flex: 1; }
 .compare-table-wrap { overflow-x: auto; border: 1px solid var(--sand-deep); border-radius: var(--radius-lg); background: var(--white); }
 .compare-table { width: 100%; border-collapse: collapse; min-width: 480px; }
-.compare-table th, .compare-table td { padding: var(--space-4); text-align: left; border-bottom: 1px solid var(--sand-deep); vertical-align: top; }
-[dir="rtl"] .compare-table th, [dir="rtl"] .compare-table td { text-align: right; }
+.compare-table th, .compare-table td { padding: var(--space-4); text-align: start; border-bottom: 1px solid var(--sand-deep); vertical-align: top; }
 .compare-table th.compare-row-label { background: var(--sand); font-weight: 700; font-size: var(--fs-sm); width: 38%; }
 .compare-table thead th { background: var(--cream); font-family: var(--font-display); font-size: var(--fs-md); font-weight: 600; }
 .compare-table tr:last-child th, .compare-table tr:last-child td { border-bottom: none; }
@@ -904,7 +904,7 @@ body.has-mobile-add-bar .wa-float { bottom: calc(var(--space-4) + env(safe-area-
 .compare-card-row { display: flex; justify-content: space-between; gap: var(--space-3); padding: var(--space-2) 0; border-bottom: 1px solid var(--sand); font-size: var(--fs-sm); }
 .compare-card-row:last-child { border-bottom: none; }
 .compare-card-row span:first-child { color: var(--ink-soft); font-weight: 600; }
-.compare-card-row span:last-child { font-weight: 700; text-align: right; }
+.compare-card-row span:last-child { font-weight: 700; text-align: end; }
 
 /* ---------- Composez votre kit ---------- */
 .kit-layout { display: grid; gap: var(--space-7); grid-template-columns: 1fr; }

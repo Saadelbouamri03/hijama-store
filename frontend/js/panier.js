@@ -15,7 +15,7 @@ function renderCartItem(item, currency) {
           <button type="button" class="qty-inc" aria-label="${I18N.t('common.increaseQty', 'Augmenter la quantité')}">+</button>
         </div>
       </div>
-      <div style="text-align:right">
+      <div style="text-align:end">
         <div style="font-weight:700">${formatPrice(item.price * item.quantity, currency)}</div>
         <button type="button" class="remove-link remove-item">${I18N.t('common.remove', 'Retirer')}</button>
       </div>

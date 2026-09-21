@@ -166,7 +166,7 @@ const KitBuilder = (() => {
               <button type="button" class="kit-sum-inc" aria-label="${I18N.t('common.increaseQty', 'Augmenter la quantité')}">+</button>
             </div>
           </div>
-          <div style="text-align:right">
+          <div style="text-align:end">
             <div style="font-weight:700; font-size: var(--fs-xs)">${formatPrice(price * line.quantity, currency)}</div>
             <button type="button" class="remove-link kit-sum-remove">${I18N.t('common.remove', 'Retirer')}</button>
           </div>
