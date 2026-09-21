@@ -108,6 +108,12 @@ p { margin: 0 0 var(--space-4); max-width: 62ch; color: var(--ink-soft); }
 }
 
 section { padding: var(--space-8) 0; }
+@media (max-width: 639px) {
+  /* Sur mobile, l'espacement desktop (4rem par section) repousse le contenu
+     très bas dans la page ; on le resserre pour garder un produit + son prix
+     visible dans le premier écran et demi de défilement. */
+  section { padding: var(--space-6) 0; }
+}
 .section-cream { background: var(--cream); }
 .section-sand { background: var(--sand); }
 
@@ -263,6 +269,13 @@ section { padding: var(--space-8) 0; }
 .hero h1 { max-width: 12ch; }
 .hero-sub { font-size: var(--fs-md); max-width: 42ch; }
 .hero-ctas { display: flex; flex-wrap: wrap; gap: var(--space-3); margin: var(--space-5) 0 var(--space-6); }
+@media (max-width: 539px) {
+  /* Les 2 boutons du hero ont des textes de longueurs différentes
+     ("Découvrir nos produits" / "Commander sur WhatsApp") : en largeur
+     naturelle ça donne 2 boutons de tailles visiblement différentes. */
+  .hero-ctas { flex-direction: column; }
+  .hero-ctas .btn { width: 100%; }
+}
 .trust-list {
   display: grid; grid-template-columns: 1fr; gap: var(--space-3);
   max-width: 420px;
