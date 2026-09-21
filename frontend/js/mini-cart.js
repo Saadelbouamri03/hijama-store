@@ -122,38 +122,6 @@ const MiniCart = (() => {
 
   function sync() {
     if (built && document.getElementById('minicart')?.classList.contains('open')) render();
-    updateFloatBadge();
-  }
-
-  // Bouton panier flottant : accès au panier toujours à portée de main (bas
-  // d'écran), pour ne jamais avoir à remonter en haut de page le rejoindre
-  // dans le header — utile juste après avoir ajouté un produit, où que l'on
-  // soit sur la page.
-  function updateFloatBadge() {
-    const badge = document.getElementById('cart-float-count');
-    if (!badge) return;
-    const count = Cart.getCount();
-    badge.textContent = count;
-    badge.hidden = count === 0;
-  }
-
-  function buildFloat() {
-    if (document.getElementById('cart-float')) return;
-    const el = document.createElement('button');
-    el.type = 'button';
-    el.id = 'cart-float';
-    el.className = 'cart-float';
-    el.setAttribute('aria-label', 'Voir le panier');
-    el.setAttribute('aria-haspopup', 'dialog');
-    el.innerHTML = `
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M6 7h12l1 13a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L6 7z"/>
-        <path d="M9 7V5a3 3 0 0 1 6 0v2"/>
-      </svg>
-      <span class="cart-float-count" id="cart-float-count" hidden>0</span>`;
-    el.addEventListener('click', open);
-    document.body.appendChild(el);
-    updateFloatBadge();
   }
 
   document.addEventListener('config:ready', (e) => { currency = e.detail.currency; });
@@ -167,7 +135,6 @@ const MiniCart = (() => {
         open();
       });
     }
-    buildFloat();
   });
 
   return { open, close, sync };

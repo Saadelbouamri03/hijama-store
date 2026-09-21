@@ -482,9 +482,14 @@ section { padding: var(--space-8) 0; }
 .footer-legal-links a { color: inherit; text-decoration: none; }
 .footer-legal-links a:hover { text-decoration: underline; }
 
+/* Réserve assez d'espace en bas de chaque page pour que le bouton WhatsApp
+   flottant (58px + marge) ne recouvre jamais le dernier contenu visible,
+   y compris sur les téléphones à encoche/barre d'accueil. */
+main { padding-bottom: calc(90px + env(safe-area-inset-bottom)); }
+
 /* ---------- Bouton WhatsApp flottant ---------- */
 .wa-float {
-  position: fixed; right: var(--space-4); bottom: var(--space-4); z-index: 50;
+  position: fixed; right: var(--space-4); bottom: calc(var(--space-4) + env(safe-area-inset-bottom)); z-index: 50;
   width: 58px; height: 58px; border-radius: 50%;
   background: #3F6B3A; color: var(--white);
   display: flex; align-items: center; justify-content: center;
@@ -493,28 +498,6 @@ section { padding: var(--space-8) 0; }
 }
 .wa-float:hover { transform: scale(1.06); }
 .wa-float svg { width: 28px; height: 28px; }
-
-/* ---------- Bouton panier flottant (accès rapide, jamais besoin de remonter au header) ---------- */
-.cart-float {
-  position: fixed; left: var(--space-4); bottom: var(--space-4); z-index: 50;
-  width: 56px; height: 56px; border-radius: 50%;
-  background: var(--moss); color: var(--white);
-  border: none; display: flex; align-items: center; justify-content: center;
-  box-shadow: var(--shadow-lift);
-  transition: transform 0.15s ease, bottom 0.2s ease;
-}
-[dir="rtl"] .cart-float { left: auto; right: var(--space-4); }
-.cart-float:hover { transform: scale(1.06); background: var(--moss-dark); }
-.cart-float-count {
-  position: absolute; top: -2px; right: -2px;
-  background: var(--clay); color: var(--white);
-  font-size: 0.72rem; font-weight: 700; line-height: 1;
-  min-width: 20px; height: 20px; border-radius: 999px;
-  display: flex; align-items: center; justify-content: center;
-  padding: 0 4px; border: 2px solid var(--cream);
-}
-body.has-mobile-add-bar .cart-float { bottom: calc(var(--space-4) + 68px); }
-@media (min-width: 720px) { body.has-mobile-add-bar .cart-float { bottom: var(--space-4); } }
 
 /* ---------- Fils d'Ariane ---------- */
 .breadcrumb { font-size: var(--fs-xs); color: var(--ink-soft); padding: var(--space-4) 0; }
@@ -819,8 +802,8 @@ select:focus-visible, .variant-pill:focus-visible, [tabindex]:focus-visible {
 
 /* Le bouton WhatsApp flottant remonte au-dessus de la barre mobile
    "Ajouter au panier" quand elle est visible, pour ne jamais la masquer. */
-body.has-mobile-add-bar .wa-float { bottom: calc(var(--space-4) + 68px); }
-@media (min-width: 720px) { body.has-mobile-add-bar .wa-float { bottom: var(--space-4); } }
+body.has-mobile-add-bar .wa-float { bottom: calc(var(--space-4) + env(safe-area-inset-bottom) + 68px); }
+@media (min-width: 720px) { body.has-mobile-add-bar .wa-float { bottom: calc(var(--space-4) + env(safe-area-inset-bottom)); } }
 
 /* ---------- Guide des tailles de ventouses ---------- */
 .size-guide-note {
