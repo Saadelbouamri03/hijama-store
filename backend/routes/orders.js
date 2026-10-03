@@ -9,6 +9,7 @@ const { sendPurchaseEventCapi, sendConfirmedOrderEventCapi } = require('../utils
 const { sendPurchaseEventTikTok, sendConfirmedOrderEventTikTok } = require('../utils/tiktok-events');
 const { renderBonCommande } = require('../utils/bon-commande');
 const { generateBonCommandePdf } = require('../utils/bon-commande-pdf');
+const { buildPaymentForm } = require('../utils/cmi');
 const { config } = require('../config');
 
 const router = express.Router();
@@ -93,6 +94,14 @@ router.post('/', orderLimiter, (req, res) => {
   const { valid, errors } = validateOrderInput(body);
   if (!valid) return res.status(400).json({ error: errors.join(' ') });
 
+  // Paiement en ligne (CMI) en option, en plus du paiement à la livraison par
+  // défaut — voir backend/utils/cmi.js. Refusé explicitement si demandé sans
+  // être configuré, plutôt que de silencieusement retomber sur la livraison.
+  const wantsCmi = body.paymentMethod === 'cmi';
+  if (wantsCmi && !config.cmi.enabled) {
+    return res.status(400).json({ error: 'Le paiement en ligne n\'est pas encore activé sur ce site.' });
+  }
+
   // Vérifie chaque produit (et sa variante éventuelle : taille, marque...) et le stock disponible.
   const lineItems = [];
   for (const item of body.items) {
@@ -145,8 +154,8 @@ router.post('/', orderLimiter, (req, res) => {
 
   const createOrder = db.transaction(() => {
     const info = db.prepare(`
-      INSERT INTO orders (customer_name, phone, city, address, region, postal_code, comment, subtotal, delivery_fee, total, payment_method, status, utm_source, utm_medium, utm_campaign, fbclid, ttclid, landing_page, ab_variant)
-      VALUES (@customer_name, @phone, @city, @address, @region, @postal_code, @comment, @subtotal, @delivery_fee, @total, 'Paiement à la livraison', 'Nouvelle commande', @utm_source, @utm_medium, @utm_campaign, @fbclid, @ttclid, @landing_page, @ab_variant)
+      INSERT INTO orders (customer_name, phone, city, address, region, postal_code, comment, subtotal, delivery_fee, total, payment_method, payment_status, status, utm_source, utm_medium, utm_campaign, fbclid, ttclid, landing_page, ab_variant)
+      VALUES (@customer_name, @phone, @city, @address, @region, @postal_code, @comment, @subtotal, @delivery_fee, @total, @payment_method, @payment_status, 'Nouvelle commande', @utm_source, @utm_medium, @utm_campaign, @fbclid, @ttclid, @landing_page, @ab_variant)
     `).run({
       customer_name: body.customerName.trim(),
       phone: cleanPhone,
@@ -156,6 +165,8 @@ router.post('/', orderLimiter, (req, res) => {
       postal_code: body.postalCode || '',
       comment: body.comment || '',
       subtotal, delivery_fee: deliveryFee, total,
+      payment_method: wantsCmi ? 'Carte bancaire (CMI)' : 'Paiement à la livraison',
+      payment_status: wantsCmi ? 'en_attente' : 'non_requis',
       utm_source: body.utmSource || '',
       utm_medium: body.utmMedium || '',
       utm_campaign: body.utmCampaign || '',
@@ -187,8 +198,20 @@ router.post('/', orderLimiter, (req, res) => {
   const orderId = createOrder();
   const order = getOrderWithItems(orderId);
   notifyNewOrder(order);
-  sendPurchaseEventCapi(order, req);
-  sendPurchaseEventTikTok(order, req);
+
+  // Pour un paiement en ligne, la commande n'est pas encore garantie (le
+  // client peut abandonner la page CMI) : les évènements "Purchase" partent
+  // seulement une fois le paiement confirmé par la notification CMI, pas ici.
+  if (!wantsCmi) {
+    sendPurchaseEventCapi(order, req);
+    sendPurchaseEventTikTok(order, req);
+  }
+
+  if (wantsCmi) {
+    const payment = buildPaymentForm(order);
+    return res.status(201).json({ ...order, cmiPayment: payment });
+  }
+
   res.status(201).json(order);
 });
 

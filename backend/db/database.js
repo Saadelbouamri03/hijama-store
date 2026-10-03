@@ -50,4 +50,11 @@ ensureColumn('orders', 'ab_variant', "TEXT DEFAULT ''");
 // et sur la landing, et plus tard à calculer un AggregateRating par produit.
 ensureColumn('reviews', 'product_id', 'INTEGER REFERENCES products(id) ON DELETE SET NULL');
 
+// Paiement en ligne (CMI) en plus du paiement à la livraison existant :
+// 'non_requis' pour les commandes à la livraison (comportement inchangé),
+// 'en_attente' le temps que le client paie sur la page CMI, puis 'payee' ou
+// 'echouee' selon la notification reçue (voir backend/utils/cmi.js).
+ensureColumn('orders', 'payment_status', "TEXT DEFAULT 'non_requis'");
+ensureColumn('orders', 'payment_ref', "TEXT DEFAULT ''");
+
 module.exports = db;

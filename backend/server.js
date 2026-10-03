@@ -19,6 +19,7 @@ const productsRoute = require('./routes/products');
 const ordersRoute = require('./routes/orders');
 const reviewsRoute = require('./routes/reviews');
 const deliveryRoute = require('./routes/delivery');
+const paymentsRoute = require('./routes/payments');
 
 const app = express();
 const FRONTEND_DIR = path.join(__dirname, '..', 'frontend');
@@ -58,6 +59,7 @@ app.use('/api/products', productsRoute);
 app.use('/api/orders', ordersRoute);
 app.use('/api/reviews', reviewsRoute);
 app.use('/api/delivery-fees', deliveryRoute);
+app.use('/api/payments', paymentsRoute);
 
 // --- Page produit à URL propre : /produit/mon-produit -------------------
 // Le HTML de base est chargé une fois au démarrage (fichier statique, ne

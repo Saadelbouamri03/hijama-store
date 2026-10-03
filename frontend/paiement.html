@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الدفع — Hijama Store</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preload" href="/fonts/cairo-arabic.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<main id="main" class="section-cream" style="min-height:70vh; display:flex; align-items:center; justify-content:center;">
+  <div class="container" style="max-width:420px; text-align:center;">
+    <div id="payment-status">
+      <div class="skeleton-card" style="height:120px; border-radius:var(--radius-sm)"></div>
+      <p class="hint" style="margin-top:var(--space-4)">كنحضرو صفحة الخلاص، تصبر شوية...</p>
+    </div>
+  </div>
+</main>
+
+<script>
+(async function () {
+  const params = new URLSearchParams(window.location.search);
+  const orderId = params.get('order');
+  const statusEl = document.getElementById('payment-status');
+
+  if (!orderId) {
+    statusEl.innerHTML = '<p>الرابط ناقص رقم الكوموند.</p>';
+    return;
+  }
+
+  try {
+    const res = await fetch(`/api/payments/cmi/form?order=${encodeURIComponent(orderId)}`);
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'خطأ غير متوقع.');
+
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = data.actionUrl;
+    Object.entries(data.fields).forEach(([name, value]) => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = name;
+      input.value = value;
+      form.appendChild(input);
+    });
+    document.body.appendChild(form);
+    statusEl.innerHTML = '<p>كنوجهوك لصفحة الخلاص الآمنة...</p>';
+    form.submit();
+  } catch (err) {
+    statusEl.innerHTML = `<p>${err.message || 'ماقدرناش نحضرو صفحة الخلاص. تواصل معانا على واتساب.'}</p>`;
+  }
+})();
+</script>
+</body>
+</html>

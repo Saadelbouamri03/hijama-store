@@ -77,6 +77,26 @@ const config = {
     accessToken: required('TIKTOK_ACCESS_TOKEN', ''),
   },
 
+  // Paiement en ligne par carte (CMI, opérateur monétique marocain) — nécessaire
+  // pour les commandes qui ne peuvent pas être payées à la livraison (ex. clients
+  // à l'étranger). Reste inactif (cmi.enabled = false) tant que ces identifiants
+  // ne sont pas renseignés : aucun changement pour le paiement à la livraison
+  // existant. ATTENTION : clientId/storePassword/hashKey et le format exact des
+  // champs signés sont fournis par CMI à la validation du compte marchand — à
+  // vérifier contre le kit d'intégration officiel avant la mise en production,
+  // ce module s'appuie sur le schéma standard documenté publiquement.
+  cmi: {
+    clientId: required('CMI_CLIENT_ID', ''),
+    storePassword: required('CMI_STORE_PASSWORD', ''),
+    hashKey: required('CMI_HASH_KEY', ''),
+    baseUrl: required('CMI_BASE_URL', 'https://testpayment.cmi.co.ma/fim/est3Dgate'),
+    get enabled() { return Boolean(this.clientId && this.storePassword && this.hashKey); },
+  },
+
+  // URL publique du site (sans slash final), utilisée pour construire les URLs
+  // de retour CMI (succès/échec/notification) — doit pointer vers le domaine réel.
+  siteUrl: required('SITE_URL', 'https://hijamastore.com'),
+
   // Landing page /pack-hajjam-pro : le pack lui-même est un produit normal du
   // catalogue (créé une fois via l'admin, voir son slug ci-dessous) — ceci ne
   // configure que la règle de remise sur la 2e unité et le produit d'upsell,
