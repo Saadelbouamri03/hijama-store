@@ -15,6 +15,37 @@ function whatsappOrderLink(o) {
   const text = `Commande #${o.id}\n${o.customer_name} — ${o.phone}\n${o.address}, ${o.city}\n\n${productsLine}\n\nTotal : ${o.total} ${ADMIN_CURRENCY}`;
   return Api.whatsappLink(ADMIN_WHATSAPP, text);
 }
+
+// Les numéros clients sont saisis au format local marocain (0612345678) ;
+// wa.me exige le format international sans "+" (212612345678).
+function toInternational(phone) {
+  let digits = String(phone || '').replace(/[^\d]/g, '');
+  if (digits.startsWith('00')) digits = digits.slice(2);
+  if (digits.startsWith('0')) digits = '212' + digits.slice(1);
+  return digits;
+}
+
+// Message de confirmation envoyé AU CLIENT (et non à soi-même) : avec le
+// paiement à la livraison, faire confirmer la commande par le client avant
+// de l'expédier évite une bonne partie des colis refusés à la livraison.
+function whatsappCustomerConfirmLink(o) {
+  if (!o.phone) return null;
+  // La liste des commandes ne charge pas le détail des articles (seul le
+  // modal le fait) : le message reste correct dans les deux cas.
+  const productsLine = (o.items || [])
+    .map((i) => `• ${i.product_name}${i.variant_label ? ' (' + i.variant_label + ')' : ''} ×${i.quantity}`)
+    .join('\n');
+  const text = `السلام عليكم ${o.customer_name} 👋
+هادي *Hijama Store*.
+
+وصلاتنا الكوموند ديالك رقم *#${o.id}*${productsLine ? ':\n' + productsLine : ''}
+
+المجموع: *${o.total} ${ADMIN_CURRENCY}* (مع التوصيل)
+العنوان: ${o.address || ''}، ${o.city}
+
+واش كتأكد الطلب؟ جاوبنا بـ *نعم* وغادي نحضروه ليك 📦`;
+  return Api.whatsappLink(toInternational(o.phone), text);
+}
 const ORDER_STATUSES = ['Nouvelle commande', 'Confirmée', 'Préparation', 'Expédiée', 'Livrée', 'Annulée'];
 
 // ---------- Notification ----------
@@ -132,6 +163,7 @@ async function loadOrders() {
       </td>
       <td class="row-actions">
         <button class="icon-btn view-order-btn" data-order-id="${o.id}">Détail</button>
+        ${whatsappCustomerConfirmLink(o) ? `<a class="icon-btn" href="${whatsappCustomerConfirmLink(o)}" target="_blank" rel="noopener" title="Confirmer la commande avec le client">📲 Confirmer</a>` : ''}
         <a class="icon-btn" href="/api/orders/${o.id}/bon-commande" target="_blank" rel="noopener">Bon de commande</a>
         <a class="icon-btn" href="/api/orders/${o.id}/bon-commande.pdf" target="_blank" rel="noopener">PDF</a>
         <button class="icon-btn danger delete-order-btn" data-order-id="${o.id}">Supprimer</button>
@@ -189,7 +221,8 @@ async function openOrderDetail(id) {
     <div class="summary-row total"><span>Total</span><span>${formatPrice(o.total, ADMIN_CURRENCY)}</span></div>
     <a href="/api/orders/${o.id}/bon-commande" target="_blank" rel="noopener" class="btn btn-primary btn-block" style="margin-top: var(--space-4)">Ouvrir le bon de commande (à imprimer / envoyer)</a>
     <a href="/api/orders/${o.id}/bon-commande.pdf" target="_blank" rel="noopener" class="btn btn-outline btn-block" style="margin-top: var(--space-2)">Télécharger en PDF</a>
-    ${whatsappOrderLink(o) ? `<a href="${whatsappOrderLink(o)}" target="_blank" rel="noopener" class="btn btn-whatsapp btn-block" style="margin-top: var(--space-2)">Envoyer sur WhatsApp</a>` : ''}
+    ${whatsappCustomerConfirmLink(o) ? `<a href="${whatsappCustomerConfirmLink(o)}" target="_blank" rel="noopener" class="btn btn-whatsapp btn-block" style="margin-top: var(--space-4)">📲 Confirmer avec le client sur WhatsApp</a>` : ''}
+    ${whatsappOrderLink(o) ? `<a href="${whatsappOrderLink(o)}" target="_blank" rel="noopener" class="btn btn-outline btn-block" style="margin-top: var(--space-2)">Envoyer le récap sur mon WhatsApp</a>` : ''}
     <button type="button" class="btn btn-outline btn-block danger" id="modal-delete-order-btn" style="margin-top: var(--space-4)">Supprimer cette commande</button>
   `);
   document.getElementById('modal-delete-order-btn').addEventListener('click', async () => {
