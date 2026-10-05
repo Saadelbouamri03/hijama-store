@@ -30,7 +30,24 @@ const orderLimiter = rateLimit({
 function getOrderWithItems(id) {
   const order = db.prepare('SELECT * FROM orders WHERE id = ?').get(id);
   if (!order) return null;
-  const items = db.prepare('SELECT * FROM order_items WHERE order_id = ?').all(id);
+  // La photo du produit est jointe depuis le catalogue (et non copiée dans
+  // order_items) : elle sert à reconnaître d'un coup d'œil ce qui a été
+  // commandé, un nom seul ne suffisant pas toujours. Reste vide si le
+  // produit a depuis été supprimé (product_id passe alors à NULL).
+  const items = db.prepare(`
+    SELECT oi.*, p.images AS product_images
+    FROM order_items oi
+    LEFT JOIN products p ON p.id = oi.product_id
+    WHERE oi.order_id = ?
+  `).all(id).map((item) => {
+    let image = '';
+    try {
+      const parsed = JSON.parse(item.product_images || '[]');
+      if (Array.isArray(parsed) && parsed.length) image = parsed[0];
+    } catch { /* colonne vide ou illisible : on reste sans image */ }
+    const { product_images, ...rest } = item;
+    return { ...rest, image };
+  });
   return { ...order, items };
 }
 

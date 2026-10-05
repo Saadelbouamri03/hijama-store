@@ -212,8 +212,13 @@ async function openOrderDetail(id) {
     ${o.comment ? `<p class="hint">Commentaire : ${escapeHtml(o.comment)}</p>` : ''}
     <div class="table-wrap" style="margin: var(--space-4) 0">
       <table class="admin-table">
-        <thead><tr><th>Produit</th><th>Qté</th><th>Prix</th></tr></thead>
-        <tbody>${o.items.map((i) => `<tr><td>${escapeHtml(i.product_name)}${i.variant_label ? ' — ' + escapeHtml(i.variant_label) : ''}</td><td>${i.quantity}</td><td>${formatPrice(i.unit_price * i.quantity, ADMIN_CURRENCY)}</td></tr>`).join('')}</tbody>
+        <thead><tr><th></th><th>Produit</th><th>Qté</th><th>Prix</th></tr></thead>
+        <tbody>${o.items.map((i) => `<tr>
+          <td style="width:60px"><img src="${i.image ? '/images/products/' + encodeURIComponent(i.image) : '/images/products/placeholder-hijama.svg'}" alt="" loading="lazy" style="width:52px; height:52px; object-fit:cover; border-radius:var(--radius-sm); background:var(--cream)"></td>
+          <td>${escapeHtml(i.product_name)}${i.variant_label ? ' — ' + escapeHtml(i.variant_label) : ''}</td>
+          <td>${i.quantity}</td>
+          <td>${formatPrice(i.unit_price * i.quantity, ADMIN_CURRENCY)}</td>
+        </tr>`).join('')}</tbody>
       </table>
     </div>
     <div class="summary-row"><span>Sous-total</span><span>${formatPrice(o.subtotal, ADMIN_CURRENCY)}</span></div>
