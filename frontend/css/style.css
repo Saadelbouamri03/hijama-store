@@ -467,6 +467,29 @@ section { padding: var(--space-8) 0; }
 .review-card p { color: var(--ink); font-style: italic; margin-bottom: var(--space-3); }
 .review-name { font-weight: 700; font-size: var(--fs-sm); }
 
+/* Capture d'écran de la conversation WhatsApp : hauteur bornée pour que la
+   grille d'avis reste lisible, l'image entière s'ouvrant au clic. */
+.review-shot {
+  display: block;
+  position: relative;
+  margin-top: var(--space-3);
+  max-height: 300px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, .08);
+  border-radius: var(--radius-sm);
+}
+.review-shot img { display: block; width: 100%; height: auto; }
+/* Dégradé bas : montre que la capture est coupée et invite à l'ouvrir. */
+.review-shot::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 60px;
+  background: linear-gradient(to bottom, transparent, var(--cream));
+  pointer-events: none;
+}
+
 /* ---------- Pourquoi nous choisir ---------- */
 .why-grid { grid-template-columns: 1fr; }
 @media (min-width: 720px) { .why-grid { grid-template-columns: repeat(3, 1fr); } }

@@ -50,6 +50,12 @@ ensureColumn('orders', 'ab_variant', "TEXT DEFAULT ''");
 // et sur la landing, et plus tard à calculer un AggregateRating par produit.
 ensureColumn('reviews', 'product_id', 'INTEGER REFERENCES products(id) ON DELETE SET NULL');
 
+// Capture d'écran facultative (conversation WhatsApp d'un vrai client) :
+// un témoignage montré tel qu'il a été reçu est bien plus convaincant qu'un
+// texte recopié, que n'importe qui pourrait inventer. Nom de fichier seul,
+// servi depuis frontend/images/reviews/.
+ensureColumn('reviews', 'image', "TEXT DEFAULT ''");
+
 // Paiement en ligne (CMI) en plus du paiement à la livraison existant :
 // 'non_requis' pour les commandes à la livraison (comportement inchangé),
 // 'en_attente' le temps que le client paie sur la page CMI, puis 'payee' ou

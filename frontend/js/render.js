@@ -109,11 +109,19 @@ function renderNouveautesCard() {
 }
 
 function renderReviewCard(review) {
+  // La capture d'écran de la conversation, quand elle existe, est la preuve :
+  // elle est cliquable pour être lue en grand (les textes WhatsApp sont fins).
+  const shot = review.image
+    ? `<a href="/images/reviews/${encodeURIComponent(review.image)}" target="_blank" rel="noopener" class="review-shot">
+         <img src="/images/reviews/${encodeURIComponent(review.image)}" alt="${I18N.t('reviews.screenshotAlt', 'Capture de la conversation WhatsApp')}" loading="lazy">
+       </a>`
+    : '';
   return `
-    <article class="review-card">
+    <article class="review-card${review.image ? ' has-shot' : ''}">
       <div class="stars" aria-label="${review.rating} ${I18N.t('common.outOf5', 'sur 5')}">${starString(review.rating)}</div>
       <p${bidiAttr(review.comment)}>« ${escapeHtml(review.comment)} »</p>
       <div class="review-name">${escapeHtml(review.customer_name)}</div>
+      ${shot}
     </article>`;
 }
 

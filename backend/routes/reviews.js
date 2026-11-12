@@ -25,16 +25,16 @@ router.get('/', (req, res) => {
 
 // POST /api/reviews - admin
 router.post('/', requireAdmin, (req, res) => {
-  const { customer_name, rating, comment, product_id, is_demo, display_order } = req.body || {};
+  const { customer_name, rating, comment, product_id, is_demo, display_order, image } = req.body || {};
   if (!isNonEmptyString(customer_name, 80)) return res.status(400).json({ error: 'Le nom du client est requis.' });
   if (!isNonEmptyString(comment, 500)) return res.status(400).json({ error: "Le commentaire est requis." });
   const r = Number(rating);
   if (!Number.isInteger(r) || r < 1 || r > 5) return res.status(400).json({ error: 'La note doit être entre 1 et 5.' });
 
   const info = db.prepare(`
-    INSERT INTO reviews (customer_name, rating, comment, product_id, is_demo, active, display_order)
-    VALUES (?, ?, ?, ?, ?, 1, ?)
-  `).run(customer_name.trim(), r, comment.trim(), product_id || null, is_demo ? 1 : 0, Number(display_order) || 0);
+    INSERT INTO reviews (customer_name, rating, comment, product_id, is_demo, active, display_order, image)
+    VALUES (?, ?, ?, ?, ?, 1, ?, ?)
+  `).run(customer_name.trim(), r, comment.trim(), product_id || null, is_demo ? 1 : 0, Number(display_order) || 0, (image || '').trim());
 
   res.status(201).json(db.prepare('SELECT * FROM reviews WHERE id = ?').get(info.lastInsertRowid));
 });
@@ -53,11 +53,12 @@ router.put('/:id', requireAdmin, (req, res) => {
     is_demo: b.is_demo !== undefined ? (b.is_demo ? 1 : 0) : existing.is_demo,
     active: b.active !== undefined ? (b.active ? 1 : 0) : existing.active,
     display_order: b.display_order !== undefined ? Number(b.display_order) : existing.display_order,
+    image: b.image !== undefined ? String(b.image).trim() : existing.image,
   };
 
   db.prepare(`
-    UPDATE reviews SET customer_name=?, rating=?, comment=?, product_id=?, is_demo=?, active=?, display_order=? WHERE id=?
-  `).run(updated.customer_name, updated.rating, updated.comment, updated.product_id, updated.is_demo, updated.active, updated.display_order, req.params.id);
+    UPDATE reviews SET customer_name=?, rating=?, comment=?, product_id=?, is_demo=?, active=?, display_order=?, image=? WHERE id=?
+  `).run(updated.customer_name, updated.rating, updated.comment, updated.product_id, updated.is_demo, updated.active, updated.display_order, updated.image, req.params.id);
 
   res.json(db.prepare('SELECT * FROM reviews WHERE id = ?').get(req.params.id));
 });
