@@ -29,6 +29,7 @@
     <button class="admin-tab" data-panel="categories">Catégories</button>
     <button class="admin-tab" data-panel="reviews">Avis</button>
     <button class="admin-tab" data-panel="delivery">Livraison</button>
+    <button class="admin-tab" data-panel="prospects">Prospection</button>
   </div>
 </div>
 
@@ -121,6 +122,33 @@
         <tbody id="delivery-tbody"><tr class="empty-row"><td colspan="3">Chargement…</td></tr></tbody>
       </table>
     </div>
+  </section>
+
+  <!-- ===== PROSPECTION (centres à démarcher) ===== -->
+  <section class="admin-panel" id="panel-prospects">
+    <div class="admin-toolbar">
+      <h2>Prospection — centres</h2>
+      <div class="flex gap-2">
+        <select id="prospect-status-filter">
+          <option value="">Tous les statuts</option>
+          <option>À contacter</option>
+          <option>Contacté</option>
+          <option>Répondu</option>
+          <option>Intéressé</option>
+          <option>Commande passée</option>
+          <option>Pas intéressé</option>
+          <option>Faux numéro</option>
+        </select>
+        <button class="btn btn-primary btn-sm" id="add-prospect-btn">+ Ajouter un centre</button>
+      </div>
+    </div>
+    <p class="hint" style="margin-bottom: var(--space-3)">
+      Ouvrez cette page <strong>depuis le téléphone</strong> : le bouton WhatsApp y ouvre
+      WhatsApp Business avec le message déjà écrit. Rythme conseillé : 20 à 30 centres par
+      jour, étalés dans la journée.
+    </p>
+    <div id="prospect-progress" class="hint" style="margin-bottom: var(--space-4)"></div>
+    <div id="prospects-list"><p class="hint">Chargement…</p></div>
   </section>
 
 </div>

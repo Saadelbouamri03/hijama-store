@@ -98,3 +98,17 @@ CREATE TABLE IF NOT EXISTS delivery_fees (
   city  TEXT NOT NULL UNIQUE,
   fee   REAL NOT NULL
 );
+
+-- Prospection B2B : centres de hijama/massage à démarcher un par un. Le
+-- statut vit en base plutôt que dans un fichier, pour être le même sur le
+-- téléphone (d'où partent les messages) et sur l'ordinateur.
+CREATE TABLE IF NOT EXISTS prospects (
+  id            INTEGER PRIMARY KEY AUTOINCREMENT,
+  name          TEXT NOT NULL,
+  city          TEXT DEFAULT '',
+  phone         TEXT NOT NULL,
+  status        TEXT NOT NULL DEFAULT 'À contacter',
+  notes         TEXT DEFAULT '',
+  contacted_at  TEXT DEFAULT '',
+  created_at    TEXT NOT NULL DEFAULT (datetime('now'))
+);

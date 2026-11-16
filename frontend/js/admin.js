@@ -627,6 +627,130 @@ function openFeeForm(id = null) {
   });
 }
 
+// ================= PROSPECTION (centres à démarcher) =================
+const PROSPECT_STATUSES = ['À contacter', 'Contacté', 'Répondu', 'Intéressé', 'Commande passée', 'Pas intéressé', 'Faux numéro'];
+
+// Message d'approche, personnalisé avec le nom du centre : deux centres ne
+// reçoivent jamais exactement le même texte, ce qui est précisément ce que
+// WhatsApp repère comme envoi de masse.
+function prospectMessage(p) {
+  return `السلام عليكم ${p.name} 👋
+
+أنا من Hijama Store — كنوفرو مستلزمات الحجامة والمساج للمراكز والمحترفين بالمغرب.
+
+أكثر من 130 منتوج: كؤوس، مضخات، شفرات، قفازات، زيوت، موكسا، أدوات المساج...
+
+أثمنة الجملة للمراكز + توصيل لجميع المدن + الدفع عند الاستلام.
+
+هاك الكاتالوگ بالأثمنة 👇`;
+}
+
+// Schéma whatsapp:// (et non https://wa.me/) : c'est celui qui ouvre
+// WhatsApp Business quand les deux applications sont installées.
+function prospectWaLink(p) {
+  const digits = toInternational(p.phone);
+  if (digits.length < 11) return null; // numéro incomplet : pas de lien
+  return `whatsapp://send?phone=${digits}&text=${encodeURIComponent(prospectMessage(p))}`;
+}
+
+async function loadProspects() {
+  const filter = document.getElementById('prospect-status-filter').value;
+  const all = await Api.get('/api/prospects');
+  const list = filter ? all.filter((p) => p.status === filter) : all;
+  const box = document.getElementById('prospects-list');
+
+  const done = all.filter((p) => p.status !== 'À contacter').length;
+  const ordered = all.filter((p) => p.status === 'Commande passée').length;
+  document.getElementById('prospect-progress').innerHTML =
+    `<strong>${done}/${all.length}</strong> contactés · <strong>${ordered}</strong> commande(s)`;
+
+  if (!list.length) {
+    box.innerHTML = '<p class="hint">Aucun centre pour ce filtre.</p>';
+    return;
+  }
+
+  box.innerHTML = list.map((p) => {
+    const link = prospectWaLink(p);
+    return `
+    <div class="prospect-card" data-id="${p.id}">
+      <div class="prospect-head">
+        <div>
+          <strong${bidiAttr(p.name)}>${escapeHtml(p.name)}</strong>
+          ${p.city ? `<span class="prospect-city">${escapeHtml(p.city)}</span>` : ''}
+          <div class="prospect-phone">${escapeHtml(p.phone)}${p.contacted_at ? ` · contacté le ${escapeHtml(p.contacted_at)}` : ''}</div>
+        </div>
+        ${link
+          ? `<a href="${link}" class="btn btn-whatsapp btn-sm prospect-send">📲 WhatsApp</a>`
+          : `<span class="prospect-bad">⚠️ n° incomplet</span>`}
+      </div>
+      <div class="prospect-actions">
+        <select class="prospect-status" data-id="${p.id}">
+          ${PROSPECT_STATUSES.map((s) => `<option ${s === p.status ? 'selected' : ''}>${s}</option>`).join('')}
+        </select>
+        <input class="prospect-notes" data-id="${p.id}" value="${escapeHtml(p.notes || '')}" placeholder="Notes…">
+        <button class="icon-btn danger prospect-delete" data-id="${p.id}">Suppr.</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  box.querySelectorAll('.prospect-status').forEach((sel) => {
+    sel.addEventListener('change', async () => {
+      try {
+        await Api.put(`/api/prospects/${sel.dataset.id}`, { status: sel.value });
+        showToast('Statut mis à jour');
+        loadProspects();
+      } catch (err) { showToast(err.message); }
+    });
+  });
+
+  // Enregistrement à la sortie du champ : saisir une note sur mobile ne doit
+  // pas déclencher une requête à chaque lettre.
+  box.querySelectorAll('.prospect-notes').forEach((inp) => {
+    inp.addEventListener('change', async () => {
+      try {
+        await Api.put(`/api/prospects/${inp.dataset.id}`, { notes: inp.value });
+        showToast('Note enregistrée');
+      } catch (err) { showToast(err.message); }
+    });
+  });
+
+  box.querySelectorAll('.prospect-delete').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      if (!confirm('Retirer ce centre de la liste ?')) return;
+      try {
+        await Api.del(`/api/prospects/${btn.dataset.id}`);
+        loadProspects();
+      } catch (err) { showToast(err.message); }
+    });
+  });
+}
+
+function openProspectForm() {
+  openModal(`
+    <button class="modal-close" data-close>&times;</button>
+    <h2>Ajouter un centre</h2>
+    <form id="prospect-form" class="admin-form">
+      <label>Nom du centre<input id="p-name" required maxlength="120"></label>
+      <label>Ville<input id="p-city" maxlength="60"></label>
+      <label>Téléphone<input id="p-phone" required maxlength="30" placeholder="0612345678"></label>
+      <button type="submit" class="btn btn-primary btn-block">Enregistrer</button>
+    </form>
+  `);
+  document.getElementById('prospect-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    try {
+      await Api.post('/api/prospects', {
+        name: document.getElementById('p-name').value.trim(),
+        city: document.getElementById('p-city').value.trim(),
+        phone: document.getElementById('p-phone').value.trim(),
+      });
+      showToast('Centre ajouté');
+      closeModal();
+      loadProspects();
+    } catch (err) { showToast(err.message); }
+  });
+}
+
 // ================= INITIALISATION =================
 (async function init() {
   const ok = await checkAuth();
@@ -643,6 +767,8 @@ function openFeeForm(id = null) {
   document.getElementById('add-review-btn').addEventListener('click', () => openReviewForm());
   document.getElementById('add-fee-btn').addEventListener('click', () => openFeeForm());
   document.getElementById('order-status-filter').addEventListener('change', loadOrders);
+  document.getElementById('add-prospect-btn').addEventListener('click', () => openProspectForm());
+  document.getElementById('prospect-status-filter').addEventListener('change', loadProspects);
 
-  await Promise.all([loadOverview(), loadOrders(), loadProducts(), loadCategories(), loadReviews(), loadDelivery()]);
+  await Promise.all([loadOverview(), loadOrders(), loadProducts(), loadCategories(), loadReviews(), loadDelivery(), loadProspects()]);
 })();
